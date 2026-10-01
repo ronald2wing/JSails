@@ -1,0 +1,79 @@
+// jamal.config.js — the single deployment/planning config for `jsails jamal`.
+//
+// One file drives both environments (there is no "mode" flag): `jamal dev` and
+// `jamal up` start the local backing services, and `jamal deploy` plans a
+// production release. The `services` map declares the backing services the app
+// depends on — MariaDB (`db`, the recommended default) and Valkey (`valkey`,
+// the Redis-compatible store JSails uses for cache, jobs, and broadcast) — and
+// `local.ports` publishes them on loopback so the app running on the host can
+// reach them. See the "Jamal" section of the bundled guide for the full command
+// surface.
+import { secret } from 'jsails';
+
+export default {
+  // Compose project name (local) and container-name prefix (production).
+  service: 'jsails-app',
+  // Production image reference; replace with your registry/name before deploy.
+  image: 'jsails-app',
+  // The app answers /up (the default healthPath); Jamal polls it after a deploy.
+  health: { path: '/up', timeoutMs: 5000, intervalMs: 30000 },
+  // Environment the app reads. Each `secret('NAME')` entry resolves from the
+  // secrets files under `.jamal/` — `.jamal/secrets-common` is merged first,
+  // then `.jamal/secrets.<destination>` (per-environment overrides) — so no
+  // value is ever written here. Those files are dotenv-format: `$NAME` resolves
+  // from earlier entries in the same file, then the host environment (to an
+  // empty string when undefined); `$(cmd)` runs a shell command; a
+  // `$(jsails jamal secrets fetch NAME)` command is inlined, so one secret can
+  // derive another by name across files. A value that is `secret(...)` stays on
+  // the secret channel: it is written to a host env file and read by the
+  // container, never passed on the `docker run` command line. A literal string
+  // stays on the clear channel (`-e NAME=VALUE`); an optional `{ clear: true }`
+  // opts a secret reference into the clear channel when it is not actually
+  // sensitive. An optional `{ alias: 'OTHER' }` renames the variable inside the
+  // container. In local development Docker Compose interpolates the names as
+  // ${NAME} from the host, so no secret value is ever written here either.
+  env: {
+    DATABASE_HOST: secret('DATABASE_HOST'),
+    DATABASE_PORT: secret('DATABASE_PORT'),
+    DATABASE_USER: secret('DATABASE_USER'),
+    DATABASE_PASSWORD: secret('DATABASE_PASSWORD'),
+    DATABASE_NAME: secret('DATABASE_NAME'),
+    VALKEY_URL: secret('VALKEY_URL'),
+    BETTER_AUTH_SECRET: secret('BETTER_AUTH_SECRET'),
+    JSAILS_COMPONENT_SECRET: secret('JSAILS_COMPONENT_SECRET'),
+  },
+  // Backing services: MariaDB and Valkey (Redis).
+  services: {
+    db: { type: 'mariadb' },
+    valkey: { type: 'valkey' },
+    // Opt-in search engines — uncomment to run alongside the app:
+    // search: { type: 'meilisearch' },   // key: MEILISEARCH_KEY
+    // search: { type: 'typesense' },     // key: TYPESENSE_API_KEY
+    // search: { type: 'opensearch' },    // no key (single-node, security off)
+    // Opt-in S3-compatible object store (SeaweedFS) — uncomment to run alongside:
+    // s3: { type: 's3' },                // creds: S3_ACCESS_KEY_ID/S3_SECRET_ACCESS_KEY
+  },
+  local: {
+    // Loopback-published ports so the app on the host reaches the services.
+    ports: { db: 3306, valkey: 6379 },
+    // Search ports, matching the services above:
+    // ports: { db: 3306, valkey: 6379, search: 7700 },   // meilisearch
+    // ports: { db: 3306, valkey: 6379, search: 8108 },   // typesense
+    // ports: { db: 3306, valkey: 6379, search: 9200 },   // opensearch
+    // ports: { db: 3306, valkey: 6379, s3: 8333 },       // s3 (SeaweedFS S3 gateway)
+    // false: the app runs on the host via `npm run dev`/`serve`; set true to
+    // build and run the app in a container instead.
+    build: false,
+  },
+  // Production overlay — uncomment and fill in to deploy:
+  // production: {
+  //   server: 'your.server.example',
+  //   domain: 'example.com',
+  //   registry: { server: 'registry.example.com', username: 'you' },
+  //   // Deploy target: read `.jamal/secrets.<destination>` and address the env
+  //   // file as `<service>[-<destination>]`. Default: no destination.
+  //   destination: 'production',
+  //   // Override the secrets files' location (relative to the project root).
+  //   secretsPath: '.jamal/secrets',
+  // },
+};

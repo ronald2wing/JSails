@@ -1,0 +1,39 @@
+{
+  // Shared by every workspace. `${configDir}` is the directory of the tsconfig
+  // that extends this file, so one base compiles each workspace's `src/` and
+  // `test/` into its own `dist/`; a workspace tsconfig only has to extend it.
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "jsails",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    // Source is not shipped and `.map` files are excluded from every package,
+    // so declaration maps would be dead output.
+    "declarationMap": false,
+    "sourceMap": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "rootDir": "${configDir}",
+    "outDir": "${configDir}/dist",
+    "tsBuildInfoFile": "${configDir}/dist/.tsbuildinfo"
+  },
+  "include": [
+    "${configDir}/src/**/*.ts",
+    "${configDir}/src/**/*.tsx",
+    "${configDir}/test/**/*.ts",
+    "${configDir}/test/**/*.tsx"
+  ]
+}

@@ -1,0 +1,27 @@
+/**
+ * `jsails hello` command.
+ *
+ * A readable sample of the class-based command API. The optional `name`
+ * argument is read from the command line; when it is absent the command prompts
+ * for it interactively through the injected `node:readline/promises` prompter.
+ */
+
+import { Command } from '../app/application-command.js';
+
+export default class HelloCommand extends Command {
+  static readonly signature = 'hello {name?}';
+  static readonly summary = 'Greet someone by name';
+  static readonly audience = 'user' as const;
+
+  async handle(): Promise<number> {
+    let name = this.argument('name');
+    if (name === undefined) {
+      name = await this.prompter.text('What is your name?');
+    }
+    if (name === '') {
+      name = 'world';
+    }
+    this.stdout(`Hello, ${name}!`);
+    return 0;
+  }
+}
