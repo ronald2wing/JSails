@@ -1,0 +1,49 @@
+{
+  "name": "jsails-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "core",
+    "plugins/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w jsails && npm run build -w @jsails/cache && npm run build -w @jsails/signals && npm run build -w @jsails/diagnostics && npm run build -w @jsails/filesystem && npm run build -w @jsails/theme && npm run build -w @jsails/sessions && npm run build -w @jsails/plugin-tools && npm run build -w @jsails/inertia && npm run build -w @jsails/ai && npm run build -w @jsails/logging && npm run build -w @jsails/content && npm run build -w @jsails/editor && npm run build -w @jsails/mail && npm run build -w @jsails/auth && npm run build -w @jsails/notifications && npm run build -w @jsails/admin && npm run build -w @jsails/media && npm run build -w @jsails/blog && npm run build -w @jsails/live && npm run build -w @jsails/flags && npm run build -w @jsails/admin-plugin-manager && npm run build -w @jsails/tenancy",
+    "build:clean": "npm run build:clean -w jsails && npm run build:clean -w @jsails/cache && npm run build:clean -w @jsails/signals && npm run build:clean -w @jsails/diagnostics && npm run build:clean -w @jsails/filesystem && npm run build:clean -w @jsails/theme && npm run build:clean -w @jsails/sessions && npm run build:clean -w @jsails/plugin-tools && npm run build:clean -w @jsails/inertia && npm run build:clean -w @jsails/ai && npm run build:clean -w @jsails/logging && npm run build:clean -w @jsails/content && npm run build:clean -w @jsails/editor && npm run build:clean -w @jsails/mail && npm run build:clean -w @jsails/auth && npm run build:clean -w @jsails/notifications && npm run build:clean -w @jsails/admin && npm run build:clean -w @jsails/media && npm run build:clean -w @jsails/blog && npm run build:clean -w @jsails/live && npm run build:clean -w @jsails/flags && npm run build:clean -w @jsails/admin-plugin-manager && npm run build:clean -w @jsails/tenancy",
+    "build:watch": "npm run build:watch -w jsails",
+    "test": "npm run build:clean && npm run test -w jsails && npm run test -w @jsails/cache && npm run test -w @jsails/signals && npm run test -w @jsails/diagnostics && npm run test -w @jsails/filesystem && npm run test -w @jsails/theme && npm run test -w @jsails/sessions && npm run test -w @jsails/plugin-tools && npm run test -w @jsails/inertia && npm run test -w @jsails/ai && npm run test -w @jsails/logging && npm run test -w @jsails/content && npm run test -w @jsails/editor && npm run test -w @jsails/mail && npm run test -w @jsails/auth && npm run test -w @jsails/notifications && npm run test -w @jsails/admin && npm run test -w @jsails/media && npm run test -w @jsails/blog && npm run test -w @jsails/live && npm run test -w @jsails/flags && npm run test -w @jsails/admin-plugin-manager && npm run test -w @jsails/tenancy",
+    "test:watch": "npm run test:watch --workspace=jsails",
+    "test:coverage": "npm run test:coverage --workspace=jsails",
+    "typecheck": "npm run typecheck -w jsails && npm run typecheck -w @jsails/cache && npm run typecheck -w @jsails/signals && npm run typecheck -w @jsails/diagnostics && npm run typecheck -w @jsails/filesystem && npm run typecheck -w @jsails/theme && npm run typecheck -w @jsails/sessions && npm run typecheck -w @jsails/plugin-tools && npm run typecheck -w @jsails/inertia && npm run typecheck -w @jsails/ai && npm run typecheck -w @jsails/logging && npm run typecheck -w @jsails/content && npm run typecheck -w @jsails/editor && npm run typecheck -w @jsails/mail && npm run typecheck -w @jsails/auth && npm run typecheck -w @jsails/notifications && npm run typecheck -w @jsails/admin && npm run typecheck -w @jsails/media && npm run typecheck -w @jsails/blog && npm run typecheck -w @jsails/live && npm run typecheck -w @jsails/flags && npm run typecheck -w @jsails/admin-plugin-manager && npm run typecheck -w @jsails/tenancy",
+    "lint": "eslint . --cache",
+    "lint:fix": "eslint . --fix --cache",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check-structure": "node scripts/check-src-structure.mjs",
+    "check": "node scripts/run-parallel.mjs lint format:check check-structure && npm run test",
+    "verify:starter": "node scripts/verify-starter.mjs",
+    "verify:integrations": "node scripts/verify-integrations.mjs",
+    "website": "npm run build && npm --prefix website run build",
+    "prepublishOnly": "npm run check",
+    "precheck": "npm run build",
+    "release": "npm run check && npm publish --workspaces --ignore-scripts"
+  },
+  "devDependencies": {
+    "@types/hotwired__turbo": "^8.0.16",
+    "@types/mime-types": "^3.0.1",
+    "@types/node": "^26.6.5",
+    "@types/nodemailer": "^8.0.2",
+    "@types/qs": "^6.15.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "eslint": "^10.13.0",
+    "eslint-config-prettier": "^10.1.8",
+    "playwright-core": "^1.64.1",
+    "prettier": "^3.9.10",
+    "schema-dts": "^2.1.0",
+    "socket.io-adapter": "^2.5.8",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript-eslint": "^8.72.0"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  }
+}

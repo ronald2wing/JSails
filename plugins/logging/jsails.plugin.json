@@ -1,0 +1,4 @@
+{
+  "id": "jsails-logging",
+  "provides": ["@jsails/logging"]
+}

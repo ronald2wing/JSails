@@ -1,0 +1,4 @@
+{
+  "id": "jsails-theme",
+  "provides": ["@jsails/theme", "@jsails/theme/server"]
+}

@@ -1,0 +1,64 @@
+{
+  "name": "@jsails/filesystem",
+  "version": "1.0.0",
+  "description": "Keyed blob-store Disk implementations, variants, rich text, and filesystem plugin for JSails.",
+  "license": "MIT",
+  "author": "Ronald Wong <ronald2wing@gmail.com>",
+  "homepage": "https://jsails.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronald2wing/JSails.git",
+    "directory": "plugins/filesystem"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/test",
+    "!dist/.tsbuildinfo",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "tsc -p tsconfig.json",
+    "build:clean": "npm run clean && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test \"dist/test/**/*.test.js\"",
+    "test:watch": "node --test --watch \"dist/test/**/*.test.js\"",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "jsails": "1.0.0"
+  },
+  "devDependencies": {
+    "jsails": "1.0.0"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ronald2wing/JSails/issues"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1155.0"
+  },
+  "jsails": {
+    "id": "jsails-filesystem",
+    "version": "1.0.0",
+    "jsailsCompat": "^1.0.0",
+    "permissions": [
+      "filesystem.read",
+      "filesystem.write"
+    ],
+    "entry": "@jsails/filesystem"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "name": "@jsails/flags",
+  "version": "1.0.0",
+  "description": "Feature flags with memory/database stores, scopes, and an admin page.",
+  "license": "MIT",
+  "author": "Ronald Wong <ronald2wing@gmail.com>",
+  "homepage": "https://jsails.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronald2wing/JSails.git",
+    "directory": "plugins/flags"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/test",
+    "!dist/.tsbuildinfo",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "tsc -p tsconfig.json",
+    "build:clean": "npm run clean && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test \"dist/test/**/*.test.js\"",
+    "test:watch": "node --test --watch \"dist/test/**/*.test.js\"",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@jsails/admin": "1.0.0",
+    "preact": "^11.0.1"
+  },
+  "peerDependencies": {
+    "jsails": "1.0.0",
+    "typeorm": "^1.1.1"
+  },
+  "devDependencies": {
+    "jsails": "1.0.0",
+    "typeorm": "^1.1.1"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ronald2wing/JSails/issues"
+  },
+  "jsails": {
+    "id": "jsails-flags",
+    "version": "1.0.0",
+    "jsailsCompat": "^1.0.0",
+    "permissions": [
+      "database.read",
+      "database.write"
+    ],
+    "entry": "@jsails/flags"
+  }
+}

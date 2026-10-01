@@ -1,0 +1,72 @@
+# Dependencies
+node_modules/
+
+# Build output and generated artifacts. Unanchored on purpose: the same names
+# are used by the docs site and by generated app fixtures.
+dist/
+out/
+.jsails/
+*.tsbuildinfo
+website/public/assets/
+# Compiled output must never land beside its source. The build writes to
+# `dist/`; a stray in-place emit would otherwise be committed silently.
+core/src/**/*.js
+core/src/**/*.d.ts
+core/src/**/*.map
+plugins/*/src/**/*.js
+plugins/*/src/**/*.d.ts
+plugins/*/src/**/*.map
+
+# Local runtime state (managed services, app storage, SQLite files)
+storage/
+.jamal/
+.content-cache/
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Environment and secrets
+.env
+.env.*
+# Committed templates
+!.env.example
+!.env.testing.example
+!core/templates/**/.env.*.template
+# Key material
+*.pem
+*.key
+*.p12
+*.crt
+
+# Test and coverage artifacts
+coverage/
+test-results/
+playwright-report/
+
+# Logs and tool caches
+*.log
+.eslintcache
+
+# Packed tarballs (npm pack output)
+*.tgz
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Editors / IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Merge/patch debris
+*~
+*.orig
+*.rej

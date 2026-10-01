@@ -1,0 +1,4 @@
+{
+  "id": "jsails-admin",
+  "provides": ["@jsails/admin"]
+}

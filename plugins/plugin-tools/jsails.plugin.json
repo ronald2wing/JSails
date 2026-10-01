@@ -1,0 +1,4 @@
+{
+  "id": "jsails-plugin-tools",
+  "provides": ["@jsails/plugin-tools"]
+}

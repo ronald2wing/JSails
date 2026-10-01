@@ -1,0 +1,58 @@
+{
+  "name": "@jsails/plugin-tools",
+  "version": "1.0.0",
+  "description": "Canonical shared tool modules for JSails plugin authors.",
+  "license": "MIT",
+  "author": "Ronald Wong <ronald2wing@gmail.com>",
+  "homepage": "https://jsails.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronald2wing/JSails.git",
+    "directory": "plugins/plugin-tools"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/test",
+    "!dist/.tsbuildinfo",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "tsc -p tsconfig.json",
+    "build:clean": "npm run clean && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test \"dist/test/**/*.test.js\"",
+    "test:watch": "node --test --watch \"dist/test/**/*.test.js\"",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "jsails": "1.0.0"
+  },
+  "devDependencies": {
+    "jsails": "1.0.0"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ronald2wing/JSails/issues"
+  },
+  "jsails": {
+    "id": "jsails-plugin-tools",
+    "version": "1.0.0",
+    "jsailsCompat": "^1.0.0",
+    "permissions": [],
+    "entry": "@jsails/plugin-tools"
+  }
+}
