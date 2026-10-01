@@ -1,0 +1,12 @@
+<script setup lang="ts">
+defineProps<{ title: string }>();
+</script>
+
+<template>
+  <div class="shell">
+    <header>
+      <h2>{{ title }}</h2>
+    </header>
+    <slot>Nothing to show.</slot>
+  </div>
+</template>

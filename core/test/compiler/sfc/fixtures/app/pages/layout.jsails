@@ -1,0 +1,30 @@
+<script lang="ts">
+/** The root layout: awaits its navigation, wraps every page. */
+async function navigation(): Promise<readonly { href: string; label: string }[]> {
+  return [
+    { href: '/', label: 'Home' },
+    { href: '/blog', label: 'Blog' },
+  ];
+}
+</script>
+
+<script setup lang="ts">
+const links = await navigation();
+</script>
+
+<template>
+  <div class="layout">
+    <nav>
+      <a js-for="(link, index) in links" :key="link.href" :href="link.href" :data-index="index">{{
+        link.label
+      }}</a>
+    </nav>
+    <slot />
+  </div>
+</template>
+
+<style>
+.layout {
+  display: grid;
+}
+</style>

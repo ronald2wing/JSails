@@ -1,0 +1,4 @@
+<!-- A view that mounts an island. -->
+<template>
+  <aside class="promo"><Counter :start="5" label="Promo" /></aside>
+</template>

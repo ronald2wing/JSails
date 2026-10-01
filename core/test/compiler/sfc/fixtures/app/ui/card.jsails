@@ -1,0 +1,46 @@
+<script lang="ts">
+/** A card listing rows, with header, row and footer slots. */
+import type { ComponentChild } from 'jsails/view';
+
+export interface Row {
+  readonly id: number;
+  readonly label: string;
+}
+</script>
+
+<script setup lang="ts">
+interface CardSlots {
+  readonly header?: ComponentChild;
+  readonly children?: ComponentChild;
+  readonly row?: (props: { item: Row; index: number }) => ComponentChild;
+}
+defineProps<{ rows: readonly Row[]; attributes?: Record<string, string> }>();
+defineSlots<CardSlots>();
+</script>
+
+<template>
+  <section class="card" js-bind="attributes">
+    <header><slot name="header">Rows</slot></header>
+    <ol>
+      <template js-for="(item, index) in rows" :key="item.id">
+        <slot name="row" :item="item" :index="index"
+          ><li>{{ item.label }}</li></slot
+        >
+      </template>
+    </ol>
+    <slot />
+    <component :is="rows.length > 1 ? 'strong' : 'em'" class="count">{{ rows.length }}</component>
+    <!-- prettier-ignore -->
+    <code js-pre>{{ not   interpolated }}</code>
+  </section>
+</template>
+
+<style scoped>
+.card > header {
+  font-weight: bold;
+}
+
+.count {
+  margin-inline-start: 1ch;
+}
+</style>

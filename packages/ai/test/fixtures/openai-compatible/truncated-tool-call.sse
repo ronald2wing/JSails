@@ -1,0 +1,4 @@
+data: {"id":"chatcmpl-cut2","object":"chat.completion.chunk","created":1763500000,"model":"gpt-5.2","choices":[{"index":0,"delta":{"role":"assistant","content":null,"tool_calls":[{"index":0,"id":"call_cut","type":"function","function":{"name":"weather","arguments":""}}]},"finish_reason":null}],"usage":null}
+
+data: {"id":"chatcmpl-cut2","object":"chat.completion.chunk","created":1763500000,"model":"gpt-5.2","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"city\":\"Paris\"}"}}]},"finish_reason":null}],"usage":null}
+

@@ -1,0 +1,24 @@
+/**
+ * Current user for the Better Auth starter.
+ *
+ * A read-only `GET` endpoint returning the authenticated user. Every API
+ * module states its access; this one's `authorize` admits only a request with
+ * a session, so an anonymous request is answered `401` with a problem document
+ * (`application/problem+json`, `code: "request.unauthenticated"`) before this
+ * handler runs, and a request that reaches here has a non-null session. The
+ * `null` guard below is a defensive type narrowing, not a second
+ * authorization layer.
+ */
+
+import type { RequestContext } from 'jsails';
+
+export function authorize(context: RequestContext): boolean {
+  return context.session !== null;
+}
+
+export function GET(_request: Request, context: RequestContext): Response {
+  if (context.session === null) {
+    return Response.json({ user: null }, { status: 401 });
+  }
+  return Response.json({ user: context.session.data.user });
+}

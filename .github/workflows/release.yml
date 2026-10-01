@@ -1,0 +1,66 @@
+name: Release
+
+# Publishing runs only from a version tag pushed to the repository, never from
+# a pull request or a branch push.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    # A protected environment holds NPM_TOKEN and can require a reviewer.
+    environment: npm
+    permissions:
+      contents: read
+      # Lets npm obtain the OIDC token behind `--provenance`.
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # No dependency cache: this job holds the publish token and an OIDC
+      # identity, so it installs from the registry rather than restore a cache
+      # that any earlier workflow run could have written. setup-node turns
+      # caching on by itself when package.json names npm as its package
+      # manager, so the opt-out is stated rather than implied.
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      # The tag must name the framework version being published.
+      - name: Check the tag matches the framework version
+        run: |
+          expected="v$(node -p "require('./core/package.json').version")"
+          if [ "$GITHUB_REF_NAME" != "$expected" ]; then
+            echo "tag $GITHUB_REF_NAME does not match $expected" >&2
+            exit 1
+          fi
+
+      # scripts/release.mjs refuses a dirty tree, runs `npm run check`,
+      # publishes every public workspace in dependency order with
+      # `--ignore-scripts --provenance`, and skips versions already on the
+      # registry, so re-running a failed release resumes it. It publishes the
+      # tarballs it packed and hashed, after writing their SHA-256 digests into
+      # the admin plugin manager's first-party directory, which publishes last.
+      - name: Release
+        run: npm run release
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

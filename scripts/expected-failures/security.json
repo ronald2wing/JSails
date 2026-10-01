@@ -1,0 +1,71 @@
+{
+  "description": "Known authorization and request-security holes (SEC-01): each entry is a known-holes test that asserts the safe behaviour against a real assembled app and fails today. Each reason ends with the finding it records: 'audit <area> #n' is the n-th finding of that area in the rebuild audit, 'critic <theme> missed #n' the n-th missed root cause in that design theme's critique, 'design <theme> RC n' that theme's n-th root cause. The closing package removes its entry with the fix; holes closed before SEC-01 are passing tests in the same files and have no entry.",
+  "kind": "tests",
+  "entries": [
+    {
+      "file": "core/test/security/known-holes.test.tsx",
+      "test": [
+        "known holes: a throwing authorize is a reported fault",
+        "reports a throwing resource-handler authorize"
+      ],
+      "failure": {
+        "message": "the resource authorize failure reached onError",
+        "name": "AssertionError"
+      },
+      "reason": "createResourceHandlers (core/src/api/resource.ts assertResourceAuthorized) turns a throwing authorize into a silent 403; the fault never reaches the app's onError. Finding: audit core-http #22.",
+      "fixedBy": "SEC-10"
+    },
+    {
+      "file": "core/test/security/known-holes.test.tsx",
+      "test": [
+        "known holes: a throwing authorize is a reported fault",
+        "reports a throwing readiness authorize"
+      ],
+      "failure": {
+        "message": "the readiness authorize failure reached onError",
+        "name": "AssertionError"
+      },
+      "reason": "mayShowDetails (core/src/server/readiness.ts) swallows a throwing readiness.authorize: the caller sees the aggregate status and the fault is never reported. Finding: design auth-authorization RC 2; audit framework-improvements #9.",
+      "fixedBy": "SEC-11"
+    },
+    {
+      "file": "packages/live/test/known-holes.test.ts",
+      "test": [
+        "known holes: a grant does not outlive a demotion",
+        "refuses a new admin-only subscription on the same socket after a demotion"
+      ],
+      "failure": {
+        "message": "a demoted user opened an admin-only subscription",
+        "name": "AssertionError"
+      },
+      "reason": "The transport decides a subscribe with the user resolved at the handshake (or the last revalidation, every 60 s by default), so a demoted user still opens admin-only subscriptions on the same socket until the next revalidation. Finding: audit pkg-content-io #12 and #30; design auth-authorization RC 6.",
+      "fixedBy": "CNT-11"
+    },
+    {
+      "file": "packages/live/test/known-holes.test.ts",
+      "test": [
+        "known holes: a tenant-scoped publication stays inside its tenant",
+        "delivers a subscriber its own tenant's rows and nothing else"
+      ],
+      "failure": {
+        "message": "the subscription was refused: unsupported_tenant_scope",
+        "name": "AssertionError"
+      },
+      "reason": "Delivery is not tenant-aware (the fan-out key has no tenant), so the service refuses any publication over a tenant-scoped model outright: it fails closed, but a tenant cannot have live data at all. Finding: critic content-realtime-io missed #1 (live has no tenant model).",
+      "fixedBy": "CNT-11"
+    },
+    {
+      "file": "packages/live/test/known-holes.test.ts",
+      "test": [
+        "known holes: a throwing publication authorize is a reported fault",
+        "denies the subscription and reports the failure"
+      ],
+      "failure": {
+        "message": "the authorize failure reached onError",
+        "name": "AssertionError"
+      },
+      "reason": "authorizeRequest (packages/live/src/live-service.ts) catches a throwing publication authorize and answers unauthorized without calling onError. Finding: design auth-authorization RC 2; audit framework-improvements #9.",
+      "fixedBy": "CNT-11"
+    }
+  ]
+}

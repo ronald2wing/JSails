@@ -1,0 +1,12 @@
+data: {"id":"chatcmpl-text1","object":"chat.completion.chunk","created":1763500000,"model":"gpt-5.2","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null}
+
+data: {"id":"chatcmpl-text1","object":"chat.completion.chunk","created":1763500000,"model":"gpt-5.2","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}],"usage":null}
+
+data: {"id":"chatcmpl-text1","object":"chat.completion.chunk","created":1763500000,"model":"gpt-5.2","choices":[{"index":0,"delta":{"content":" there."},"finish_reason":null}],"usage":null}
+
+data: {"id":"chatcmpl-text1","object":"chat.completion.chunk","created":1763500000,"model":"gpt-5.2","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null}
+
+data: {"id":"chatcmpl-text1","object":"chat.completion.chunk","created":1763500000,"model":"gpt-5.2","choices":[],"usage":{"prompt_tokens":1200,"completion_tokens":30,"total_tokens":1230,"prompt_tokens_details":{"cached_tokens":1024},"completion_tokens_details":{"reasoning_tokens":12}}}
+
+data: [DONE]
+

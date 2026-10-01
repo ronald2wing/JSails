@@ -1,0 +1,33 @@
+<script lang="ts">
+/** The deny matrix's gate, compiled: every lane, under the policy `shared/gate.ts` delegates to. */
+import { z } from 'zod';
+
+import { gateAuthorize, gateRan } from '../shared/gate.js';
+
+defineLive({
+  stateSchema: z.object({ count: z.number() }).strict(),
+  initialState: () => ({ count: 0 }),
+  authorize: (context) => gateAuthorize(context),
+  uploads: {
+    contentTypes: ['image/png'],
+    anonymous: { maxBytes: 1024 * 1024, maxFiles: 100, maxConcurrent: 16 },
+  },
+  actions: {
+    ping: serverAction({
+      run(state) {
+        gateRan();
+        state.count += 1;
+      },
+    }),
+  },
+});
+</script>
+
+<template>
+  <span>{{ count }}</span>
+  <button @click="ping">Ping</button>
+</template>
+
+<template static>
+  <span>The gate is live only.</span>
+</template>

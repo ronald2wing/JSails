@@ -1,0 +1,11 @@
+#mtree
+/set uid=0 gid=0 uname=root gname=root time=1767225600.0
+package type=dir mode=0755
+package/lib type=dir mode=0755
+package/index.js type=file mode=0644
+package/manifest.json type=file mode=0644
+package/lib/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef type=dir mode=0755
+package/lib/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef type=dir mode=0755
+package/lib/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef type=dir mode=0755
+package/lib/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef type=dir mode=0755
+package/lib/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef/abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdefghij-abcdef/deeper.js type=file mode=0644

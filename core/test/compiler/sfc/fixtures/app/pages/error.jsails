@@ -1,0 +1,9 @@
+<!-- The error boundary of every page. -->
+<template>
+  <section class="error" :data-status="error.status">
+    <h1 js-if="error.status === 404">Not found</h1>
+    <h1 js-else-if="error.status >= 500">Server error</h1>
+    <h1 js-else>Error {{ error.status }}</h1>
+    <p>{{ error.message }}</p>
+  </section>
+</template>

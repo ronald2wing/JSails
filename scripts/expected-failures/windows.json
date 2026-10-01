@@ -1,0 +1,5 @@
+{
+  "description": "Tests that fail only on the Windows CI leg (KRN-02; Windows is supported for development). Every entry is scoped with \"platforms\": [\"win32\"]. Recorded from reading the tests, not from a Windows run: the first run of the test-windows job confirms or corrects each entry. A test of a POSIX-only fact (file modes, chmod-denied directories, graceful signals, /bin/sh) states its platform with a win32 skip instead of an entry here. No entry may name core/test/app, core/test/cli or a starter (scripts/test/windows-ledger.test.mjs).",
+  "kind": "tests",
+  "entries": []
+}

@@ -1,0 +1,52 @@
+{
+  "description": "First-party plugin declarations still on the legacy JsailsPlugin contract (the identity definePlugin of jsails/extensions), judged by the unconverted-plugins gate (KRN-10). Each entry is one source file that calls the legacy definePlugin; its reason names the seam it still needs and its fixedBy the package that removes that blocker (KRN-10b converted every plugin whose blockers were the HTTP seam, the mode and instance-valued options). The ledger only shrinks; when it is empty the legacy helper is deleted.",
+  "kind": "gate",
+  "gate": "unconverted-plugins",
+  "entries": [
+    {
+      "id": "core/src/broadcast/plugin.ts",
+      "reason": "core/src/broadcast/plugin.ts is still on the legacy JsailsPlugin contract: it attaches its Socket.IO server in onServe, a serve-time seam the kernel contract does not have; CNT-09 deletes core/src/broadcast and @jsails/realtime is born on the kernel contract.",
+      "fixedBy": "CNT-09"
+    },
+    {
+      "id": "core/src/database/plugin.ts",
+      "reason": "core/src/database/plugin.ts is the old stack's plugin on the legacy JsailsPlugin contract (its only option is a data-source instance, which the options rule forbids); @jsails/database's database() substrate plugin replaces it, and DAT-15b deletes core/src/database with it.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/jobs/plugin.ts",
+      "reason": "core/src/jobs/plugin.ts is still on the legacy JsailsPlugin contract: the jobs cluster deletes core/src/jobs; the @jsails/jobs plugin is born on the kernel contract and JOB-08 removes this one.",
+      "fixedBy": "JOB-08"
+    },
+    {
+      "id": "core/src/server-components/extension.ts",
+      "reason": "core/src/server-components/extension.ts is still on the legacy JsailsPlugin contract: it describes component metadata through describe() and takes signing keys as instances; KRN-14 moves the component metadata onto the AppManifest, which leaves it a plain kernel plugin.",
+      "fixedBy": "KRN-14"
+    },
+    {
+      "id": "packages/admin/src/plugin.ts",
+      "reason": "packages/admin/src/plugin.ts is still on the legacy JsailsPlugin contract: its panel registers through the legacy setup context's registrar over the admin capability, which SEC-16 rebuilds on the kernel contract.",
+      "fixedBy": "SEC-16"
+    },
+    {
+      "id": "packages/auth/src/plugin.ts",
+      "reason": "packages/auth/src/plugin.ts is still on the legacy JsailsPlugin contract: it owns its own connection pool and migrations; its routes are already registrar routes, and SEC-12 moves its tables onto schema contributions and the plugin onto the kernel contract.",
+      "fixedBy": "SEC-12"
+    },
+    {
+      "id": "packages/blog/src/plugin.ts",
+      "reason": "packages/blog/src/plugin.ts is still on the legacy JsailsPlugin contract: its entities and interceptor use go with the write-path port (its routes are already registrar routes); CNT-15 owns the blog plugin after REQ-05.",
+      "fixedBy": "CNT-15"
+    },
+    {
+      "id": "packages/live/src/plugin.ts",
+      "reason": "packages/live/src/plugin.ts is still on the legacy JsailsPlugin contract: it runs its own socket server from onServe; CNT-11 moves it onto realtime's channel kind, which needs neither.",
+      "fixedBy": "CNT-11"
+    },
+    {
+      "id": "packages/tenancy/src/plugin.ts",
+      "reason": "packages/tenancy/src/plugin.ts is still on the legacy JsailsPlugin contract: it resolves the tenant through configureRequestScope, a request-scope seam the kernel contract does not have; SEC-15 makes the request scope a tenant contributor.",
+      "fixedBy": "SEC-15"
+    }
+  ]
+}

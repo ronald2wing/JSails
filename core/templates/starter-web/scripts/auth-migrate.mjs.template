@@ -1,0 +1,51 @@
+// Apply the Better Auth schema migrations to the configured auth database:
+// the one the `DATABASE_*` variables name, or the `database` passed to
+// `loadAuthMigrations`.
+//
+// Usage: node scripts/auth-migrate.mjs
+//
+// This script uses the same environment variables the app does
+// (`DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_USER`, `DATABASE_PASSWORD`,
+// `DATABASE_NAME`, `BETTER_AUTH_SECRET`/`AUTH_SECRET`, `BETTER_AUTH_URL`). It
+// is a plain Node script rather than a `jsails` command, so `npm run
+// auth:migrate` loads `.env` and `.env.local` with Node's `--env-file-if-exists`
+// (a real environment variable still wins). `loadAuthMigrations` comes
+// from the `auth` plugin (`@jsails/auth`), not compiled
+// app output, so no build is required first.
+//
+// Better Auth owns these tables. The `auth` plugin declares them as unmanaged,
+// so `npm run db:push` plans nothing for them when they share its database.
+//
+// An app whose `authPlugin` sets `twoFactor`, `socialProviders`, or `database`
+// passes the same options here (`loadAuthMigrations({ ... })`) so the plan
+// covers the same tables on the same database. The plan owns the connection it
+// was built on; `dispose()` releases it so the process exits on its own.
+import { loadAuthMigrations } from '@jsails/auth';
+
+console.log('Computing Better Auth schema migrations...');
+const migrations = await loadAuthMigrations();
+
+try {
+  for (const table of migrations.toBeCreated) {
+    console.log(`  create table ${table.table}`);
+  }
+  for (const table of migrations.toBeAdded) {
+    console.log(`  alter table ${table.table}`);
+  }
+  for (const index of migrations.toBeAddedIndexes) {
+    console.log(`  add index ${index.name} on ${index.table}`);
+  }
+
+  for (const problem of migrations.schemaProblems) {
+    console.warn(`  schema problem: ${problem}`);
+  }
+  for (const unsafe of migrations.unsafeChanges) {
+    console.warn(`  unsafe change: ${unsafe}`);
+  }
+
+  await migrations.runMigrations();
+
+  console.log('Migrations applied.');
+} finally {
+  await migrations.dispose();
+}

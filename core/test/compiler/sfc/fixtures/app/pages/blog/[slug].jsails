@@ -1,0 +1,51 @@
+<script lang="ts">
+/** A post page: one per slug, with neighbours and a reading time. */
+import type { RequestContext } from 'jsails';
+import type { Post } from '../../shared/posts.js';
+
+export interface Neighbour {
+  readonly slug: string;
+  readonly title: string;
+}
+
+export function getStaticPaths(): { slug: string }[] {
+  return posts.map((post) => ({ slug: post.slug }));
+}
+
+export async function load(context: RequestContext): Promise<{
+  page: Post | null;
+  next?: Neighbour;
+  minutes: number;
+}> {
+  const page = posts.find((post) => post.slug === context.params['slug']) ?? null;
+  if (page === null) return { page, minutes: 0 };
+  const after = posts[posts.indexOf(page) + 1];
+  return {
+    page,
+    ...(after === undefined ? {} : { next: { slug: after.slug, title: after.title } }),
+    minutes: Math.max(1, Math.round(page.body.length / 200)),
+  };
+}
+</script>
+
+<script setup lang="ts">
+const meta = page === null ? '' : [formatDate(page.date), `${minutes} min read`].join(' · ');
+</script>
+
+<template>
+  <Shell :title="page?.title ?? 'Not found'">
+    <article js-if="page" class="post" :class="{ long: minutes > 5 }">
+      <h1>{{ page.title }}</h1>
+      <p class="meta">{{ meta }}</p>
+      <ul js-if="page.tags.length > 0" class="tags">
+        <li js-for="tag of page.tags" :key="tag">
+          <TagBadge :tag="tag" :tag-count="page.tags.length" />
+        </li>
+      </ul>
+      <div js-html="page.body"></div>
+      <a js-if="next" :href="`/blog/${next.slug}`">Next: {{ next.title }} &rarr;</a>
+      <span js-else>Last post</span>
+    </article>
+    <p js-else class="empty">No post at {{ context.url.pathname }}.</p>
+  </Shell>
+</template>

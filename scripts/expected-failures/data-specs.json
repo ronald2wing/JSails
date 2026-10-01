@@ -1,0 +1,87 @@
+{
+  "description": "TypeORM models (@Entity classes, EntitySchema instances) that are not yet ModelSpecs, judged by the data-specs gate (scripts/check-schema-portability.mjs, DAT-03). Each entry is <source path>#<class>. The owning packages port or delete them; DAT-15b empties the ledger at the data cutover.",
+  "kind": "gate",
+  "gate": "data-specs",
+  "entries": [
+    {
+      "id": "core/src/database/active-storage.ts#JsailsAttachment",
+      "reason": "The attachment table is a TypeORM entity; DAT-14 ports attachments onto a spec with the unique (recordType, recordId, name) index.",
+      "fixedBy": "DAT-14"
+    },
+    {
+      "id": "core/src/jobs/failed-job-entity.ts#JsailsFailedJob",
+      "reason": "The failed-job history table is a TypeORM entity; the jobs cluster deletes it (the queue is the record), not ports it.",
+      "fixedBy": "JOB-14"
+    },
+    {
+      "id": "packages/blog/src/persistence/entities.ts#JsailsBlogCategory",
+      "reason": "Blog persistence is a set of TypeORM entities; CNT-15 rebuilds the blog write path on ModelSpec tables.",
+      "fixedBy": "CNT-15"
+    },
+    {
+      "id": "packages/blog/src/persistence/entities.ts#JsailsBlogMenu",
+      "reason": "Blog persistence is a set of TypeORM entities; CNT-15 rebuilds the blog write path on ModelSpec tables.",
+      "fixedBy": "CNT-15"
+    },
+    {
+      "id": "packages/blog/src/persistence/entities.ts#JsailsBlogPage",
+      "reason": "Blog persistence is a set of TypeORM entities; CNT-15 rebuilds the blog write path on ModelSpec tables.",
+      "fixedBy": "CNT-15"
+    },
+    {
+      "id": "packages/blog/src/persistence/entities.ts#JsailsBlogPost",
+      "reason": "Blog persistence is a set of TypeORM entities; CNT-15 rebuilds the blog write path on ModelSpec tables.",
+      "fixedBy": "CNT-15"
+    },
+    {
+      "id": "packages/blog/src/persistence/entities.ts#JsailsBlogRevision",
+      "reason": "Blog persistence is a set of TypeORM entities; CNT-15 rebuilds the blog write path on ModelSpec tables.",
+      "fixedBy": "CNT-15"
+    },
+    {
+      "id": "packages/blog/src/persistence/entities.ts#JsailsBlogSetting",
+      "reason": "Blog persistence is a set of TypeORM entities; CNT-15 rebuilds the blog write path on ModelSpec tables.",
+      "fixedBy": "CNT-15"
+    },
+    {
+      "id": "packages/blog/src/persistence/entities.ts#JsailsBlogTag",
+      "reason": "Blog persistence is a set of TypeORM entities; CNT-15 rebuilds the blog write path on ModelSpec tables.",
+      "fixedBy": "CNT-15"
+    },
+    {
+      "id": "packages/config/src/database/entities.ts#JsailsConfigEntry",
+      "reason": "Config entries are a TypeORM entity; DAT-13 ports them onto a spec with a unique key.",
+      "fixedBy": "DAT-13"
+    },
+    {
+      "id": "packages/flags/src/database/entities.ts#JsailsFeatureFlag",
+      "reason": "Feature flags are a TypeORM entity; DAT-13 ports them onto a spec with unique (key, scope).",
+      "fixedBy": "DAT-13"
+    },
+    {
+      "id": "packages/media/src/entities.ts#JsailsMediaAsset",
+      "reason": "The media index is a TypeORM entity; CNT-18 ports it onto a spec with the two-phase upload rows.",
+      "fixedBy": "CNT-18"
+    },
+    {
+      "id": "packages/notifications/src/database/entities.ts#JsailsNotification",
+      "reason": "Notifications are a TypeORM entity; CNT-19 ports them onto a spec with the (notifiable, readAt, createdAt) index.",
+      "fixedBy": "CNT-19"
+    },
+    {
+      "id": "packages/sessions/src/entities.ts#JsailsSession",
+      "reason": "Sessions are a TypeORM entity; DAT-13 ports them onto a spec with an expiresAt index and a binary-collated id.",
+      "fixedBy": "DAT-13"
+    },
+    {
+      "id": "packages/tenancy/src/entities.ts#Tenant",
+      "reason": "Tenants are a TypeORM entity; DAT-13 ports them onto a spec with a unique slug.",
+      "fixedBy": "DAT-13"
+    },
+    {
+      "id": "packages/tenancy/src/entities.ts#TenantMembership",
+      "reason": "Tenant memberships are a TypeORM entity; DAT-13 ports them onto a spec with unique (tenant, userId).",
+      "fixedBy": "DAT-13"
+    }
+  ]
+}

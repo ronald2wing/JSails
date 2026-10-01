@@ -1,0 +1,64 @@
+import preact from '@preact/preset-vite';
+import tailwindcss from '@tailwindcss/vite';
+import {
+  autoloadPlugin,
+  cleanBundlePlugin,
+  isServerOnlyModuleId,
+  serverDirectivePlugin,
+} from 'jsails/build';
+import { defineConfig } from 'vite';
+
+/**
+ * Client build for the JSails starter.
+ *
+ * Backend page/UI modules are compiled by `tsc -p tsconfig.json` into `dist`;
+ * this config only bundles the browser entry. Output lands in `public/assets`,
+ * which the JSails app copies into `out` during `jsails build`. The entry is
+ * emitted as a stable `app.js` and the extracted stylesheet as `app.css` at the
+ * root of that directory, so the SSR document shell can link them by fixed
+ * path; any secondary chunk or asset goes into a hashed `assets/` subdirectory.
+ *
+ * The page loads the entry as `app.js?v=<hash>`, a URL no chunk can name, so no
+ * chunk may import the entry: a lazy chunk importing `../app.js` would load a
+ * second copy of the client. `preserveEntrySignatures: 'strict'` keeps the
+ * entry's exports exactly those of `client/main.tsx` (none), so every module a
+ * lazy chunk shares with the entry goes into a hashed chunk both import.
+ *
+ * The three JSails build plugins inject auto-imports and guard the
+ * client/server seam:
+ * `autoloadPlugin` injects imports for the N1 auto-import tree (`app/`,
+ * `server/`, `shared/`) from the precomputed `.jsails/autoload.json` registry
+ * that `jsails build:meta` writes before `tsc`;
+ * `serverDirectivePlugin` reduces a module whose first statement is
+ * `'use server'` to throwing stubs, so importing it never ships its server code
+ * (a `'use server'` inside a function body fails the build); and
+ * `cleanBundlePlugin` fails the build outright if a `*.server.*` module (any
+ * TypeScript or JavaScript extension) reaches a client chunk.
+ */
+export default defineConfig({
+  base: '/assets/',
+  plugins: [
+    autoloadPlugin(),
+    serverDirectivePlugin(),
+    preact(),
+    tailwindcss(),
+    cleanBundlePlugin({ serverOnly: isServerOnlyModuleId }),
+  ],
+  build: {
+    outDir: 'public/assets',
+    emptyOutDir: true,
+    cssCodeSplit: false,
+    rolldownOptions: {
+      input: 'client/main.tsx',
+      preserveEntrySignatures: 'strict',
+      output: {
+        entryFileNames: 'app.js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: (assetInfo) => {
+          const name = assetInfo.names[0] ?? '';
+          return name.endsWith('.css') ? 'app.css' : 'assets/[name]-[hash][extname]';
+        },
+      },
+    },
+  },
+});

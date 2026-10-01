@@ -1,0 +1,393 @@
+{
+  "description": "Marketplace conformance (MKT-01): owner decision 1 as executable scenarios over the conformance driver, and the preset modes. Entries are today's failures against the kernel driver (today's kernel, with no marketplace); MKT-07, MKT-08, MKT-09 and MKT-14 remove theirs, and MKT-15b deletes the kernel driver with an empty list.",
+  "kind": "tests",
+  "entries": [
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "locked mode",
+        "refuses every code-changing admin action"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "locked mode",
+        "loads exactly the plugins pinned in the lock"
+      ],
+      "failure": {
+        "message": "^a plugin pinned in the lock runs",
+        "name": "AssertionError"
+      },
+      "reason": "There is no jsails.plugins.lock: a locked deployment runs plugins.use only and has no way to pin a verified bundle.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "locked mode",
+        "fails the boot when a pinned plugin's bytes differ from the lock digest"
+      ],
+      "failure": {
+        "message": "^a lock digest mismatch must fail a locked boot",
+        "name": "AssertionError"
+      },
+      "reason": "There is no lock and no digest check on stored bundle bytes, so nothing fails the boot.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "locked mode",
+        "the static export resolves an empty plugin set in either mode"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: a database-only attacker",
+        "a row inserted through SQL for a stored bundle never loads"
+      ],
+      "failure": {
+        "message": "^an unsealed row: the boot must report unsealed_state",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel reads no activation table, so the forged row loads nothing, but the boot reports nothing either; MKT-07's verifying loader reports the unsealed row.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: a database-only attacker",
+        "flipping a disabled row to enabled through SQL does not load it"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: a database-only attacker",
+        "switching the active version through SQL does not load the other version"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: a database-only attacker",
+        "replaying an earlier valid row after a disable does not load it"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: a database-only attacker",
+        "knowing the seal key does not make an unsigned bundle load"
+      ],
+      "failure": {
+        "message": "^an unsigned bundle: the boot must report untrusted_publisher",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel reads no activation table, so the sealed row loads nothing, but the boot reports nothing either; MKT-07's verifying loader reports the untrusted publisher.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: a database-only attacker",
+        "bytes replaced in the bundle store are refused and the site still boots"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: publishers and ceilings",
+        "a stored plugin above a tightened ceiling is skipped at boot"
+      ],
+      "failure": {
+        "message": "^installing acme-spy@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: publishers and ceilings",
+        "a plugin released under a revoked key stops loading"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: publishers and ceilings",
+        "a catalog whose sequence goes backwards is refused"
+      ],
+      "failure": {
+        "message": "^a signed catalog with a new sequence is accepted",
+        "name": "AssertionError"
+      },
+      "reason": "There is no signed catalog: the plugin directory is in-repo data with no publisher, sequence or expiry, so neither freshness nor rollback can be checked.",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: degraded boots and code precedence",
+        "a row whose bundle is missing is skipped and the site still boots"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: degraded boots and code precedence",
+        "a required plugin that cannot load fails the boot"
+      ],
+      "failure": {
+        "message": "^a required plugin that cannot load fails the boot",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no `required` input: a boot never fails for a plugin it does not load. MKT-07's loader fails the boot when a required id cannot be verified or loaded.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: degraded boots and code precedence",
+        "a code-declared plugin shadows a managed row with the same id"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: degraded boots and code precedence",
+        "safe mode runs code-declared plugins only"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: admin operations",
+        "an installed plugin loads at the next boot"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: admin operations",
+        "installing never evaluates plugin code"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: admin operations",
+        "disable and enable take effect at the next boot"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: admin operations",
+        "removing a plugin stops it"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: admin operations",
+        "a rollback stops the version it rolled away from"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "managed mode: admin operations",
+        "settings saved by the admin reach the plugin through ctx.settings"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "lifecycle across nodes and generations",
+        "every node, including a fresh one with empty storage, runs the installed set"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs (verify, put bytes, put row).",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "lifecycle across nodes and generations",
+        "a plugin that throws in setup does not take the site down"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs, and MKT-09 applies the change to the running site.",
+      "fixedBy": "MKT-09"
+    },
+    {
+      "file": "core/test/plugins/conformance/kernel.test.ts",
+      "test": [
+        "marketplace conformance (kernel driver)",
+        "lifecycle across nodes and generations",
+        "an install applies to the running site without a redeploy"
+      ],
+      "failure": {
+        "message": "^installing acme-notes@1\\.0\\.0 as the owner succeeds",
+        "name": "AssertionError"
+      },
+      "reason": "Today's kernel has no admin surface: the owner's install is refused as unsupported before the claim is reached. MKT-08's operations service installs, and MKT-09 applies the change to the running site.",
+      "fixedBy": "MKT-09"
+    },
+    {
+      "file": "core/test/plugins/conformance/presets.test.ts",
+      "test": [
+        "marketplace presets",
+        "the web presets state locked mode in code and commit a lock file"
+      ],
+      "failure": {
+        "message": "^the admin preset commits its lock",
+        "name": "AssertionError"
+      },
+      "reason": "The web presets state locked activation in code (KRN-11a), but there is no jsails.plugins.lock to commit.",
+      "fixedBy": "MKT-14"
+    },
+    {
+      "file": "core/test/plugins/conformance/presets.test.ts",
+      "test": ["marketplace presets", "the blog preset with the managed option ships managed mode"],
+      "failure": {
+        "message": "^--blog --managed states managed activation",
+        "name": "AssertionError"
+      },
+      "reason": "createStarterFiles and jsails create have no managed option, so a casual owner cannot opt into managed mode (owner decision 1).",
+      "fixedBy": "MKT-14"
+    }
+  ]
+}

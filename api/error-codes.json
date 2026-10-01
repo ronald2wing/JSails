@@ -1,0 +1,2403 @@
+{
+  "access.cross_site": {
+    "kind": "forbidden",
+    "audience": "client",
+    "message": "Cross-origin request rejected."
+  },
+  "access.fault": {
+    "kind": "unavailable",
+    "audience": "client",
+    "message": "Access could not be decided; try again later."
+  },
+  "access_matrix.invalid_persona": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "access_matrix.missing_probe": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "access_matrix.unknown_surface": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "access_matrix.unsupported_target": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "arr.expected_array": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "arr.expected_function": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "arr.expected_object": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "arr.expected_positive_integer": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "arr.uncloneable": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "asset.duplicate_asset": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "asset.invalid_options": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "asset.invalid_prefix": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "asset.invalid_root": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "asset.read_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "asset.route_collision": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "asset.stale_assets": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "async.expected_array": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "async.expected_function": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "async.expected_non_negative_integer": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "async.expected_non_negative_number": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "async.expected_positive_integer": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "async.invalid_backoff": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "async.invalid_delay": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "async.retries_exhausted": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "async.timeout_too_long": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "body.undeclared_read": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "bundle_archive.device_entry": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_archive.directory_with_content": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_archive.duplicate_entry": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_archive.hardlink_entry": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_archive.invalid_gzip": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_archive.invalid_header": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_archive.invalid_limits": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "bundle_archive.native_addon_entry": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_archive.symlink_entry": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_archive.too_large": {
+    "kind": "too_large",
+    "audience": "operator"
+  },
+  "bundle_archive.too_many_entries": {
+    "kind": "too_large",
+    "audience": "operator"
+  },
+  "bundle_archive.truncated": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_archive.unsafe_path": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_archive.unsupported_archive_format": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_intake.manifest_invalid": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_intake.manifest_missing": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_intake.manifest_unreadable": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_intake.missing_file": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "bundle_intake.multiple_manifests": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "cache.closed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "cache.duplicate_cache": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "cache.invalid_key": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "cache.invalid_lease": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "cache.invalid_namespace": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "cache.invalid_option": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "cache.invalid_tag": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "cache.invalid_ttl": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "cache.invalid_value": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "cache.too_large": {
+    "kind": "too_large",
+    "audience": "operator"
+  },
+  "cache.too_many_tags": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "cache.unavailable": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "cli.ambiguous_command": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "cli.interactive_unavailable": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "cli.invalid_command": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "cli.invalid_command_definition": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "cli.invalid_exit_code": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "cli.invalid_selection": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "cli.load_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "cli.missing_dependency": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "cli.no_choices": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "cli.reserved_command": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "codec.incomplete_row": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "codec.invalid_chain": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "codec.missing_seal": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "codec.not_a_model": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "codec.unknown_property": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "component_authorize.action_failed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "component_authorize.component_failed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "component_limits.invalid_lane": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "component_limits.invalid_limits": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "component_limits.invalid_value": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "component_limits.principal_over_total": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "component_limits.unknown_field": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "component_limits.unknown_lane": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "component_registry.duplicate_id": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "component_registry.invalid_definition": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "component_registry.invalid_entries": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "component_registry.invalid_id": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "component_registry.name_mismatch": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "component_static.initial_denied": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "component_static.missing_fallback": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "component_static.render_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "config.activation_mismatch": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "config.activation_not_literal": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "config.activation_repeated": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "config.activation_unstated": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "config.async_config": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "config.config_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "config.invalid_app_definition": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "config.invalid_app_env": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "config.invalid_env": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "config.invalid_options": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "config.invalid_syntax": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "config.misconfigured": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "config.non_erasable_syntax": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "config.outside_graph": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "config.removed_option": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "config_module.invalid_data_source": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "config_module.invalid_database_config": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "config_module.load_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "config_module.not_found": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "config_module.typescript_config": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "context.invalid_carrier": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "context.invalid_key_name": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "context.invalid_request_id": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "context.invalid_value": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "context.key_conflict": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "context.unencodable_value": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "context.unsupported_carrier": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "contract.ambiguous_provider": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "contract.invalid_name": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "contract.invalid_version": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "contract.missing_provider": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "contract.too_many_overrides": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "convert.end_tag": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "convert.folder_block": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "convert.invalid_blocks": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "convert.no_sidecars": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "convert.not_a_component": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "convert.script_syntax": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "convert.style_count": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "convert.target_exists": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "cookie.expected_string": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "cookie.malformed_set_cookie": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "create.invalid_package_dependency": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.already_exists": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "credentials.decryption_failed": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.environment_mismatch": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.invalid_document": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.invalid_environment": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.invalid_key": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.invalid_key_ring": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.invalid_name": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.invalid_source": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.invalid_value": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.missing_document": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "credentials.missing_key": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.no_rotation": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "credentials.reserved_key": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.rotation_in_progress": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "credentials.unknown_key": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "credentials.unknown_name": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "credentials.unreadable_source": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "credentials.unsupported_version": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "cryptography.browser_unsupported_algorithm": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "cryptography.insecure_context": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "cryptography.unsupported_algorithm": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "cryptography.unsupported_hmac_algorithm": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "data_source.already_bound": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "data_source.closed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "data_source.duplicate_package": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "data_source.invalid_options": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "data_source.not_a_model": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "data_source.not_bound": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "data_source.not_granted": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "deadline.handler_timeout": {
+    "kind": "timeout",
+    "audience": "operator"
+  },
+  "deadline.stream_idle": {
+    "kind": "timeout",
+    "audience": "operator"
+  },
+  "declarative_plugin.invalid_name": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "declarative_plugin.invalid_provide_entry": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "declarative_plugin.invalid_provide_key": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "declarative_plugin.invalid_routes": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "declarative_plugin.removed_option": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "declarative_plugin.unknown_option": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "disk.aborted": {
+    "kind": "aborted",
+    "audience": "operator"
+  },
+  "disk.conflict": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "disk.invalid_cursor": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "disk.invalid_key": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "disk.invalid_option": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "disk.invalid_range": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "disk.invalid_source": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "disk.io_failed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "disk.key_collision": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "disk.not_found": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "disk.source_failed": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "disk.too_large": {
+    "kind": "too_large",
+    "audience": "operator"
+  },
+  "disk.unsupported": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "encoding.decode_failed": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "encoding.encode_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "encoding.expected_bytes": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "encoding.expected_positive_integer": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "encoding.expected_string": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "encoding.expected_text_or_bytes": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "environment.conflict": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.inherited_foreign_project": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.inherited_mismatch": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.inherited_stale": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.inherited_without_secrets": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.invalid_environment": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.invalid_marker": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.invalid_name": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.invalid_secrets_file": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.invalid_variable": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.invalid_variable_name": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.missing_variable": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.reserved_key": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.secrets_file_reserved_key": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "environment.unreadable_file": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "environment.unreadable_secrets_file": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "errors.aborted": {
+    "kind": "aborted",
+    "audience": "operator"
+  },
+  "errors.internal": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "errors.invalid_argument": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "errors.invalid_code_name": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "errors.invalid_context": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "errors.invalid_definition": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "errors.invalid_domain": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "errors.missing_payload": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "errors.timeout": {
+    "kind": "timeout",
+    "audience": "operator"
+  },
+  "errors.unexpected_context": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "errors.unique_violation": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "errors.unknown_code": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "extension.dependency_cycle": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "extension.duplicate_provider": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "extension.invalid_entry": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "extension.invalid_extension": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "extension.invalid_hook": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "extension.invalid_roles": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "extension.invalid_root": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "extension.invalid_units": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "extension.missing_service": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "extension.sealed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "files.invalid_json": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "files.io_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "files.not_found": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "filesystem.invalid_environment": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "filesystem.invalid_option": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "filesystem.missing_default": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "filesystem.unknown_disk": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "frontmatter.expected_mapping": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "frontmatter.expected_string": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "frontmatter.malformed": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "guarded_fetch.aborted": {
+    "kind": "aborted",
+    "audience": "operator"
+  },
+  "guarded_fetch.blocked_address": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "guarded_fetch.connect_failed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "guarded_fetch.host_not_allowed": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "guarded_fetch.invalid_options": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "guarded_fetch.invalid_url": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "guarded_fetch.resolve_failed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "guarded_fetch.response_failed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "guarded_fetch.timeout": {
+    "kind": "timeout",
+    "audience": "operator"
+  },
+  "guarded_fetch.tls": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "guarded_fetch.too_large": {
+    "kind": "too_large",
+    "audience": "operator"
+  },
+  "guarded_fetch.too_many_redirects": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "http.method_not_allowed": {
+    "kind": "invalid",
+    "audience": "client",
+    "message": "The request method is not allowed for this resource."
+  },
+  "http.misdirected_request": {
+    "kind": "invalid",
+    "audience": "client",
+    "message": "This server does not serve the requested host."
+  },
+  "interceptor.invalid_callback": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "interceptor.invalid_event_name": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "interceptor.invalid_operation_name": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "interceptor.invalid_priority": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "interceptor.sealed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "interceptor.unknown_event": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "interceptor.unknown_operation": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "island.invalid_id": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "island.not_defined": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "island.props_invalid": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "island.props_too_large": {
+    "kind": "too_large",
+    "audience": "operator"
+  },
+  "island.props_unparseable": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "island.props_unserializable": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "island.redefined": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "jamal_credentials.credentials_key_unavailable": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jamal_credentials.environment_mismatch": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_env_file.invalid_key": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_env_file.invalid_value": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_env_file.too_large": {
+    "kind": "too_large",
+    "audience": "operator"
+  },
+  "jamal_forward.invalid_jamal_package": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jamal_forward.jamal_not_installed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jamal_forward.jamal_start_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jamal_host_home.read_failed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jamal_host_home.unusable_home": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_host_state.invalid": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_lock.contended": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "jamal_lock.invalid_directory": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_lock.io_failed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jamal_lock.lock_lost": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "jamal_lock.not_owner": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "jamal_lock.unfenced_command": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jamal_lock.unreachable": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jamal_manifest.invalid": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_observe.read_failed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jamal_observe.unreachable": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jamal_observe.unreadable_output": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_plan.invalid_release": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_plan.no_previous": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "jamal_plan.no_web_role": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_plan.proxy_down": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jamal_plan.secrets_missing": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "jamal_plan.unpinned_proxy": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_release_source.digest_unknown": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jamal_release_source.dirty_tree": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "jamal_release_source.not_a_checkout": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_remote_file.checksum_mismatch": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jamal_remote_file.invalid_expect": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_remote_file.invalid_lock": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_remote_file.invalid_mode": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_remote_file.invalid_path": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_remote_file.lock_lost": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "jamal_remote_file.no_hasher": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jamal_remote_file.precondition_failed": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "jamal_remote_file.write_failed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jamal_secrets_file.invalid_key": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_secrets_file.reserved_key": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jamal_secrets_file.unrepresentable_value": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jobs.adapter_closed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jobs.attempt_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.attempt_timeout": {
+    "kind": "timeout",
+    "audience": "operator"
+  },
+  "jobs.capability_missing": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.command_exit": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.command_threw": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.command_usage": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.context_not_json": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.duplicate_job": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.duplicate_schedule": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.flow_conflict": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "jobs.flow_item_refused": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jobs.flow_missing": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "jobs.flow_too_large": {
+    "kind": "too_large",
+    "audience": "operator"
+  },
+  "jobs.invalid_definition": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.invalid_delay": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.invalid_envelope": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jobs.invalid_flow": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jobs.invalid_namespace": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.invalid_option": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jobs.invalid_payload": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jobs.invalid_queue": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.invalid_schedule": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.invalid_worker": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.job_stalled": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jobs.middleware_next_late": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.middleware_next_reused": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.missing_dependency": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.overlap_lost": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jobs.overlap_unavailable": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jobs.payload_not_json": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jobs.processor_broke_contract": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.producer_closed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jobs.schedule_conflict": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "jobs.schedule_owner_mismatch": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "jobs.transport_failed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "jobs.undeclared_queue": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.unknown_job": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "jobs.unknown_option": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "jobs.unknown_queue": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "jobs.worker_aborted": {
+    "kind": "aborted",
+    "audience": "operator"
+  },
+  "kernel.adapter_not_shared": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "kernel.duplicate_unit": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "kernel.invalid_cleanup": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "kernel.invalid_stage": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "kernel.no_units": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "kernel.shutdown_timeout": {
+    "kind": "timeout",
+    "audience": "operator"
+  },
+  "kernel.unit_cycle": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "kernel.unknown_unit": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "lazy_resource.closed": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "make.duplicate_file": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "make.invalid_template": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "make.no_sidecars": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "marketplace_config.duplicate_publisher": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "marketplace_config.invalid_catalog_options": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "marketplace_config.invalid_catalog_source": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "marketplace_config.invalid_publisher": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "marketplace_config.invalid_trust": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "marketplace_config.not_canonical": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "marketplace_trust.bad_signature": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "marketplace_trust.catalog_rollback": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "marketplace_trust.digest_mismatch": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "marketplace_trust.id_outside_namespace": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "marketplace_trust.invalid_bundle": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "marketplace_trust.invalid_catalog": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "marketplace_trust.invalid_delegation": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "marketplace_trust.invalid_envelope": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "marketplace_trust.key_expired": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "marketplace_trust.key_revoked": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "marketplace_trust.key_use": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "marketplace_trust.permission_above_publisher_ceiling": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "marketplace_trust.permission_above_site_ceiling": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "marketplace_trust.release_revoked": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "marketplace_trust.statement_mismatch": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "marketplace_trust.unknown_key": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "marketplace_trust.unknown_publisher": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "media.detect_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "media.expected_bytes": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "module_syntax.syntax_error": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "module_syntax.syntax_error_at_line": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "multipart.aborted": {
+    "kind": "aborted",
+    "audience": "client",
+    "message": "The request ended while its body was being read."
+  },
+  "multipart.idle": {
+    "kind": "timeout",
+    "audience": "client",
+    "message": "The request body stopped arriving."
+  },
+  "multipart.invalid": {
+    "kind": "invalid",
+    "audience": "client",
+    "message": "The multipart body is malformed ({problem})."
+  },
+  "multipart.part_abandoned": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "multipart.too_large": {
+    "kind": "too_large",
+    "audience": "client",
+    "message": "The multipart body exceeds its {limit} limit."
+  },
+  "multipart.unexpected_file": {
+    "kind": "invalid",
+    "audience": "client",
+    "message": "The multipart body carries a file in a field that takes none."
+  },
+  "multipart.unsupported_type": {
+    "kind": "invalid",
+    "audience": "client",
+    "message": "The multipart body carries a file of a media type its field does not accept."
+  },
+  "num.empty_input": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "num.expected_finite_number": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "num.expected_integer": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "num.expected_string": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "num.invalid_minor_units": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "num.invalid_precision": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "num.inverted_range": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "num.missing_currency": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "num.not_a_number": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "num.unknown_currency": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "platform.unsupported_platform": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.conflicting_token": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.invalid_contribution": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.invalid_definition": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.invalid_instance_key": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.invalid_lifecycle_unit": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.invalid_module_ref": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.invalid_name": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.invalid_setup_module": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.invalid_substrate": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.invalid_token": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.lifecycle_unavailable": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.missing_provision": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.missing_service": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.routes_closed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.undeclared_service": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin.unsupported_contribution": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin_harness.inert_violation": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "plugin_harness.not_a_plugin": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "portable_path.invalid_path": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "project_path.relative_specifier": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "query.invalid_argument": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "query.invalid_batch": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "query.invalid_context": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "query.invalid_relation_filter": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "query.invalid_set_write": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "query.set_write_skips_hooks": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "query.unknown_relation": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "query.unsupported_relation": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "query.unsupported_set_write": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "record.invalid": {
+    "kind": "invalid",
+    "audience": "client",
+    "exposes": ["issues"],
+    "message": "The record is invalid."
+  },
+  "record.invalid_attachment": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "record.invalid_key": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "record.invalid_relation": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "record.not_a_record": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "record.not_found": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "record.not_persisted": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "record.stale_record": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "record.unknown_attachment": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "redirect.invalid_external_target": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "redirect.invalid_fallback": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "redirect.invalid_status": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "redirect.invalid_target": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "relation.invalid_include": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "relation.invalid_option": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "relation.invalid_parents": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "relation.not_countable": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "relation.not_loaded": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "relation.plain_rows": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "relation.too_many_rows": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "relation.unknown_target": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "reply.invalid_cookie": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "reply.invalid_header": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "reply.invalid_options": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "reply.invalid_status": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "reply.reserved_header": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "request.conflict": {
+    "kind": "conflict",
+    "audience": "client",
+    "exposes": ["reason"],
+    "message": "The request conflicts with the current state of the resource."
+  },
+  "request.forbidden": {
+    "kind": "forbidden",
+    "audience": "client",
+    "message": "You are not allowed to perform this action."
+  },
+  "request.invalid": {
+    "kind": "invalid",
+    "audience": "client",
+    "exposes": ["issues"],
+    "message": "The request is invalid."
+  },
+  "request.not_found": {
+    "kind": "not_found",
+    "audience": "client",
+    "message": "The requested resource was not found."
+  },
+  "request.rate_limited": {
+    "kind": "rate_limited",
+    "audience": "client",
+    "message": "Too many requests."
+  },
+  "request.too_large": {
+    "kind": "too_large",
+    "audience": "client",
+    "message": "The request is too large."
+  },
+  "request.unauthenticated": {
+    "kind": "unauthenticated",
+    "audience": "client",
+    "message": "Authentication is required."
+  },
+  "request_frame.invalid_guard_result": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "request_frame.invalid_identity_source": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "request_frame.unclaimed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "request_handler.unframed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "request_scope.duplicate_scope": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "request_scope.invalid_binding": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "request_scope.invalid_scope": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "respond.invalid_event_field": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "respond.invalid_stream_chunk": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "response_finalizer.body_taken": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "rich_text_editor.decode_refused": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "rich_text_editor.editor_destroyed": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "rich_text_editor.invalid_attribute": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "rich_text_editor.invalid_document": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "rich_text_editor.invalid_element": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "rich_text_render.invalid_document": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "rich_text_render.invalid_media": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "rich_text_render.invalid_option": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "route.duplicate_route": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route.invalid_answer": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route.invalid_definition": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route.invalid_path": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route.invalid_route": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route.managed_origin_refused": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route.managed_transform_refused": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route.mount_overlap": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route.next_called_twice": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route.not_granted": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route.outside_confinement": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route.pattern_mismatch": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route.reserved_path": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route_module.import_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "route_module.invalid_path": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "schema.approve_all_refused": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "schema.duplicate_table": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "schema.foreign_key_check": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "schema.invalid_config_module": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "schema.invalid_options": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "schema.invalid_source": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "schema.lock_timeout": {
+    "kind": "timeout",
+    "audience": "operator"
+  },
+  "schema.memory_database": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "schema.non_test_database": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "schema.owned_by_another": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "schema.pooled_connection": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "schema.reserved_table": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "schema.schema_out_of_date": {
+    "kind": "unavailable",
+    "audience": "operator"
+  },
+  "schema.stale_approval": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "schema.unknown_database": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "schema.unmarked_test_database": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "schema.unsupported_operation": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "seed_config.invalid_seed_config": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "serve.draining": {
+    "kind": "aborted",
+    "audience": "operator"
+  },
+  "serve.invalid_attachment": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "serve.invalid_handle": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "serve.missing_attachment": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "serve.shutdown_timeout": {
+    "kind": "timeout",
+    "audience": "operator"
+  },
+  "serve.stopped": {
+    "kind": "aborted",
+    "audience": "operator"
+  },
+  "serve.unfinished_stream": {
+    "kind": "timeout",
+    "audience": "operator"
+  },
+  "serve.unsupported_platform": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "service.closed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "service.duplicate": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "service.invalid_token_key": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "service.invalid_token_name": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "service.invalid_token_option": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "service.not_found": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "service.sealed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "sfc_sidecar.not_a_directory": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "sfc_sidecar.symlinked_directory": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "sfc_style.duplicate_file": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "sfc_style.invalid_path": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "sfc_style.scope_collision": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "statement.duplicate_table": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "statement.invalid_catalog": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "statement.invalid_values": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "statement.invalid_where": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "statement.unknown_column": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "statement.unknown_table": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "statement.unsupported_predicate": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "str.expected_non_negative_integer": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "str.expected_positive_integer": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "str.expected_string": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "str.invalid_count": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "str.invalid_mask_option": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "surface.duplicate_surface": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "surface.invalid_surface": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "surface.missing_access": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "tenant_scope.invalid_tenant": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "tenant_scope.invalid_tenant_id": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "tenant_scope.no_tenant": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "tenant_scope.tenant_assignment": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "tenant_scope.tenant_mismatch": {
+    "kind": "forbidden",
+    "audience": "operator"
+  },
+  "tenant_scope.upsert_without_tenant": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "test_database.non_test_database": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "test_database.unknown_database": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "testing.duplicate_seeder": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "testing.invalid_contract": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "testing.invalid_database_name": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "testing.invalid_factory": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "testing.invalid_fixture": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "testing.invalid_options": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "testing.invalid_seeder": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "testing.seeder_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "testing.unknown_fixture_model": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "testing.unknown_seeder": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "time.expected_duration_string": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "time.invalid_date": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "time.invalid_duration": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "time.non_finite_duration": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "transaction.aborted": {
+    "kind": "conflict",
+    "audience": "operator"
+  },
+  "transaction.after_commit_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "transaction.after_rollback_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "transaction.closed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "transaction.frame_busy": {
+    "kind": "timeout",
+    "audience": "operator"
+  },
+  "transaction.invalid_arguments": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "transaction.nested_begin": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "transaction.outermost_only": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "transaction.timeout": {
+    "kind": "timeout",
+    "audience": "operator"
+  },
+  "transaction.unbound_engine": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "transaction.unsupported_in_test": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "url.expected_string": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "url.invalid_disposition": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "url.invalid_url": {
+    "kind": "invalid",
+    "audience": "operator"
+  },
+  "variant.invalid_option": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "variant.missing_source": {
+    "kind": "not_found",
+    "audience": "operator"
+  },
+  "variant.transform_failed": {
+    "kind": "internal",
+    "audience": "operator"
+  },
+  "variant.unknown_variant": {
+    "kind": "internal",
+    "audience": "operator"
+  }
+}

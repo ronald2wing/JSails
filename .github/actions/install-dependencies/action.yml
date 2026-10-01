@@ -1,0 +1,86 @@
+# The dependency install of every CI job: `npm ci` in one directory, with the
+# tree it produces cached between runs. scripts/ci-dependencies.mjs derives
+# the key from every input of that `npm ci` (lockfile, the manifests it names
+# and those of every workspace the root's `workspaces` globs match, `.npmrc`,
+# lifecycle scripts, the exact Node version; the OS and architecture are added
+# here), so an exact hit is the tree `npm ci` would produce, and it
+# checks a restored tree's workspace links before the tree is used. A miss, or
+# a restored tree that fails the check, runs `npm ci` as the job always did.
+#
+# The tree is saved by a separate step right after `npm ci`, not by the cache
+# action's post step: later steps write into node_modules (the lease peaks in
+# `.cache/jsails-budget`, Node's compile cache in `.cache/jsails-compile`,
+# ESLint's cache), and a save at the end of the job would carry what one run
+# wrote into the next. It also keeps the entry when a later step fails.
+#
+# Caches are scoped to the branch that saved them: a pull request run restores
+# its own entries or its base branch's, and an entry it saves is visible only
+# to that pull request, so a pull request cannot put a tree in front of main's
+# runs. An existing key is never overwritten.
+name: Install dependencies
+description: npm ci in one directory, with its node_modules cached under the exact install inputs.
+inputs:
+  working-directory:
+    description: The directory whose package-lock.json is installed, relative to the workspace.
+    required: false
+    default: .
+  lifecycle-scripts:
+    description: Whether the installed packages' lifecycle scripts run ('false' passes --ignore-scripts).
+    required: false
+    default: 'false'
+runs:
+  using: composite
+  steps:
+    - name: Derive the dependency cache key
+      id: inputs
+      shell: bash
+      env:
+        DIRECTORY: ${{ inputs.working-directory }}
+        LIFECYCLE_SCRIPTS: ${{ inputs.lifecycle-scripts }}
+      run: node "$GITHUB_ACTION_PATH/../../../scripts/ci-dependencies.mjs" inputs "$DIRECTORY" "$LIFECYCLE_SCRIPTS"
+
+    # No restore-keys: a prefix match would be another lockfile's tree.
+    - name: Restore the dependency tree
+      id: restore
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ steps.inputs.outputs.paths }}
+        key: npm-ci-${{ runner.os }}-${{ runner.arch }}-${{ steps.inputs.outputs.key }}
+
+    - name: Check the restored tree
+      id: verify
+      if: steps.restore.outputs.cache-hit == 'true'
+      shell: bash
+      env:
+        DIRECTORY: ${{ inputs.working-directory }}
+        TREE_PATHS: ${{ steps.inputs.outputs.paths }}
+      run: |
+        if node "$GITHUB_ACTION_PATH/../../../scripts/ci-dependencies.mjs" verify "$DIRECTORY"; then
+          echo "usable=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "::warning title=Dependency cache::The restored tree failed its check; running npm ci instead."
+          while IFS= read -r path; do rm -rf -- "$path"; done <<< "$TREE_PATHS"
+          echo "usable=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    # Lifecycle scripts of third-party packages do not run unless the caller
+    # asks for them; nothing in the repository's build needs one.
+    - name: Install dependencies
+      if: steps.verify.outputs.usable != 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        LIFECYCLE_SCRIPTS: ${{ inputs.lifecycle-scripts }}
+      run: |
+        if [ "$LIFECYCLE_SCRIPTS" = true ]; then
+          npm ci
+        else
+          npm ci --ignore-scripts
+        fi
+
+    - name: Save the dependency tree
+      if: steps.restore.outputs.cache-hit != 'true'
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ steps.inputs.outputs.paths }}
+        key: ${{ steps.restore.outputs.cache-primary-key }}

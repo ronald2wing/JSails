@@ -1,0 +1,63 @@
+{
+  "name": "@jsails/inertia",
+  "version": "1.0.0",
+  "description": "Inertia v3 server protocol: prop descriptors, partial reloads, a strict page serializer, the script-element document, version guard and redirect rules, a sealed flash and errors carrier, Precognition, and SSR gateways.",
+  "license": "MIT",
+  "author": "Ronald Wong <ronald2wing@gmail.com>",
+  "homepage": "https://jsails.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronald2wing/JSails.git",
+    "directory": "packages/inertia"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./testing": {
+      "types": "./dist/src/testing/index.d.ts",
+      "default": "./dist/src/testing/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/test",
+    "!dist/.tsbuildinfo",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "tsc -p tsconfig.json",
+    "build:clean": "npm run clean && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node ../../scripts/run-tests.mjs",
+    "test:watch": "node ../../scripts/run-tests.mjs --watch"
+  },
+  "peerDependencies": {
+    "jsails": "^1.0.0"
+  },
+  "devDependencies": {
+    "jsails": "^1.0.0",
+    "@inertiajs/core": "3.11.0",
+    "@inertiajs/react": "3.11.0",
+    "happy-dom": "21.0.4",
+    "preact": "^11.0.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ronald2wing/JSails/issues"
+  },
+  "dependencies": {
+    "preact-render-to-string": "^6.8.3"
+  }
+}

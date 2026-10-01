@@ -1,0 +1,256 @@
+/**
+ * Admin pages: declarative, server-rendered page descriptors for the admin
+ * panel.
+ *
+ * `defineAdminPage(spec)` validates a page specification — a slug, a label, an
+ * optional grouping/badge/sort for the dashboard navigation, a synchronous or
+ * asynchronous `render` callback that returns the page HTML, an optional
+ * `handleGet` callback that may short-circuit a `GET` with a raw {@link Response}
+ * (streaming downloads and non-HTML payloads), and an optional `handlePost`
+ * callback for same-origin mutations, an optional `timeoutMs` for a page whose
+ * work outlasts the app's handler deadline, and an optional `maxBodyBytes` for
+ * a page whose `POST` takes a form larger than 1 MiB (an upload) — and
+ * returns a frozen {@link AdminPage} descriptor. The descriptor is inert: it carries the
+ * callbacks by identity and is only consumed by {@link adminPlugin}, which
+ * mounts the actual HTTP surface.
+ *
+ * A page's `render` receives an {@link AdminPageRenderContext} (the resolved
+ * admin session, the panel base path, the raw request, and its URL) and returns
+ * the full document HTML — or a promise of it. The page owns its own escaping;
+ * the admin never sanitizes the returned string. `handlePost`, when present,
+ * receives the same context plus the parsed string-only form body; core's
+ * access chain has already refused a cross-site post (the request's `Origin`)
+ * and run the panel's and the page's `authorize` before calling it, so a
+ * page's `handlePost` only implements its own policy. A page
+ * without `handlePost` rejects `POST` with a 405.
+ *
+ * `authorize` is the per-page gate that runs after the panel's own `authorize`
+ * on every `GET` and `POST`: the page is served only when it resolves to
+ * exactly `true` (a throw denies), and the dashboard hides the link from a
+ * session it denies. A page without one is served to no one: the panel gate
+ * admits a session to the panel, not to every page in it.
+ *
+ * `handleGet`, when present, runs after the auth gate but before `render`: when
+ * it returns a {@link Response} the route sends it unchanged (status, headers,
+ * and body are the page's own) and `render` never runs; returning `undefined`
+ * falls through to the ordinary HTML render.
+ *
+ * The module is ORM-free: it imports only the session contract (a type) and
+ * performs no I/O.
+ */
+
+import type { Session } from 'jsails';
+import type { ServiceToken } from 'jsails/kernel';
+import { isRecord } from 'jsails/plugin-sdk';
+import type { ThemeResolution } from '@jsails/theme';
+
+import { resolveRequires } from './descriptor-shape.js';
+import { AdminDefinitionError } from './errors.js';
+import type { UploadedFilePart } from './guards.js';
+import type { AdminTheme, AdminThemeCustomization } from './panel.js';
+import { assertAdminSlug } from './slug.js';
+
+/** Context handed to a page's `render` callback for a `GET` request. */
+export interface AdminPageRenderContext {
+  /** The resolved, authorized admin session. */
+  readonly session: Session;
+  /** The panel base path (e.g. `/admin`). */
+  readonly path: string;
+  /** The raw incoming request. */
+  readonly request: Request;
+  /** The parsed request URL. */
+  readonly url: URL;
+  /** The panel's admin theme, for rendering a themed document. */
+  readonly theme?: AdminTheme;
+  /** Custom theme CSS / token overrides the panel was configured with. */
+  readonly themeCustomization?: AdminThemeCustomization;
+  /** The resolved `@jsails/theme` service, for a fuller themed document. */
+  readonly themeTokens?: ThemeResolution;
+  /** The panel's trusted client script URLs, emitted by the document renderer. */
+  readonly clientScripts?: readonly string[];
+}
+
+/** Context handed to a page's `handlePost` callback for a `POST` request. */
+export interface AdminPagePostContext extends AdminPageRenderContext {
+  /** The parsed string-only form body. */
+  readonly body: Record<string, string>;
+  /**
+   * Parsed file parts keyed by field name (empty for urlencoded bodies). The
+   * route parses the request once, so pages must read uploads here rather than
+   * re-reading the already-consumed request body.
+   */
+  readonly files?: ReadonlyMap<string, UploadedFilePart>;
+}
+
+/** Context handed to a page's `authorize` callback. */
+export interface AdminPageAuthorizeContext {
+  /** The resolved session the panel `authorize` already allowed. */
+  readonly session: Session;
+  /** The page slug being reached. */
+  readonly slug: string;
+}
+
+/** Per-page default-deny gate; exact `true` allows, anything else denies. */
+export type AdminPageAuthorize = (context: AdminPageAuthorizeContext) => boolean | Promise<boolean>;
+
+/** A frozen, validated page descriptor consumed by {@link adminPlugin}. */
+export interface AdminPage {
+  /** URL identifier under the panel path; an identifier with no slashes. */
+  readonly slug: string;
+  /** Human label used in the dashboard navigation and page heading. */
+  readonly label: string;
+  /** Optional dashboard navigation group. */
+  readonly group?: string;
+  /** Optional short badge rendered next to the navigation label. */
+  readonly badge?: string;
+  /** Optional navigation sort weight; lower sorts first. Defaults to `0`. */
+  readonly sort?: number;
+  /** Optional per-page gate evaluated after the panel's `authorize`. */
+  readonly authorize?: AdminPageAuthorize;
+  /**
+   * Services the page reads from the application. A page in the panel's
+   * `pages` makes the `admin` plugin require them; a page an admin plugin
+   * contributes is covered by that plugin's `requires`, and the admin plugin's
+   * setup refuses one whose service is not registered.
+   */
+  readonly requires?: readonly ServiceToken<unknown>[];
+  /** Required: render the full document HTML for a `GET`. */
+  readonly render: (context: AdminPageRenderContext) => string | Promise<string>;
+  /**
+   * Optional: short-circuit a `GET` before `render` runs. When present and it
+   * resolves to a {@link Response}, the route sends that response unchanged (the
+   * page owns its own headers/status); when it resolves to `undefined`, the
+   * normal `render` path runs. Errors thrown here map to the value-free 500 like
+   * any other page renderer failure.
+   */
+  readonly handleGet?: (
+    context: AdminPageRenderContext,
+  ) => Response | undefined | Promise<Response | undefined>;
+  /** Optional: handle a same-origin `POST`. */
+  readonly handlePost?: (context: AdminPagePostContext) => Response | Promise<Response>;
+  /**
+   * Optional: milliseconds the page's `GET` and `POST` have to answer, in
+   * place of the app's `server.handlerTimeoutMs` (`0` disables the deadline).
+   * A page whose action outlasts the app's deadline (an install that downloads
+   * a bundle) states its own, so it is never answered 504 while still at work.
+   */
+  readonly timeoutMs?: number;
+  /**
+   * Optional: the largest form body the page's `POST` reads, in bytes (at
+   * most 100 MiB; default 1 MiB). A page that takes an upload states a cap
+   * that admits the file and its framing; a body past it is answered 413
+   * before `handlePost` sees it.
+   */
+  readonly maxBodyBytes?: number;
+}
+
+/** Specification passed to {@link defineAdminPage}. */
+export interface AdminPageDefinition {
+  /** URL identifier under the panel path. */
+  readonly slug: string;
+  /** Human navigation/page label. */
+  readonly label: string;
+  /** Optional navigation group. */
+  readonly group?: string;
+  /** Optional badge. */
+  readonly badge?: string;
+  /** Optional navigation sort weight. */
+  readonly sort?: number;
+  /** Optional per-page gate evaluated after the panel's `authorize`. */
+  readonly authorize?: AdminPageAuthorize;
+  /** Services the page reads from the application. */
+  readonly requires?: readonly ServiceToken<unknown>[];
+  /** Render the full document HTML for a `GET`. */
+  readonly render: (context: AdminPageRenderContext) => string | Promise<string>;
+  /** Optional: short-circuit a `GET` by returning a `Response`. */
+  readonly handleGet?: (
+    context: AdminPageRenderContext,
+  ) => Response | undefined | Promise<Response | undefined>;
+  /** Handle a same-origin `POST`. */
+  readonly handlePost?: (context: AdminPagePostContext) => Response | Promise<Response>;
+  /** The page's own deadline in milliseconds (`0`: none); see {@link AdminPage.timeoutMs}. */
+  readonly timeoutMs?: number;
+  /** The page's own form cap in bytes; see {@link AdminPage.maxBodyBytes}. */
+  readonly maxBodyBytes?: number;
+}
+
+/** The largest form cap a page may state: the framework's 100 MiB route ceiling. */
+const MAX_BODY_BYTES = 100 * 1024 * 1024;
+
+/** The largest timer delay Node honours, the bound of a page's `timeoutMs`. */
+const MAX_TIMEOUT_MS = 2_147_483_647;
+
+/** Raise the page's value-free definition error. */
+function invalid(message: string): AdminDefinitionError {
+  return new AdminDefinitionError('invalid_page', message);
+}
+
+/**
+ * Validate a page spec and return a frozen descriptor. The callbacks are
+ * carried by identity; every other field is copied onto a frozen object.
+ */
+export function defineAdminPage(spec: AdminPageDefinition): AdminPage {
+  validateSpec(spec);
+  const requires = resolveRequires(spec.requires, 'invalid_page', 'admin page');
+  const page: AdminPage = {
+    slug: spec.slug,
+    label: spec.label,
+    ...(spec.group === undefined ? {} : { group: spec.group }),
+    ...(spec.badge === undefined ? {} : { badge: spec.badge }),
+    ...(spec.sort === undefined ? {} : { sort: spec.sort }),
+    ...(spec.authorize === undefined ? {} : { authorize: spec.authorize }),
+    ...(requires === undefined ? {} : { requires }),
+    render: spec.render,
+    ...(spec.handleGet === undefined ? {} : { handleGet: spec.handleGet }),
+    ...(spec.handlePost === undefined ? {} : { handlePost: spec.handlePost }),
+    ...(spec.timeoutMs === undefined ? {} : { timeoutMs: spec.timeoutMs }),
+    ...(spec.maxBodyBytes === undefined ? {} : { maxBodyBytes: spec.maxBodyBytes }),
+  };
+  return Object.freeze(page);
+}
+
+/** Validate the spec structure, throwing value-free definition errors. */
+function validateSpec(spec: AdminPageDefinition): void {
+  if (!isRecord(spec)) {
+    throw invalid('defineAdminPage requires a spec object');
+  }
+  assertAdminSlug(spec.slug, { code: 'invalid_page', label: 'admin page slug' });
+  if (typeof spec.label !== 'string' || spec.label.trim() === '') {
+    throw invalid('admin page label must be a non-empty string');
+  }
+  if (typeof spec.render !== 'function') {
+    throw invalid('admin page must define a render function');
+  }
+  if (spec.handlePost !== undefined && typeof spec.handlePost !== 'function') {
+    throw invalid('admin page handlePost must be a function when present');
+  }
+  if (spec.authorize !== undefined && typeof spec.authorize !== 'function') {
+    throw invalid('admin page authorize must be a function when present');
+  }
+  if (spec.handleGet !== undefined && typeof spec.handleGet !== 'function') {
+    throw invalid('admin page handleGet must be a function when present');
+  }
+  if (spec.group !== undefined && (typeof spec.group !== 'string' || spec.group.trim() === '')) {
+    throw invalid('admin page group must be a non-empty string when present');
+  }
+  if (spec.badge !== undefined && typeof spec.badge !== 'string') {
+    throw invalid('admin page badge must be a string when present');
+  }
+  if (spec.sort !== undefined && typeof spec.sort !== 'number') {
+    throw invalid('admin page sort must be a number when present');
+  }
+  if (
+    spec.timeoutMs !== undefined &&
+    (!Number.isInteger(spec.timeoutMs) || spec.timeoutMs < 0 || spec.timeoutMs > MAX_TIMEOUT_MS)
+  ) {
+    throw invalid(`admin page timeoutMs must be an integer from 0 to ${MAX_TIMEOUT_MS}`);
+  }
+  if (
+    spec.maxBodyBytes !== undefined &&
+    (!Number.isInteger(spec.maxBodyBytes) ||
+      spec.maxBodyBytes < 1 ||
+      spec.maxBodyBytes > MAX_BODY_BYTES)
+  ) {
+    throw invalid(`admin page maxBodyBytes must be an integer from 1 to ${MAX_BODY_BYTES}`);
+  }
+}

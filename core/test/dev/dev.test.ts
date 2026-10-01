@@ -1,0 +1,964 @@
+/**
+ * Tests for `jsails dev` orchestration: tool resolution, child lifecycle,
+ * serve-child environment, and shutdown; and the serve child itself, which
+ * runs the web and worker roles in one process.
+ */
+
+import assert from 'node:assert/strict';
+import { spawn, spawnSync } from 'node:child_process';
+import { EventEmitter } from 'node:events';
+import { get as httpGet } from 'node:http';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { after, describe, it } from 'node:test';
+
+import {
+  DEV_CONFIG_ENV,
+  DEV_CWD_ENV,
+  runDev,
+  type DevChild,
+  type DevDeps,
+  type DevSpawnOptions,
+} from '../../src/dev/runtime.js';
+import type { ChangeClass } from '../../src/dev/change-classify.js';
+import {
+  DEV_GENERATION_ENV,
+  generationFilePath,
+  readGeneration,
+} from '../../src/dev/generation.js';
+import { waitFor } from '../../src/testing/index.js';
+
+/**
+ * Tests for the dev runtime orchestration (`runDev`).
+ *
+ * These drive the real orchestration against fake process and watcher seams: no
+ * compiler, Vite, or serve process is ever started. The fakes record every
+ * spawn, signal, and watch request so the tests can assert on command order,
+ * restart behavior, and teardown ownership.
+ */
+
+// ---------------------------------------------------------------------------
+// fakes
+// ---------------------------------------------------------------------------
+
+/** A fake child process: an EventEmitter plus a manually-triggered exit/error. */
+class FakeChild implements DevChild {
+  private readonly emitter = new EventEmitter();
+  readonly pid: number;
+  exitCode: number | null = null;
+
+  constructor(pid: number) {
+    this.pid = pid;
+  }
+
+  on(event: 'exit' | 'error', listener: (...args: any[]) => void): void {
+    this.emitter.on(event, listener);
+  }
+
+  once(event: 'exit' | 'error', listener: (...args: any[]) => void): void {
+    this.emitter.once(event, listener);
+  }
+
+  removeListener(event: 'exit' | 'error', listener: (...args: any[]) => void): void {
+    this.emitter.removeListener(event, listener);
+  }
+
+  exit(code: number): void {
+    this.exitCode = code;
+    this.emitter.emit('exit', code, null);
+  }
+
+  fail(): void {
+    this.emitter.emit('error', new Error('spawn failed'));
+  }
+}
+
+interface SpawnRecord {
+  command: string;
+  args: readonly string[];
+  options: DevSpawnOptions | undefined;
+  child: FakeChild;
+}
+
+interface WatcherRecord {
+  root: string;
+  onChange: (change: ChangeClass, paths: readonly string[] | undefined) => void;
+  onMetaSourceChange: () => void;
+  onError: (error: unknown) => void;
+  closed: number;
+}
+
+interface Harness {
+  deps: DevDeps;
+  spawns: SpawnRecord[];
+  killed: Array<{ pid: number; signal: string }>;
+  metaRuns: string[];
+  signal: () => void;
+  disposeCount: () => number;
+  watcher: () => WatcherRecord | undefined;
+  notifyChange: (change?: ChangeClass, paths?: readonly string[]) => void;
+  notifyWatcherError: (error: unknown) => void;
+  notifyMetaSource: () => void;
+}
+
+const createdDirs: string[] = [];
+
+after(() => {
+  for (const dir of createdDirs) {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+/** Track a temp dir so the `after` hook can remove it. */
+function makeProject(files: { tsconfig?: boolean; viteConfig?: boolean } = {}): string {
+  const dir = mkdtempSync(join(tmpdir(), 'jsails-dev-proj-'));
+  createdDirs.push(dir);
+  if (files.tsconfig) writeFileSync(join(dir, 'tsconfig.json'), '{}');
+  if (files.viteConfig) writeFileSync(join(dir, 'vite.config.js'), 'export default {};');
+  return dir;
+}
+
+function createHarness(
+  options: {
+    resolveTool?: (tool: 'tsc' | 'vite') => string | undefined;
+    runMeta?: (rootDir: string) => Promise<number>;
+  } = {},
+): Harness {
+  const spawns: SpawnRecord[] = [];
+  const killed: Array<{ pid: number; signal: string }> = [];
+  const metaRuns: string[] = [];
+  let watcher: WatcherRecord | undefined;
+  let nextPid = 1000;
+  let resolveSignal!: () => void;
+  let disposed = 0;
+  const signalPromise = new Promise<void>((resolvePromise) => {
+    resolveSignal = resolvePromise;
+  });
+
+  const resolveTool = options.resolveTool ?? ((tool) => `/tools/${tool}.js`);
+
+  const deps: DevDeps = {
+    spawn: (command, args, spawnOptions) => {
+      const child = new FakeChild(nextPid);
+      nextPid += 1;
+      spawns.push({ command, args, options: spawnOptions, child });
+      return child;
+    },
+    killGroup: (pid, signal) => {
+      killed.push({ pid, signal });
+      return true;
+    },
+    waitForShutdown: () => ({
+      promise: signalPromise,
+      abort: new AbortController().signal,
+      dispose: () => {
+        disposed += 1;
+      },
+    }),
+    resolveTool: (tool) => resolveTool(tool),
+    resolveServeChild: () => '/tools/serve-child.js',
+    watchProject: (root, listeners) => {
+      watcher = {
+        root,
+        onChange: listeners.onChange,
+        onMetaSourceChange: listeners.onMetaSourceChange,
+        onError: listeners.onError,
+        closed: 0,
+      };
+      return {
+        close: () => {
+          if (watcher !== undefined) {
+            watcher.closed += 1;
+          }
+        },
+      };
+    },
+    runMeta: (rootDir) => {
+      metaRuns.push(rootDir);
+      return options.runMeta?.(rootDir) ?? Promise.resolve(0);
+    },
+    graceMs: 10,
+  };
+
+  return {
+    deps,
+    spawns,
+    killed,
+    metaRuns,
+    signal: () => resolveSignal(),
+    disposeCount: () => disposed,
+    watcher: () => watcher,
+    notifyChange: (change = 'server-restart', paths) => watcher?.onChange(change, paths),
+    notifyWatcherError: (error) => watcher?.onError(error),
+    notifyMetaSource: () => watcher?.onMetaSourceChange(),
+  };
+}
+
+/** Capture `console.error` output so tests can assert on actionable messages. */
+function captureErrors(): { errors: string[]; restore: () => void } {
+  const errors: string[] = [];
+  const original = console.error;
+  console.error = (...args: unknown[]) => {
+    errors.push(args.map(String).join(' '));
+  };
+  return {
+    errors,
+    restore: () => {
+      console.error = original;
+    },
+  };
+}
+
+/** Poll until `cond` holds within the dev orchestration budget. */
+const WAIT_MS = 5000;
+
+// ---------------------------------------------------------------------------
+// orchestration
+// ---------------------------------------------------------------------------
+
+describe('runDev: orchestration', () => {
+  it('compiles (tsc then vite), then watches and serves, shutting down on signal', async () => {
+    const dir = makeProject({ tsconfig: true, viteConfig: true });
+    const h = createHarness();
+
+    const pending = runDev({ cwd: dir }, h.deps);
+
+    // build:meta runs in-process before the initial build.
+    await waitFor(() => h.metaRuns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'build:meta to run',
+    });
+    assert.equal(h.metaRuns[0], dir);
+
+    // Initial build: tsc first.
+    await waitFor(() => h.spawns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the tsc initial build to spawn',
+    });
+    assert.equal(h.spawns[0]?.command, process.execPath);
+    // Both tsc runs share one dev-only build-info file, so the watcher's initial
+    // pass has nothing to re-emit and does not restart the fresh server.
+    const tsBuildInfo = join(dir, '.jsails', 'dev.tsbuildinfo');
+    const incremental = ['--incremental', '--tsBuildInfoFile', tsBuildInfo];
+    assert.deepEqual(h.spawns[0]?.args, ['/tools/tsc.js', '-p', 'tsconfig.json', ...incremental]);
+    h.spawns[0]?.child.exit(0);
+
+    // Then vite.
+    await waitFor(() => h.spawns.length === 2, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the vite initial build to spawn',
+    });
+    assert.deepEqual(h.spawns[1]?.args, ['/tools/vite.js', 'build']);
+    h.spawns[1]?.child.exit(0);
+
+    // Then two watchers and the serve child.
+    await waitFor(() => h.spawns.length === 5, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the watchers to spawn',
+    });
+    assert.deepEqual(h.spawns[2]?.args, [
+      '/tools/tsc.js',
+      '-p',
+      'tsconfig.json',
+      '--watch',
+      '--preserveWatchOutput',
+      ...incremental,
+    ]);
+    assert.deepEqual(h.spawns[3]?.args, ['/tools/vite.js', 'build', '--watch']);
+
+    const serve = h.spawns[4]!;
+    assert.deepEqual(serve.args, ['/tools/serve-child.js']);
+    assert.equal(serve.options?.cwd, dir);
+    assert.equal(serve.options?.detached, true);
+    assert.equal(serve.options?.env?.[DEV_CWD_ENV], dir);
+    assert.equal(serve.options?.env?.[DEV_CONFIG_ENV], resolve(dir, 'jsails.app.js'));
+    assert.equal(serve.options?.env?.[DEV_GENERATION_ENV], generationFilePath(dir));
+    assert.equal(h.watcher()?.root, dir);
+
+    // The baseline is written before the first spawn, so the child never boots
+    // at a generation the parent has already moved past.
+    assert.equal(readGeneration(generationFilePath(dir)), 0);
+
+    h.signal();
+    const code = await pending;
+
+    assert.equal(code, 0);
+
+    // Only the three owned processes remain; each gets SIGTERM then SIGKILL.
+    const watcherPids = [h.spawns[2].child.pid, h.spawns[3].child.pid, serve.child.pid];
+    assert.deepEqual(h.killed, [
+      { pid: watcherPids[0], signal: 'SIGTERM' },
+      { pid: watcherPids[1], signal: 'SIGTERM' },
+      { pid: watcherPids[2], signal: 'SIGTERM' },
+      { pid: watcherPids[0], signal: 'SIGKILL' },
+      { pid: watcherPids[1], signal: 'SIGKILL' },
+      { pid: watcherPids[2], signal: 'SIGKILL' },
+    ]);
+
+    assert.equal(h.disposeCount(), 1, 'signal listeners disposed exactly once');
+    assert.equal(h.watcher()?.closed, 1, 'the project watcher is closed exactly once');
+  });
+
+  it('skips tools whose config files are absent (precompiled app, serve only)', async () => {
+    const dir = makeProject();
+    const h = createHarness();
+
+    const pending = runDev({ cwd: dir }, h.deps);
+
+    await waitFor(() => h.spawns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the serve child to spawn',
+    });
+    assert.equal(h.spawns[0]?.command, process.execPath);
+    assert.deepEqual(h.spawns[0]?.args, ['/tools/serve-child.js']);
+
+    h.signal();
+    assert.equal(await pending, 0);
+  });
+
+  it('restarts the serve child after a relevant project change', async () => {
+    const dir = makeProject();
+    const h = createHarness();
+
+    const pending = runDev({ cwd: dir }, h.deps);
+    await waitFor(() => h.spawns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the first serve child to spawn',
+    });
+    const first = h.spawns[0]!.child;
+
+    h.notifyChange();
+    await waitFor(
+      () => h.killed.some((entry) => entry.pid === first.pid && entry.signal === 'SIGTERM'),
+      { timeoutMs: WAIT_MS, intervalMs: 0, label: 'the first serve child to receive SIGTERM' },
+    );
+    first.exit(0);
+
+    await waitFor(() => h.spawns.length === 2, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the replacement serve child to spawn',
+    });
+    assert.deepEqual(h.spawns[1]?.args, ['/tools/serve-child.js']);
+
+    h.signal();
+    assert.equal(await pending, 0);
+  });
+
+  it('re-runs build:meta, one run at a time, when a scanned source changes', async () => {
+    const dir = makeProject();
+    let release: (() => void) | undefined;
+    const h = createHarness({
+      runMeta: () =>
+        h.metaRuns.length === 1
+          ? Promise.resolve(0)
+          : new Promise<number>((resolveRun) => {
+              release = () => resolveRun(0);
+            }),
+    });
+
+    const pending = runDev({ cwd: dir }, h.deps);
+    await waitFor(() => h.spawns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the serve child to spawn',
+    });
+    assert.equal(h.metaRuns.length, 1);
+
+    h.notifyMetaSource();
+    await waitFor(() => h.metaRuns.length === 2, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'build:meta to re-run',
+    });
+    // Two more bursts while the run is in flight queue a single follow-up.
+    h.notifyMetaSource();
+    h.notifyMetaSource();
+    await new Promise((resolveWait) => setTimeout(resolveWait, 10));
+    assert.equal(h.metaRuns.length, 2, 'runs never overlap');
+    release?.();
+    await waitFor(() => h.metaRuns.length === 3, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the queued build:meta run',
+    });
+    release?.();
+    await new Promise((resolveWait) => setTimeout(resolveWait, 10));
+    assert.equal(h.metaRuns.length, 3, 'the queued bursts collapse into one run');
+    assert.equal(h.spawns.length, 1, 'a meta re-run alone does not restart the server');
+
+    h.signal();
+    assert.equal(await pending, 0);
+  });
+
+  it('keeps serving when a build:meta re-run fails', async () => {
+    const dir = makeProject();
+    const h = createHarness({
+      runMeta: () => Promise.resolve(h.metaRuns.length === 1 ? 0 : 1),
+    });
+
+    const cap = captureErrors();
+    let code: number;
+    try {
+      const pending = runDev({ cwd: dir }, h.deps);
+      await waitFor(() => h.spawns.length === 1, {
+        timeoutMs: WAIT_MS,
+        intervalMs: 0,
+        label: 'the serve child to spawn',
+      });
+      h.notifyMetaSource();
+      await waitFor(() => cap.errors.some((e) => e.includes('build:meta failed')), {
+        timeoutMs: WAIT_MS,
+        intervalMs: 0,
+        label: 'the meta failure to be reported',
+      });
+      h.signal();
+      code = await pending;
+    } finally {
+      cap.restore();
+    }
+    assert.equal(code, 0);
+  });
+
+  it('bumps the generation without restarting for a client-only change', async () => {
+    const dir = makeProject();
+    const h = createHarness();
+
+    const pending = runDev({ cwd: dir }, h.deps);
+    await waitFor(() => h.spawns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the serve child to spawn',
+    });
+    const generationPath = generationFilePath(dir);
+    assert.equal(readGeneration(generationPath), 0);
+
+    h.notifyChange('client-reload');
+    await waitFor(() => readGeneration(generationPath) === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the generation to bump',
+    });
+
+    // A reload is a browser concern; the process serving it is unchanged.
+    assert.equal(h.spawns.length, 1, 'no new serve child was spawned');
+    assert.equal(h.killed.length, 0, 'the serve child was not signalled');
+
+    h.signal();
+    assert.equal(await pending, 0);
+  });
+
+  it('restarts once per edit: the echo of an auto-import write is not a change', async () => {
+    const dir = makeProject();
+    mkdirSync(join(dir, 'dist', 'ui'), { recursive: true });
+    const component = join(dir, 'dist', 'ui', 'c.js');
+    writeFileSync(component, 'export const c = () => useState(0);\n');
+    const h = createHarness();
+
+    const pending = runDev({ cwd: dir }, h.deps);
+    await waitFor(() => h.spawns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the serve child to spawn',
+    });
+    const generationPath = generationFilePath(dir);
+
+    // tsc re-emits the component without its imports; the injector rewrites it.
+    writeFileSync(component, 'export const c = () => useState(1);\n');
+    h.notifyChange('server-restart', ['dist/ui/c.js']);
+    await waitFor(() => readGeneration(generationPath) === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the generation to bump for the edit',
+    });
+    assert.match(readFileSync(component, 'utf8'), /import \{ useState \}/);
+    h.spawns[0]!.child.exit(0);
+    await waitFor(() => h.spawns.length === 2, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the replacement serve child to spawn',
+    });
+
+    // The watcher then reports the injector's own write: no restart, no bump.
+    h.notifyChange('server-restart', ['dist/ui/c.js']);
+    await new Promise((resolveWait) => setTimeout(resolveWait, 50));
+    assert.equal(readGeneration(generationPath), 1);
+    assert.equal(h.spawns.length, 2, 'no second restart');
+
+    h.signal();
+    assert.equal(await pending, 0);
+  });
+
+  it('removes a stale dev build-info file before the initial build', async () => {
+    const dir = makeProject({ tsconfig: true });
+    mkdirSync(join(dir, '.jsails'), { recursive: true });
+    const tsBuildInfo = join(dir, '.jsails', 'dev.tsbuildinfo');
+    writeFileSync(tsBuildInfo, '{}');
+    const h = createHarness();
+
+    const pending = runDev({ cwd: dir }, h.deps);
+    await waitFor(() => h.spawns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the tsc initial build to spawn',
+    });
+    assert.equal(existsSync(tsBuildInfo), false);
+
+    h.signal();
+    assert.equal(await pending, 0);
+  });
+
+  it('bumps the generation and restarts for a server change', async () => {
+    const dir = makeProject();
+    const h = createHarness();
+
+    const pending = runDev({ cwd: dir }, h.deps);
+    await waitFor(() => h.spawns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the first serve child to spawn',
+    });
+    const first = h.spawns[0]!.child;
+    const generationPath = generationFilePath(dir);
+
+    h.notifyChange('server-restart');
+    await waitFor(() => readGeneration(generationPath) === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the generation to bump',
+    });
+    await waitFor(
+      () => h.killed.some((entry) => entry.pid === first.pid && entry.signal === 'SIGTERM'),
+      { timeoutMs: WAIT_MS, intervalMs: 0, label: 'the first serve child to receive SIGTERM' },
+    );
+    first.exit(0);
+    await waitFor(() => h.spawns.length === 2, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the replacement serve child to spawn',
+    });
+
+    // The replacement reads the bumped value, so a tab that reconnects after
+    // the restart sees a generation it does not have and reloads.
+    assert.equal(h.spawns[1]?.options?.env?.[DEV_GENERATION_ENV], generationPath);
+    assert.equal(readGeneration(generationPath), 1);
+
+    h.signal();
+    assert.equal(await pending, 0);
+  });
+
+  it('does not swallow a reload that lands during an in-flight restart', async () => {
+    const dir = makeProject();
+    const h = createHarness();
+
+    const pending = runDev({ cwd: dir }, h.deps);
+    await waitFor(() => h.spawns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the first serve child to spawn',
+    });
+    const first = h.spawns[0]!.child;
+    const generationPath = generationFilePath(dir);
+
+    // Start a restart, then land a client change before the child has exited.
+    h.notifyChange('server-restart');
+    await waitFor(() => readGeneration(generationPath) === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the restart bump',
+    });
+    h.notifyChange('client-reload');
+    await waitFor(() => readGeneration(generationPath) === 2, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the reload bump',
+    });
+
+    first.exit(0);
+    await waitFor(() => h.spawns.length === 2, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the replacement serve child to spawn',
+    });
+    assert.equal(readGeneration(generationPath), 2, 'the reload bump survived the restart');
+
+    h.signal();
+    assert.equal(await pending, 0);
+  });
+
+  it('aborts cleanly when a signal arrives during the initial build', async () => {
+    const dir = makeProject({ tsconfig: true });
+    const h = createHarness();
+
+    const pending = runDev({ cwd: dir }, h.deps);
+
+    // The tsc build is still running when the signal lands.
+    await waitFor(() => h.spawns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the tsc initial build to spawn',
+    });
+    const build = h.spawns[0]!.child;
+    h.signal();
+    const code = await pending;
+
+    assert.equal(code, 0);
+    // The in-flight build is still owned and torn down.
+    assert.deepEqual(h.killed, [
+      { pid: build.pid, signal: 'SIGTERM' },
+      { pid: build.pid, signal: 'SIGKILL' },
+    ]);
+    assert.equal(h.disposeCount(), 1);
+    assert.equal(h.watcher(), undefined, 'no project watcher was started');
+  });
+
+  it('returns the build exit code when the initial build fails', async () => {
+    const dir = makeProject({ tsconfig: true });
+    const h = createHarness();
+
+    const cap = captureErrors();
+    let code: number;
+    try {
+      const pending = runDev({ cwd: dir }, h.deps);
+      await waitFor(() => h.spawns.length === 1, {
+        timeoutMs: WAIT_MS,
+        intervalMs: 0,
+        label: 'the tsc initial build to spawn',
+      });
+      h.spawns[0]!.child.exit(2);
+      code = await pending;
+    } finally {
+      cap.restore();
+    }
+
+    assert.equal(code, 2);
+    assert.ok(cap.errors.some((e) => e.includes('initial build failed')));
+    // The failed build already exited, so nothing is left to tear down.
+    assert.equal(h.killed.length, 0);
+    assert.equal(h.disposeCount(), 1);
+    assert.equal(h.watcher(), undefined);
+  });
+
+  it('aborts before any build when build:meta fails', async () => {
+    const dir = makeProject({ tsconfig: true });
+    const h = createHarness({ runMeta: () => Promise.resolve(1) });
+
+    const cap = captureErrors();
+    let code: number;
+    try {
+      code = await runDev({ cwd: dir }, h.deps);
+    } finally {
+      cap.restore();
+    }
+
+    assert.equal(code, 1);
+    assert.ok(cap.errors.some((e) => e.includes('build:meta failed')));
+    assert.equal(h.spawns.length, 0, 'no build process was spawned');
+    assert.equal(h.disposeCount(), 1);
+  });
+
+  it('reports and exits non-zero when a watcher dies unexpectedly', async () => {
+    const dir = makeProject({ tsconfig: true });
+    const h = createHarness();
+
+    const cap = captureErrors();
+    let code: number;
+    try {
+      const pending = runDev({ cwd: dir }, h.deps);
+      await waitFor(() => h.spawns.length === 1, {
+        timeoutMs: WAIT_MS,
+        intervalMs: 0,
+        label: 'the tsc initial build to spawn',
+      });
+      h.spawns[0]!.child.exit(0); // tsc build succeeds
+      await waitFor(() => h.spawns.length === 3, {
+        timeoutMs: WAIT_MS,
+        intervalMs: 0,
+        label: 'the watchers to spawn',
+      });
+
+      h.spawns[1]!.child.exit(1); // the tsc watcher dies
+      code = await pending;
+    } finally {
+      cap.restore();
+    }
+
+    assert.equal(code, 1);
+    assert.ok(cap.errors.some((e) => e.includes('the tsc watcher exited unexpectedly')));
+    assert.equal(h.disposeCount(), 1);
+  });
+
+  it('reports and exits non-zero when the project watcher errors', async () => {
+    const dir = makeProject();
+    const h = createHarness();
+
+    const cap = captureErrors();
+    let code: number;
+    try {
+      const pending = runDev({ cwd: dir }, h.deps);
+      await waitFor(() => h.spawns.length === 1, {
+        timeoutMs: WAIT_MS,
+        intervalMs: 0,
+        label: 'the serve child to spawn',
+      });
+      h.notifyWatcherError(new Error('watch failed'));
+      code = await pending;
+    } finally {
+      cap.restore();
+    }
+
+    assert.equal(code, 1);
+    assert.ok(cap.errors.some((e) => e.includes('file watcher failed')));
+    assert.equal(h.watcher()?.closed, 1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// missing tool bins
+// ---------------------------------------------------------------------------
+
+describe('runDev: missing tool bins', () => {
+  it('errors with an install hint when tsconfig.json has no TypeScript', async () => {
+    const dir = makeProject({ tsconfig: true });
+    const h = createHarness({
+      resolveTool: (tool) => (tool === 'tsc' ? undefined : '/tools/vite.js'),
+    });
+
+    const cap = captureErrors();
+    let code: number;
+    try {
+      code = await runDev({ cwd: dir }, h.deps);
+    } finally {
+      cap.restore();
+    }
+
+    assert.equal(code, 1);
+    assert.ok(cap.errors.some((e) => e.includes('run npm install')));
+    assert.equal(h.spawns.length, 0, 'no process was spawned');
+    assert.equal(h.disposeCount(), 0, 'no signal handler installed');
+    assert.equal(h.watcher(), undefined, 'no project watcher created');
+  });
+
+  it('errors with an install hint when a Vite config has no Vite', async () => {
+    const dir = makeProject({ viteConfig: true });
+    const h = createHarness({
+      resolveTool: (tool) => (tool === 'vite' ? undefined : '/tools/tsc.js'),
+    });
+
+    const cap = captureErrors();
+    let code: number;
+    try {
+      code = await runDev({ cwd: dir }, h.deps);
+    } finally {
+      cap.restore();
+    }
+
+    assert.equal(code, 1);
+    assert.ok(cap.errors.some((e) => e.includes('run npm install')));
+    assert.equal(h.spawns.length, 0);
+    assert.equal(h.disposeCount(), 0);
+    assert.equal(h.watcher(), undefined);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// serve-child environment
+// ---------------------------------------------------------------------------
+
+describe('runDev: serve child environment', () => {
+  it('passes the requested config path and project cwd without redirecting HOME', async () => {
+    const dir = makeProject();
+    const h = createHarness();
+
+    const pending = runDev({ cwd: dir, configPath: 'custom.app.js' }, h.deps);
+    await waitFor(() => h.spawns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the serve child to spawn',
+    });
+
+    const env = h.spawns[0]!.options?.env;
+    assert.equal(env?.[DEV_CWD_ENV], dir);
+    assert.equal(env?.[DEV_CONFIG_ENV], resolve(dir, 'custom.app.js'));
+    assert.equal(env?.HOME, process.env.HOME, 'HOME is inherited unchanged');
+    assert.equal(env?.HOMEPATH, process.env.HOMEPATH, 'HOMEPATH is inherited unchanged');
+
+    h.signal();
+    assert.equal(await pending, 0);
+  });
+
+  it('defaults the config path to jsails.app.js when none is requested', async () => {
+    const dir = makeProject();
+    const h = createHarness();
+
+    const pending = runDev({ cwd: dir }, h.deps);
+    await waitFor(() => h.spawns.length === 1, {
+      timeoutMs: WAIT_MS,
+      intervalMs: 0,
+      label: 'the serve child to spawn',
+    });
+
+    assert.equal(h.spawns[0]!.options?.env?.[DEV_CONFIG_ENV], resolve(dir, 'jsails.app.js'));
+
+    h.signal();
+    assert.equal(await pending, 0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// serve-child guard: a deleted project directory fails controlled
+// ---------------------------------------------------------------------------
+
+describe('serve-child: guard against a deleted project directory', () => {
+  it('fails controlled instead of throwing an unhandled stack', () => {
+    const serveChild = join(import.meta.dirname, '../../src/dev/serve-child.js');
+    const missingDir = join(tmpdir(), `jsails-dev-missing-${process.pid}`);
+
+    const result = spawnSync(process.execPath, [serveChild], {
+      env: { ...process.env, [DEV_CWD_ENV]: missingDir, [DEV_CONFIG_ENV]: 'jsails.app.js' },
+      encoding: 'utf8',
+    });
+
+    assert.equal(result.status, 1, result.stderr);
+    assert.match(result.stderr, /jsails dev:/, 'a controlled message is printed');
+    assert.doesNotMatch(result.stderr, /ENOENT/, 'no raw errno leaks to stderr');
+    assert.doesNotMatch(result.stderr, /at process\.chdir/, 'no unhandled stack trace');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// serve-child: the web and worker roles in one process
+// ---------------------------------------------------------------------------
+
+/** A GET on a connection of its own, closed after the response. */
+function getOnce(url: URL): Promise<{ status: number | undefined; body: string }> {
+  return new Promise((resolveGet, reject) => {
+    const request = httpGet(url, { agent: false }, (response) => {
+      let body = '';
+      response.setEncoding('utf8');
+      response.on('data', (chunk: string) => {
+        body += chunk;
+      });
+      response.on('end', () => resolveGet({ status: response.statusCode, body }));
+    });
+    request.on('error', reject);
+  });
+}
+
+describe('serve-child: the whole app in one process', () => {
+  // Under core's dist, so the app config resolves `jsails/*` and `zod` as an
+  // installed app does.
+  const appDir = mkdtempSync(join(fileURLToPath(new URL('../..', import.meta.url)), 'dev-roles-'));
+  after(() => rmSync(appDir, { recursive: true, force: true }));
+  writeFileSync(join(appDir, 'package.json'), JSON.stringify({ name: 'dev-roles' }));
+  writeFileSync(
+    join(appDir, 'jsails.app.js'),
+    `import { z } from 'zod';
+import { createJobRegistry, defineJob, jobsPlugin, MemoryJobsAdapter } from 'jsails/jobs';
+
+export default {
+  host: '127.0.0.1',
+  port: 0,
+  extensions: [
+    jobsPlugin({
+      registry: createJobRegistry({
+        record: defineJob(z.number(), (payload) => {
+          process.stdout.write('ran ' + payload + '\\n');
+        }),
+      }),
+      adapter: new MemoryJobsAdapter(),
+    }),
+  ],
+};
+`,
+  );
+  mkdirSync(join(appDir, 'api'));
+  writeFileSync(
+    join(appDir, 'api', 'record.js'),
+    `import { defineApi, publicAccess, Respond } from 'jsails/api';
+import { jobsToken } from 'jsails/jobs';
+
+export default defineApi('/api/record', {
+  access: publicAccess('dev serve-child test'),
+  GET: async ({ services }) => {
+    await services.get(jobsToken).dispatch('record', 7);
+    return Respond.json({ dispatched: true });
+  },
+});
+`,
+  );
+
+  it(
+    'serves an app on the in-memory jobs adapter and runs the jobs its routes dispatch',
+    { skip: process.platform === 'win32' && 'graceful signals are POSIX-only' },
+    async () => {
+      const serveChild = join(import.meta.dirname, '../../src/dev/serve-child.js');
+      // The environment `jsails dev` resolves for its serve child.
+      const env: NodeJS.ProcessEnv = {
+        ...process.env,
+        NODE_ENV: 'development',
+        JSAILS_ENV: 'development',
+        [DEV_CWD_ENV]: appDir,
+        [DEV_CONFIG_ENV]: join(appDir, 'jsails.app.js'),
+      };
+      delete env.NODE_TEST_CONTEXT;
+      delete env.VALKEY_URL;
+      delete env.JSAILS_ENV_RESOLVED;
+      const child = spawn(process.execPath, [serveChild], {
+        env,
+        stdio: ['ignore', 'pipe', 'pipe'],
+      });
+      let stdout = '';
+      let stderr = '';
+      const waiters: { pattern: RegExp; resolve: (match: RegExpMatchArray) => void }[] = [];
+      child.stdout.setEncoding('utf8');
+      child.stdout.on('data', (chunk: string) => {
+        stdout += chunk;
+        for (const waiter of [...waiters]) {
+          const match = waiter.pattern.exec(stdout);
+          if (match === null) continue;
+          waiters.splice(waiters.indexOf(waiter), 1);
+          waiter.resolve(match);
+        }
+      });
+      child.stderr.setEncoding('utf8');
+      child.stderr.on('data', (chunk: string) => {
+        stderr += chunk;
+      });
+      const exited = new Promise<number | null>((resolveExit) => {
+        child.on('close', (code) => resolveExit(code));
+      });
+      /** The first match of `pattern` on stdout, or a failure when the child exits first. */
+      const line = (pattern: RegExp): Promise<RegExpMatchArray> =>
+        Promise.race([
+          new Promise<RegExpMatchArray>((resolveLine) => {
+            const match = pattern.exec(stdout);
+            if (match === null) waiters.push({ pattern, resolve: resolveLine });
+            else resolveLine(match);
+          }),
+          exited.then((code) => {
+            throw new Error(
+              `the serve child exited (${code}) before ${pattern}: ${stdout}${stderr}`,
+            );
+          }),
+        ]);
+      try {
+        const [, url] = await line(/^Serving at (\S+)$/m);
+        const response = await getOnce(new URL('/api/record', url));
+        assert.equal(response.status, 200, response.body);
+        await line(/^ran 7$/m);
+      } finally {
+        child.kill('SIGTERM');
+      }
+      assert.equal(await exited, 0, stdout + stderr);
+    },
+  );
+});

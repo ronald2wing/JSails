@@ -1,0 +1,6 @@
+<!-- A page whose live component exports its initial render. -->
+<template>
+  <main>
+    <Initial />
+  </main>
+</template>

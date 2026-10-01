@@ -1,0 +1,192 @@
+/**
+ * Form body parsing for plain pages and API handlers.
+ *
+ * `readForm(request, schema)` reads the request body with a hard byte bound,
+ * decodes it as `application/x-www-form-urlencoded` (or JSON when the
+ * content-type says so), and validates the result against a {@link Schema}. It
+ * returns a discriminated result — typed values on success, or a value-free list
+ * of field errors on failure — so a handler renders the errors itself rather
+ * than throwing:
+ *
+ * ```ts
+ * const result = await readForm(request, object({ email: string({ min: 1 }), age: integer() }));
+ * if (!result.ok) {
+ *   return json({ errors: result.errors }, 400);
+ * }
+ * result.value; // typed
+ * ```
+ *
+ * Form semantics are deliberately strict, matching the rest of the API surface:
+ * `application/x-www-form-urlencoded` yields strings (repeated keys become
+ * string arrays), and there is **no implicit coercion** — a form field feeding an
+ * `integer()`/`boolean()` schema must already be that type, which JSON bodies
+ * carry natively. For an HTML form, use `string()` fields (the common sign-in and
+ * registration case) or interpret the values in the handler.
+ *
+ * A missing or empty `content-type` is treated as form-urlencoded. Any other
+ * content type yields an `unsupported_content_type` error. Non-field failures
+ * (body too large, malformed JSON, unsupported type) are represented as single
+ * issues with an empty path and a stable code, so every failure has the same
+ * shape as a field error and none ever echo the raw body.
+ */
+
+import { readStreamBounded } from '../support/bytes.js';
+import { isTooLarge } from './json-body.js';
+import {
+  ValidationError,
+  type FieldPath,
+  type Schema,
+  type ValidationIssue,
+} from './validation.js';
+
+/** Options for {@link readForm}. */
+export interface ReadFormOptions {
+  /** Upper bound on the request body, in bytes. Defaults to 64 KiB. */
+  readonly maxBytes?: number;
+}
+
+/** The result of reading and validating a form body. */
+export type FormResult<T> =
+  | { readonly ok: true; readonly value: T }
+  | { readonly ok: false; readonly errors: readonly ValidationIssue[] };
+
+const DEFAULT_MAX_BYTES = 64 * 1024;
+
+/**
+ * Read and validate a form/JSON request body. Returns typed values on success,
+ * or a value-free field-error result on any validation or body failure. Never
+ * throws for a malformed or oversized body.
+ */
+export async function readForm<T>(
+  request: Request,
+  schema: Schema<T>,
+  options: ReadFormOptions = {},
+): Promise<FormResult<T>> {
+  const maxBytes = options.maxBytes ?? DEFAULT_MAX_BYTES;
+  if (!Number.isInteger(maxBytes) || maxBytes < 1) {
+    throw new TypeError('maxBytes must be a positive integer');
+  }
+
+  let text: string;
+  try {
+    text = await readBodyText(request, maxBytes);
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return { ok: false, errors: error.issues };
+    }
+    // Past the request's body budget: the request is answered 413 anyway.
+    if (isTooLarge(error)) {
+      return { ok: false, errors: [issue([], 'body_too_large', 'Request body too large')] };
+    }
+    throw error;
+  }
+
+  const contentType = detectContentType(request.headers.get('content-type'));
+  let value: unknown;
+  if (contentType === 'json') {
+    try {
+      value = JSON.parse(text);
+    } catch {
+      return { ok: false, errors: [issue([], 'invalid_json', 'Invalid JSON body')] };
+    }
+  } else if (contentType === 'form') {
+    value = parseFormUrlEncoded(text);
+  } else {
+    return {
+      ok: false,
+      errors: [issue([], 'unsupported_content_type', 'Unsupported content type')],
+    };
+  }
+
+  try {
+    return { ok: true, value: schema.validate(value) };
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return { ok: false, errors: error.issues };
+    }
+    throw error;
+  }
+}
+
+function bodyTooLarge(): never {
+  throw new ValidationError([issue([], 'body_too_large', 'Request body too large')]);
+}
+
+/** Reads and decodes the body with a hard byte bound; too large throws a `ValidationError`. */
+async function readBodyText(request: Request, maxBytes: number): Promise<string> {
+  // A declared length over the cap is refused before a single byte is read.
+  const declared = Number(request.headers.get('content-length') ?? Number.NaN);
+  if (Number.isFinite(declared) && declared > maxBytes) {
+    bodyTooLarge();
+  }
+  const bytes = await readStreamBounded(request.body, maxBytes, bodyTooLarge);
+  return new TextDecoder().decode(bytes);
+}
+
+/**
+ * The request body as `FormData`, for a route that declares a `form` body:
+ * `application/x-www-form-urlencoded`, or `multipart/form-data` (held in
+ * memory, so small bodies only; the route's declared `maxBytes` bounds it).
+ * Any other content type, or a body the content type does not describe,
+ * throws a 422 `request.invalid`; a body past the request's budget its
+ * `request.too_large`. Field names and values are untrusted input.
+ */
+export async function readFormData(request: Request): Promise<FormData> {
+  const mime = mediaType(request.headers.get('content-type'));
+  if (mime !== 'application/x-www-form-urlencoded' && mime !== 'multipart/form-data') {
+    throw new ValidationError([issue([], 'unsupported_content_type', 'Unsupported content type')]);
+  }
+  try {
+    return await request.formData();
+  } catch (error) {
+    if (isTooLarge(error)) throw error;
+    if (error instanceof Error && isTooLarge(error.cause)) throw error.cause;
+    throw new ValidationError([issue([], 'invalid_form', 'Invalid form body')]);
+  }
+}
+
+/** The media type of a `Content-Type` header, lowercased, without parameters. */
+function mediaType(header: string | null): string {
+  return (header ?? '').split(';', 1)[0]?.trim().toLowerCase() ?? '';
+}
+
+/** Maps a content-type header to a body kind; empty/missing defaults to form. */
+function detectContentType(header: string | null): 'json' | 'form' | 'unknown' {
+  const mime = mediaType(header);
+  if (mime.length === 0 || mime === 'application/x-www-form-urlencoded') {
+    return 'form';
+  }
+  if (mime === 'application/json' || mime.endsWith('+json')) {
+    return 'json';
+  }
+  return 'unknown';
+}
+
+/**
+ * Decodes form-urlencoded text; repeated keys become string arrays.
+ *
+ * Field names are untrusted, so values are collected in a `Map` and turned into
+ * own data properties with `Object.fromEntries`: a field named `__proto__` or
+ * `constructor` is then an ordinary key the schema can reject, instead of an
+ * inherited lookup that rewrites the record's prototype or wraps an inherited
+ * function into the value.
+ */
+function parseFormUrlEncoded(text: string): Record<string, string | string[]> {
+  const params = new URLSearchParams(text);
+  const fields = new Map<string, string | string[]>();
+  for (const [key, value] of params) {
+    const existing = fields.get(key);
+    if (existing === undefined) {
+      fields.set(key, value);
+    } else if (Array.isArray(existing)) {
+      existing.push(value);
+    } else {
+      fields.set(key, [existing, value]);
+    }
+  }
+  return Object.fromEntries(fields);
+}
+
+function issue(path: FieldPath, code: string, message: string): ValidationIssue {
+  return { path, code, message };
+}

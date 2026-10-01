@@ -1,0 +1,57 @@
+<script lang="ts">
+/** Demo task list: server state, two actions, and a static-export fallback. */
+import { z } from 'zod';
+
+defineLive({
+  stateSchema: z
+    .object({
+      title: z.string().max(120),
+      tasks: z.array(z.string().min(1).max(120)).max(50),
+    })
+    .strict(),
+  initialState: () => ({ title: '', tasks: [] }),
+  writableKeys: ['title'],
+  authorize: () => true, // public demo; default-deny requires exactly true
+  actions: {
+    add: serverAction({
+      input: z.object({}),
+      run(state) {
+        const { title } = z.object({ title: z.string().min(1) }).parse({ title: state.title });
+        state.tasks.push(title);
+        state.title = '';
+      },
+    }),
+    remove: serverAction({
+      input: z.object({ index: z.number().int().min(0) }),
+      run(state, { index }) {
+        state.tasks.splice(index, 1);
+      },
+    }),
+  },
+  derived: { count: (state) => state.tasks.length },
+});
+</script>
+
+<template>
+  <section class="card">
+    <form class="flex gap-2" @submit="add">
+      <input class="input" js-model.trim="title" placeholder="New task" />
+      <button class="btn" js-loading>Add</button>
+    </form>
+    <p js-if="errors.title" class="text-error" data-task-error>{{ errors.title }}</p>
+    <ul js-if="tasks.length > 0" class="list">
+      <li js-for="(task, index) in tasks" :key="task" class="list-row" data-task-item>
+        {{ task }}
+        <button class="btn" @click="remove({ index })" js-confirm="'Remove it?'">Remove</button>
+      </li>
+    </ul>
+    <p js-else class="muted">No tasks yet.</p>
+    <p class="text-sm">{{ count }} {{ count === 1 ? 'task' : 'tasks' }}</p>
+  </section>
+</template>
+
+<template static>
+  <section class="card">
+    <p>The task list works when the site is served.</p>
+  </section>
+</template>

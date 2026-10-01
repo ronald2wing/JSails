@@ -1,0 +1,88 @@
+{
+  "name": "@jsails/database",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The JSails data layer: ModelSpec model declarations and their portable lowering to SQLite, MariaDB and PostgreSQL, records and immutable queries, transactions, the database() plugin, and the three-driver test matrix.",
+  "license": "MIT",
+  "author": "Ronald Wong <ronald2wing@gmail.com>",
+  "homepage": "https://jsails.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronald2wing/JSails.git",
+    "directory": "packages/database"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./model": {
+      "types": "./dist/src/model/index.d.ts",
+      "default": "./dist/src/model/index.js"
+    },
+    "./schema": {
+      "types": "./dist/src/schema/index.d.ts",
+      "default": "./dist/src/schema/index.js"
+    },
+    "./testing": {
+      "types": "./dist/src/testing/index.d.ts",
+      "default": "./dist/src/testing/index.js"
+    },
+    "./unguarded": {
+      "types": "./dist/src/unguarded/index.d.ts",
+      "default": "./dist/src/unguarded/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/test",
+    "!dist/.tsbuildinfo",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "tsc -p tsconfig.json",
+    "build:clean": "npm run clean && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node ../../scripts/run-tests.mjs",
+    "test:watch": "node ../../scripts/run-tests.mjs --watch"
+  },
+  "dependencies": {
+    "typeorm": "1.1.1"
+  },
+  "peerDependencies": {
+    "jsails": "^1.0.0",
+    "mysql2": "^3.24.5",
+    "pg": "^8.23.1",
+    "zod": "^4.6.7"
+  },
+  "peerDependenciesMeta": {
+    "mysql2": {
+      "optional": true
+    },
+    "pg": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@jsails/blog": "^1.0.0",
+    "@jsails/config": "^1.0.0",
+    "@jsails/flags": "^1.0.0",
+    "@jsails/media": "^1.0.0",
+    "@jsails/notifications": "^1.0.0",
+    "@jsails/sessions": "^1.0.0",
+    "@jsails/tenancy": "^1.0.0",
+    "jsails": "^1.0.0",
+    "mysql2": "^3.24.5",
+    "pg": "^8.23.1",
+    "zod": "^4.6.7"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/ronald2wing/JSails/issues"
+  }
+}

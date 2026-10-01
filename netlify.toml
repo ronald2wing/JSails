@@ -1,0 +1,19 @@
+[build]
+  # Base is the repo root: website/ depends on `jsails` and `@jsails/content`
+  # through "file:.." links, so both must be compiled before the site builds.
+  # Netlify's own "install" step already ran `npm install` at the root; the
+  # root `website` script compiles those two workspaces, installs the site's
+  # dependencies, and builds it. Node comes from `.nvmrc`.
+  base = "."
+  command = "npm run website"
+  publish = "website/out"
+
+[build.processing.html]
+  pretty_urls = true
+
+# Deliberately NO [build.processing.css] / [build.processing.js] blocks: Vite
+# already bundles and minifies `app.css`/`app.js`, and Netlify's legacy asset
+# optimizer (bundle/minify) re-runs an old PostCSS pipeline that drops or
+# mangles modern Tailwind 4 + daisyUI output (`@layer`, `@property`,
+# `color-mix()`, custom-property theme blocks) — the classic "deploys with no
+# styles" failure. Leave asset post-processing off.

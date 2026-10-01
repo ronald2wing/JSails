@@ -1,0 +1,96 @@
+{
+  "name": "@jsails/auth",
+  "version": "1.0.0",
+  "description": "Better Auth over MariaDB, MySQL, PostgreSQL, or SQLite as a JSails plugin: email/password and device-flow sign-in, sessions, roles, and revocable API tokens.",
+  "license": "MIT",
+  "author": "Ronald Wong <ronald2wing@gmail.com>",
+  "homepage": "https://jsails.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronald2wing/JSails.git",
+    "directory": "packages/auth"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/test",
+    "!dist/.tsbuildinfo",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "tsc -p tsconfig.json",
+    "build:clean": "npm run clean && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node ../../scripts/run-tests.mjs",
+    "test:watch": "node ../../scripts/run-tests.mjs --watch"
+  },
+  "dependencies": {
+    "@jsails/mail": "^1.0.0",
+    "better-auth": "1.7.12",
+    "kysely": "^0.29.7",
+    "mysql2": "^3.24.5"
+  },
+  "peerDependencies": {
+    "jsails": "^1.0.0",
+    "pg": "^8.23.1"
+  },
+  "peerDependenciesMeta": {
+    "pg": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "jsails": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ronald2wing/JSails/issues"
+  },
+  "jsails": {
+    "manifestVersion": 1,
+    "id": "jsails-auth",
+    "version": "1.0.0",
+    "name": "Authentication",
+    "summary": "Email/password and device-flow sign-in, sessions, roles, and revocable API tokens.",
+    "publisher": "jsails",
+    "jsailsCompat": "^1.0.0",
+    "apiTier": "stable",
+    "permissions": [
+      "http.routes",
+      "services.provide",
+      "mail.send"
+    ],
+    "entry": "@jsails/auth",
+    "env": [
+      {
+        "name": "BETTER_AUTH_SECRET",
+        "kind": "secret",
+        "generate": true,
+        "description": "The key that signs sessions; AUTH_SECRET is read when it is unset."
+      },
+      {
+        "name": "AUTH_SECRET",
+        "kind": "secret",
+        "description": "The fallback name for the session signing key."
+      },
+      {
+        "name": "BETTER_AUTH_URL",
+        "kind": "url",
+        "description": "The public base URL auth links and callbacks use."
+      }
+    ]
+  }
+}

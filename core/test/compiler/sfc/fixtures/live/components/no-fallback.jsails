@@ -1,0 +1,14 @@
+<script lang="ts">
+/** A live component without a static form: a static export refuses its page. */
+import { z } from 'zod';
+
+defineLive({
+  stateSchema: z.object({ on: z.boolean() }).strict(),
+  initialState: () => ({ on: false }),
+  authorize: () => true,
+});
+</script>
+
+<template>
+  <p js-show="on">On</p>
+</template>

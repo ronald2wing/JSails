@@ -1,0 +1,15 @@
+<script setup lang="ts">
+const { tag, tagCount = 1 } = defineProps<{ tag: string; tagCount?: number }>();
+const label = tag.toUpperCase();
+</script>
+
+<template>
+  <span
+    class="badge"
+    :class="[tagCount > 3 && 'small', { solo: tagCount === 1 }]"
+    style="color: red"
+    :style="{ fontWeight: 'bold' }"
+    js-show="label !== ''"
+    >{{ label }}</span
+  >
+</template>

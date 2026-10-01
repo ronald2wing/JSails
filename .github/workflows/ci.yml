@@ -1,0 +1,717 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Least privilege: every job only reads the repository. No job needs a token
+# that can write, and no job reads a repository secret.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  # Cancel the in-flight run whenever a newer commit lands on the same ref.
+  # Rapid pushes to main otherwise queue runs that GitHub cancels mid-flight,
+  # which reports as a `failure` conclusion and masks the real result.
+  cancel-in-progress: true
+
+# Every job reads the Node line from `.nvmrc`, the one place it is declared,
+# except three. Two run the bench gate (`check`, through `npm run gates`, and
+# `bench`): its banded budgets hold only on the exact Node version they were
+# recorded on, and CI fails them on any other, so those jobs run the version
+# `perf/budgets.json` records (`node`, within the `.nvmrc` line). A Node
+# release upstream then cannot turn the gate red without a commit; moving the
+# bench to a new 26.x is a re-baseline (`node scripts/bench/index.mjs --write`
+# on that version) in a commit of its own. The third, `coverage`, runs the
+# rest of `npm run check` on that same version, so the whole of `npm run
+# check` still runs on one Node, and the coverage the floors hold (V8's
+# counts) cannot move with a Node release either.
+# Actions are pinned to full commit SHAs (the tag is in the trailing comment)
+# so a moved tag cannot change what runs; Dependabot proposes the updates.
+#
+# `npm run check` is split across two jobs, each with a runner of its own and
+# its own clean build: `check` runs lint, format, every gate and the tooling
+# tests, and `coverage` runs every workspace's tests with coverage floors.
+# Together they run exactly the parts of the `check` script, which
+# scripts/test/ci-workflow.test.mjs holds them to.
+#
+# The downstream jobs (`database`, `bench`, `perf-compare`, `starter`,
+# `starter-browser`, `website`, `integrations`) declare `needs: build` without
+# an `if:` override, so they run only after `build` succeeds: a clean install
+# and build that stops them before they spend their minutes when a change
+# does not install or compile, and that saves the Linux dependency tree most
+# of them restore. They do not wait for `check` or `coverage`, whose length
+# would otherwise sit in front of theirs on the run's critical path; a run
+# that fails lint, a gate or a test still runs them, which costs runner
+# minutes but not time, and `gate` needs every job, so nothing merges with any
+# job red.
+# An `if:` built on a status function such as `!cancelled()` would replace
+# the implicit `success()` and let them run after a failed build. The one
+# exception is `gate`, which must report even when a job failed.
+#
+# Every job installs through `.github/actions/install-dependencies`, which
+# caches the tree `npm ci` produces under every input of that install (its
+# comment says why a hit is that exact tree). setup-node's npm cache is off:
+# it keys on the lockfile alone, so it would restore on every run whose tree
+# the dependency cache already restored and miss on the lockfile changes the
+# dependency cache misses, paying a restore and a cache entry for nothing.
+#
+# Test legs reconcile their results with the expected-failure ledgers in
+# `scripts/expected-failures/` (scripts/run-tests.mjs): a failure no ledger
+# lists fails the leg, and so does a listed failure that now passes. A ledger
+# entry scoped with `platforms` or `databases` applies only to those legs, and
+# one scoped with `services` only to a run that declares them (the jobs stage
+# of `integrations` declares `valkey`).
+jobs:
+  # The fail-fast the downstream jobs wait for (see above): a clean install
+  # and build of every workspace, on the `.nvmrc` Node most of them run.
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Build every workspace
+        run: npm run build
+
+  # Lint, format, every scripts/gates/*.mjs gate, and the tooling tests: the
+  # parts of `npm run check` other than the coverage run, after the same clean
+  # build.
+  check:
+    name: Check (lint, format, gates, tooling tests)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Read the bench budgets' Node version
+        id: bench-node
+        run: echo "version=$(jq -er '.node | ltrimstr("v")' perf/budgets.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ steps.bench-node.outputs.version }}
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Clean build
+        run: npm run build:clean
+
+      - name: Lint, format, gates, tooling tests
+        run: node scripts/run-parallel.mjs lint:ci format:check gates test:scripts
+
+  # Every workspace's tests with coverage floors: the rest of `npm run check`,
+  # after the same clean build. One run of `test:coverage`, never sharded,
+  # because each floor is checked against one workspace's whole run.
+  coverage:
+    name: Tests with coverage (Linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Read the bench budgets' Node version
+        id: bench-node
+        run: echo "version=$(jq -er '.node | ltrimstr("v")' perf/budgets.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ steps.bench-node.outputs.version }}
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Clean build
+        run: npm run build:clean
+
+      - name: Workspace tests with coverage floors
+        run: npm run test:coverage
+
+      # A coverage run records its timings beside the plain run's
+      # (scripts/run-workspaces.mjs), so this is the file it writes.
+      - name: Upload the timing record
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: timings-linux
+          path: test-results/timings-test-coverage.json
+          if-no-files-found: ignore
+
+      # Each workspace's reconcile verdict (test-results/reconcile/), with a
+      # ledger-entry draft per unexpected failure.
+      - name: Upload the reconcile verdicts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: reconcile-linux
+          path: test-results/reconcile/
+          if-no-files-found: ignore
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      # Runtime dependencies only: a high or critical advisory in anything the
+      # published packages install fails the run.
+      - name: Audit runtime dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      # Every installed tarball must carry a valid registry signature.
+      - name: Verify registry signatures
+        run: npm audit signatures
+
+  # The same build and tests on macOS. Failures that are specific to macOS are
+  # recorded in scripts/expected-failures/macos.json (scoped to darwin).
+  test-macos:
+    name: Tests (macOS)
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Build every workspace
+        run: npm run build
+
+      - name: Workspace tests
+        run: npm run test:workspaces
+
+      - name: Tooling tests
+        run: npm run test:scripts
+
+      - name: Upload the timing record
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: timings-macos
+          path: test-results/timings.json
+          if-no-files-found: ignore
+
+      # Each workspace's reconcile verdict (test-results/reconcile/), with a
+      # ledger-entry draft per unexpected failure, so a red leg's failures
+      # become macos.json entries.
+      - name: Upload the reconcile verdicts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: reconcile-macos
+          path: test-results/reconcile/
+          if-no-files-found: ignore
+
+  # Windows is supported for development (owner decision 7). Failures that are
+  # specific to Windows are recorded in scripts/expected-failures/windows.json
+  # (scoped to win32) and must only shrink.
+  test-windows:
+    name: Tests (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    # The root LICENSE, README.md and CHANGELOG.md are regular copies of their
+    # core/ originals, and .gitattributes (`* text=auto eol=lf`) gives every
+    # checkout LF line endings, so the leg runs on the runner's git defaults.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      # npm links the workspaces into node_modules as junctions here; the
+      # install step checks that a restored tree still has them as links to
+      # the workspaces, and installs instead when it does not.
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Build every workspace
+        run: npm run build
+
+      - name: Workspace tests
+        run: npm run test:workspaces
+
+      - name: Tooling tests
+        run: npm run test:scripts
+
+      - name: Upload the timing record
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: timings-windows
+          path: test-results/timings.json
+          if-no-files-found: ignore
+
+      # Each workspace's reconcile verdict (test-results/reconcile/), with a
+      # ledger-entry draft per unexpected failure, so a red leg's failures
+      # become windows.json entries.
+      - name: Upload the reconcile verdicts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: reconcile-windows
+          path: test-results/reconcile/
+          if-no-files-found: ignore
+
+  # One leg per supported server database. Each leg runs the live database
+  # stage of verify:integrations and the `database` test suite: every
+  # `*.database.test.ts(x)` file, run against the leg's server
+  # (`--suite=database`; the child sees JSAILS_TEST_SUITE=database and the
+  # DATABASE_* variables below). Non-MariaDB MySQL is not supported, so there
+  # is no MySQL leg; SQLite runs in every default-suite job.
+  database:
+    name: Database (${{ matrix.database }})
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - database: mariadb
+            image: mariadb:11.4
+            port: 3306
+            health: healthcheck.sh --connect --innodb_initialized
+          - database: postgres
+            image: postgres:17
+            port: 5432
+            health: pg_isready --username jsails --dbname jsails_test
+    # A throwaway service container; the credentials exist only inside this
+    # job's network and are not secrets. Each image reads only its own
+    # variables, so both sets are given.
+    services:
+      db:
+        image: ${{ matrix.image }}
+        env:
+          MARIADB_ROOT_PASSWORD: jsails-ci-root
+          MARIADB_DATABASE: jsails_test
+          MARIADB_USER: jsails
+          MARIADB_PASSWORD: jsails-ci
+          POSTGRES_USER: jsails
+          POSTGRES_PASSWORD: jsails-ci
+          POSTGRES_DB: jsails_test
+        ports:
+          - ${{ matrix.port }}:${{ matrix.port }}
+        options: >-
+          --health-cmd "${{ matrix.health }}"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_TYPE: ${{ matrix.database }}
+      DATABASE_HOST: 127.0.0.1
+      DATABASE_PORT: ${{ matrix.port }}
+      DATABASE_USER: jsails
+      DATABASE_PASSWORD: jsails-ci
+      DATABASE_NAME: jsails_test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Build every workspace
+        run: npm run build
+
+      # The test matrix gives every data source a database of its own
+      # (jsails_m_<random>_test, dropped afterwards); the MariaDB image grants
+      # the CI user only MARIADB_DATABASE, so grant it that prefix too. The leg
+      # keeps connecting as that unprivileged user, as a production app does,
+      # so a privilege-dependent defect cannot hide behind root. PostgreSQL
+      # needs nothing, because POSTGRES_USER is a superuser.
+      - name: Let the CI user create matrix databases (MariaDB)
+        if: matrix.database == 'mariadb'
+        run: |
+          docker exec -i ${{ job.services.db.id }} mariadb -uroot -pjsails-ci-root <<'SQL'
+          GRANT ALL PRIVILEGES ON `jsails\_m\_%`.* TO 'jsails'@'%';
+          SQL
+
+      # `--require database` turns a skipped stage into a failure, so a leg
+      # whose variables did not arrive cannot pass.
+      - name: Live database stage
+        run: npm run verify:integrations -- --require database
+
+      - name: Database test suite
+        run: npm run test:database
+
+  # The bench gate (scripts/bench/) on a runner of its own: `check` runs it
+  # beside every other gate, where its wall time is shared, so the 30 s budget
+  # on its wall time (`--max-ms`) is enforced only here. CI is set, so banded
+  # budgets recorded on another Node line fail instead of being skipped; the
+  # job runs the Node version perf/budgets.json records, so that happens only
+  # when a commit changes the budgets.
+  bench:
+    name: Bench budgets
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Read the bench budgets' Node version
+        id: bench-node
+        run: echo "version=$(jq -er '.node | ltrimstr("v")' perf/budgets.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ steps.bench-node.outputs.version }}
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Build every workspace
+        run: npm run build
+
+      - name: Bench check (alone)
+        run: node scripts/bench/index.mjs --check
+
+  # Advisory: request throughput of this commit against its base (the pull
+  # request's base commit, or the previous main), measured in interleaved
+  # rounds by `--compare`. Hosted-runner timings are too noisy to gate on until
+  # their spread has been measured, so there is no `--strict`, the job cannot
+  # fail the run (`continue-on-error`), and `gate` does not need it; read its
+  # log for SLOWER rows.
+  perf-compare:
+    name: Bench timing against the base (advisory)
+    runs-on: ubuntu-latest
+    needs: build
+    continue-on-error: true
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: head
+          persist-credentials: false
+
+      - name: Check out the base commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha || github.event.before }}
+          path: base
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: head/.nvmrc
+          package-manager-cache: false
+
+      # Both checkouts install through the head's install step, each from its
+      # own lockfile.
+      - name: Install the head's dependencies
+        uses: ./head/.github/actions/install-dependencies
+        with:
+          working-directory: head
+
+      - name: Build the head
+        working-directory: head
+        run: npm run build
+
+      - name: Install the base's dependencies
+        uses: ./head/.github/actions/install-dependencies
+        with:
+          working-directory: base
+
+      - name: Build the base
+        working-directory: base
+        run: npm run build
+
+      - name: Compare request throughput with the base
+        working-directory: head
+        run: node scripts/bench/index.mjs --compare "$GITHUB_WORKSPACE/base"
+
+  starter:
+    name: Starter verification (all presets)
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      # Packs the framework, generates and installs all five presets (admin,
+      # blog, saas, the default static site, cli), and runs each one's checks.
+      # No browser is downloaded or launched; each browser stage is recorded
+      # as an explicit skip.
+      - name: Verify starter (no browser)
+        run: npm run verify:starter -- --skip-browser
+
+  # The full starter pipeline: browser journeys (Playwright on the Chrome the
+  # runner image ships), the database-backed auth stages against a MariaDB
+  # service, and the negative proofs. No browser is downloaded.
+  starter-browser:
+    name: Starter verification (browser + database)
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 60
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: jsails-ci-root
+          MARIADB_DATABASE: jsails_starter
+          MARIADB_USER: jsails
+          MARIADB_PASSWORD: jsails-ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Verify starter (browser and database stages included)
+        env:
+          JSAILS_BROWSER_PATH: /usr/bin/google-chrome
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_PORT: '3306'
+          DATABASE_USER: jsails
+          DATABASE_PASSWORD: jsails-ci
+          DATABASE_NAME: jsails_starter
+        run: npm run verify:starter
+
+  website:
+    name: Docs site
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      # The site installs `jsails` and `@jsails/content` through `file:` links,
+      # and the docs check compiles every documented sample against the built
+      # workspaces (`website/scripts/check-docs.mjs`), so every workspace is
+      # built first, not only the two the site links.
+      - name: Build every workspace
+        run: npm run build
+
+      # Installed exactly as the Netlify build (`npm run website`) installs it:
+      # `npm ci` with lifecycle scripts, from the site's own lockfile. The
+      # `file:` links are symlinks into this checkout, so a restored tree
+      # holds no copy of the workspaces it links.
+      - name: Install the docs site
+        uses: ./.github/actions/install-dependencies
+        with:
+          working-directory: website
+          lifecycle-scripts: 'true'
+
+      # Builds the site, typechecks its browser bundle, and compiles every
+      # documented sample against the built workspaces.
+      - name: Check the docs site
+        run: npm --prefix website run check
+
+  integrations:
+    name: Integrations (live services)
+    runs-on: ubuntu-latest
+    needs: build
+    # The jamal stage adds a pack, an --admin install, and two MariaDB starts
+    # (about two minutes on a warm machine) to the build and the suites.
+    timeout-minutes: 25
+    # Throwaway service containers; the credentials below exist only inside
+    # this job's network and are not secrets.
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: jsails-ci-root
+          MARIADB_DATABASE: jsails_test
+          MARIADB_USER: jsails
+          MARIADB_PASSWORD: jsails-ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+      valkey:
+        image: valkey/valkey:8
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "valkey-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Build workspaces
+        run: npm run build
+
+      # The variable names are the ones scripts/verify-integrations.mjs reads.
+      # `--require` turns a skip of any provisioned stage into a failure, so a
+      # run whose variables did not arrive cannot pass. The jobs stage also
+      # runs the @jsails/jobs suite on this Valkey with the `valkey` service
+      # declared, reconciled with its scoped entries in jobs.json; the cache
+      # stage holds the @jsails/cache Valkey stores to their conformance cases
+      # on it. The jamal
+      # stage uses the runner's own Docker: it generates an --admin app from
+      # packed tarballs and runs its `jamal` verbs against containers in a
+      # Compose project unique to the run, on free loopback ports, so it never
+      # meets the service containers above (which hold 3306 and 6379). The
+      # jamal-secrets stage writes a release's secrets file as a deploy does
+      # and reads it back from a container run as the app's uid 10001.
+      - name: Run live-service integrations
+        env:
+          DATABASE_TYPE: mariadb
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_PORT: '3306'
+          DATABASE_USER: jsails
+          DATABASE_PASSWORD: jsails-ci
+          DATABASE_NAME: jsails_test
+          VALKEY_URL: redis://127.0.0.1:6379
+          JSAILS_TEST_VALKEY: '1'
+          JSAILS_TEST_DOCKER: '1'
+        run: npm run verify:integrations -- --require database,jobs,broadcast,jamal,jamal-secrets,live,cache
+
+  # The one required status: branch protection names this job only, and it
+  # succeeds only when every other job succeeded, so adding a job never needs a
+  # settings change. An advisory job (`continue-on-error: true`, today only
+  # `perf-compare`) is the one kind left out. `if: always()` makes it report a
+  # failed or skipped need instead of being skipped itself.
+  gate:
+    name: Gate
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - build
+      - check
+      - coverage
+      - audit
+      - test-macos
+      - test-windows
+      - database
+      - bench
+      - starter
+      - starter-browser
+      - website
+      - integrations
+    timeout-minutes: 5
+    steps:
+      - name: Every job succeeded
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          echo "$RESULTS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          echo "$RESULTS" | jq -e 'all(.[]; .result == "success")' > /dev/null

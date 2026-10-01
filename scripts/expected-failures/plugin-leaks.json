@@ -1,0 +1,6 @@
+{
+  "description": "First-party plugins, on either contract, that the plugin-leaks gate (KRN-12) cannot assemble and serve, or finds leaking, over fifty create/serve/close cycles. Each entry is one plugin, by source file and name; its reason says why it is not measured or what it leaks, and its fixedBy the package that removes the blocker. The ledger only shrinks, and must be empty before KRN-19.",
+  "kind": "gate",
+  "gate": "plugin-leaks",
+  "entries": []
+}

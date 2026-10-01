@@ -1,0 +1,388 @@
+{
+  "node": "v26.13.1",
+  "band": 0.15,
+  "scenarios": {
+    "api-large-json/fetch": {
+      "exact": {
+        "fs": 0,
+        "zlib": 1,
+        "responses": 2,
+        "readableStreams": 2,
+        "bodyStreams": 1,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 487
+      },
+      "banded": {
+        "promises": 120,
+        "allocBytes": 311259
+      }
+    },
+    "api-large-json/listener": {
+      "exact": {
+        "fs": 0,
+        "zlib": 1,
+        "responses": 3,
+        "readableStreams": 1,
+        "bodyStreams": 1,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 487
+      },
+      "banded": {
+        "promises": 118,
+        "allocBytes": 386327
+      }
+    },
+    "api-post-json/fetch": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 4,
+        "bodyStreams": 1,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 13
+      },
+      "banded": {
+        "promises": 141,
+        "allocBytes": 383654
+      }
+    },
+    "api-post-json/listener": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 3,
+        "readableStreams": 4,
+        "bodyStreams": 1,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 13
+      },
+      "banded": {
+        "promises": 158,
+        "allocBytes": 426439
+      }
+    },
+    "api-small-json/fetch": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 2,
+        "bodyStreams": 1,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 11
+      },
+      "banded": {
+        "promises": 115,
+        "allocBytes": 346219
+      }
+    },
+    "api-small-json/listener": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 3,
+        "readableStreams": 1,
+        "bodyStreams": 1,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 11
+      },
+      "banded": {
+        "promises": 113,
+        "allocBytes": 396157
+      }
+    },
+    "assemble-200-routes": {
+      "exact": {
+        "assembly.fs": 19,
+        "assembly.modules": 624,
+        "firstRequest.fs": 0,
+        "firstRequest.modules": 0,
+        "firstRequest.zlib": 0,
+        "firstRequest.hashes": 0
+      }
+    },
+    "assemble-5-routes": {
+      "exact": {
+        "assembly.fs": 19,
+        "assembly.modules": 429,
+        "firstRequest.fs": 0,
+        "firstRequest.modules": 0,
+        "firstRequest.zlib": 0,
+        "firstRequest.hashes": 0
+      }
+    },
+    "component-poll-unchanged/fetch": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 4,
+        "bodyStreams": 1,
+        "alsRuns": 12,
+        "modules": 0,
+        "hashes": 2,
+        "renders": 1,
+        "stores": 0,
+        "bytesOut": 33,
+        "requestBytesOverSnapshot": 510
+      },
+      "banded": {
+        "promises": 285,
+        "allocBytes": 820029
+      }
+    },
+    "not-found-html/fetch": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 2,
+        "bodyStreams": 0,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 448
+      },
+      "banded": {
+        "promises": 44,
+        "allocBytes": 342815
+      }
+    },
+    "not-found-html/listener": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 0,
+        "bodyStreams": 0,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 448
+      },
+      "banded": {
+        "promises": 42,
+        "allocBytes": 362071
+      }
+    },
+    "not-found-json/fetch": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 2,
+        "bodyStreams": 0,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 176
+      },
+      "banded": {
+        "promises": 44,
+        "allocBytes": 318021
+      }
+    },
+    "not-found-json/listener": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 0,
+        "bodyStreams": 0,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 176
+      },
+      "banded": {
+        "promises": 42,
+        "allocBytes": 357135
+      }
+    },
+    "page-small/fetch": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 2,
+        "bodyStreams": 0,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 81
+      },
+      "banded": {
+        "promises": 106,
+        "allocBytes": 358713
+      }
+    },
+    "page-small/listener": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 0,
+        "bodyStreams": 0,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 81
+      },
+      "banded": {
+        "promises": 104,
+        "allocBytes": 383654
+      }
+    },
+    "static-304/fetch": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 0,
+        "bodyStreams": 0,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 0
+      },
+      "banded": {
+        "promises": 32,
+        "allocBytes": 316016
+      }
+    },
+    "static-304/listener": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 0,
+        "bodyStreams": 0,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 0
+      },
+      "banded": {
+        "promises": 37,
+        "allocBytes": 350921
+      }
+    },
+    "static-large/fetch": {
+      "exact": {
+        "fs": 1,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 2,
+        "bodyStreams": 0,
+        "alsRuns": 6,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 204800
+      },
+      "banded": {
+        "promises": 138,
+        "allocBytes": 247545
+      }
+    },
+    "static-large/listener": {
+      "exact": {
+        "fs": 1,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 2,
+        "bodyStreams": 0,
+        "alsRuns": 6,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 204800
+      },
+      "banded": {
+        "promises": 152,
+        "allocBytes": 373014
+      }
+    },
+    "static-small/fetch": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 2,
+        "bodyStreams": 0,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 14
+      },
+      "banded": {
+        "promises": 40,
+        "allocBytes": 335432
+      }
+    },
+    "static-small/listener": {
+      "exact": {
+        "fs": 0,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 0,
+        "bodyStreams": 0,
+        "alsRuns": 1,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 14
+      },
+      "banded": {
+        "promises": 37,
+        "allocBytes": 363548
+      }
+    }
+  }
+}

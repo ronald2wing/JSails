@@ -1,0 +1,15 @@
+{
+  // The server program of the docs site: pages and the content pipeline,
+  // compiled into `dist/` for `jsails build`. The browser bundle has its own
+  // program in `tsconfig.client.json` because it targets the DOM and Vite.
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // Nothing imports the site's compiled output as a library.
+    "declaration": false
+  },
+  "include": [
+    "${configDir}/pages/**/*.ts",
+    "${configDir}/pages/**/*.tsx",
+    "${configDir}/src/**/*.ts"
+  ]
+}

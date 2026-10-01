@@ -1,0 +1,134 @@
+{
+  "workspaces": {
+    "@jsails/admin": {
+      "lines": 92,
+      "branches": 83,
+      "functions": 98
+    },
+    "@jsails/ai": {
+      "lines": 97,
+      "branches": 91,
+      "functions": 97
+    },
+    "@jsails/auth": {
+      "lines": 88,
+      "branches": 88,
+      "functions": 85
+    },
+    "@jsails/blog": {
+      "lines": 94,
+      "branches": 87,
+      "functions": 91
+    },
+    "@jsails/cache": {
+      "lines": 95,
+      "branches": 93,
+      "functions": 93
+    },
+    "@jsails/config": {
+      "lines": 93,
+      "branches": 82,
+      "functions": 97
+    },
+    "@jsails/content": {
+      "lines": 96,
+      "branches": 89,
+      "functions": 98
+    },
+    "@jsails/diagnostics": {
+      "lines": 96,
+      "branches": 93,
+      "functions": 95
+    },
+    "@jsails/editor": {
+      "lines": 83,
+      "branches": 88,
+      "functions": 72
+    },
+    "@jsails/filesystem": {
+      "lines": 86,
+      "branches": 79,
+      "functions": 93
+    },
+    "@jsails/flags": {
+      "lines": 97,
+      "branches": 91,
+      "functions": 97
+    },
+    "@jsails/inertia": {
+      "lines": 98,
+      "branches": 93,
+      "functions": 96
+    },
+    "@jsails/jobs": {
+      "lines": 98,
+      "branches": 94,
+      "functions": 96
+    },
+    "@jsails/live": {
+      "lines": 88,
+      "branches": 82,
+      "functions": 90
+    },
+    "@jsails/logging": {
+      "lines": 97,
+      "branches": 97,
+      "functions": 99
+    },
+    "@jsails/mail": {
+      "lines": 96,
+      "branches": 93,
+      "functions": 95
+    },
+    "@jsails/marketplace": {
+      "lines": 98,
+      "branches": 94,
+      "functions": 98
+    },
+    "@jsails/mcp": {
+      "lines": 94,
+      "branches": 90,
+      "functions": 94
+    },
+    "@jsails/media": {
+      "lines": 89,
+      "branches": 81,
+      "functions": 94
+    },
+    "@jsails/notifications": {
+      "lines": 96,
+      "branches": 94,
+      "functions": 97
+    },
+    "@jsails/resources": {
+      "lines": 93,
+      "branches": 88,
+      "functions": 93
+    },
+    "@jsails/sessions": {
+      "lines": 92,
+      "branches": 82,
+      "functions": 94
+    },
+    "@jsails/tenancy": {
+      "lines": 97,
+      "branches": 95,
+      "functions": 97
+    },
+    "@jsails/theme": {
+      "lines": 96,
+      "branches": 89,
+      "functions": 99
+    },
+    "@jsails/webhook": {
+      "lines": 93,
+      "branches": 86,
+      "functions": 99
+    },
+    "jsails": {
+      "lines": 92,
+      "branches": 87,
+      "functions": 88
+    }
+  }
+}
