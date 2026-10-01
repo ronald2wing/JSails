@@ -1,0 +1,5 @@
+{
+  "description": "Tests that fail only on the macOS CI leg (KRN-01). Every entry is scoped with \"platforms\": [\"darwin\"].",
+  "kind": "tests",
+  "entries": []
+}

@@ -1,0 +1,7 @@
+node_modules/
+dist/
+out/
+public/assets/
+.jsails/
+.content-cache/
+config/credentials/*.key

@@ -1,0 +1,2712 @@
+{
+  "description": "Docs samples, marked references, and published entries that fail the docs compile gate (website/scripts/check-docs.mjs) today. Report-only (KRN-05): the gate tolerates these ids and fails on a new one or on a listed one that is gone. KRN-24 empties it and switches the gate to failing.",
+  "kind": "gate",
+  "gate": "docs",
+  "entries": [
+    {
+      "id": "entry @jsails/admin-plugin-manager: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/admin: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/ai/anthropic: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/ai/client: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/ai/mcp: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/ai/openai-compatible: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/ai/testing: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/blog/admin: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/blog: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/config/admin: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/editor/preact: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/editor/server: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/editor: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/filesystem: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/flags/admin: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/inertia/testing: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/inertia: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/live/client: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/media/admin: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/media: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/notifications: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/resources: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/sessions: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry @jsails/webhook: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/broadcast/client: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/broadcast: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/build: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/cache: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/client/model: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/client: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/dev: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/diagnostics: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/facades: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/filesystem: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/http: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/i18n/server: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/introspect: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/live: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/pages: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/render-to-string: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/rich-text: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/security: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/semver: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/server-components: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/services: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "entry jsails/validation: no compiled docs sample imports it",
+      "reason": "No docs sample that compiles imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#admin-panel[1] TS18004: No value exists in scope for the shorthand property 'resolveSession'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#admin-panel[1] TS2304: Cannot find name 'postCount'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#admin-panel[1] TS2304: Cannot find name 'posts'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#default-deny-contributions[1] TS18004: No value exists in scope for the shorthand property 'library'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#default-deny-contributions[1] TS2304: Cannot find name 'authSessionToken'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#default-deny-contributions[1] TS2304: Cannot find name 'mediaAdmin'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#feature-flags-admin-page[1] TS18004: No value exists in scope for the shorthand property 'resolveSession'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#feature-flags-admin-page[1] TS7006: Parameter 'session' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#jobs-dashboard[2] TS18004: No value exists in scope for the shorthand property 'resolveSession'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#jobs-dashboard[2] TS2307: Cannot find module './dist/jobs/dashboard.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#plugin-manager-access-and-install-policy[1] TS2304: Cannot find name 'firstPartyPluginDirectory'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#plugin-manager-access-and-install-policy[1] TS2304: Cannot find name 'pluginInstaller'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#plugin-manager-access-and-install-policy[1] TS2304: Cannot find name 'pluginManagerAdmin'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#plugin-manager-access-and-install-policy[1] TS2304: Cannot find name 'pluginState'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#plugin-manager-access-and-install-policy[1] TS7031: Binding element 'session' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#plugin-manager-access-and-install-policy[1] TS7031: Binding element 'session' implicitly has an 'any' type. (2)",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS18004: No value exists in scope for the shorthand property 'rows'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS18004: No value exists in scope for the shorthand property 'total'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS2304: Cannot find name 'authors'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS2304: Cannot find name 'defineResource'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS2304: Cannot find name 'persist'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS2304: Cannot find name 'rowOrNull'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS7006: Parameter 'row' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS7031: Binding element 'id' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS7031: Binding element 'id' implicitly has an 'any' type. (2)",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS7031: Binding element 'page' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS7031: Binding element 'pageSize' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS7031: Binding element 'session' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/admin.md#resources[1] TS7031: Binding element 'values' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#anthropic[1] TS2304: Cannot find name 'policy'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#anthropic[1] TS2304: Cannot find name 'secrets'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[1] TS18004: No value exists in scope for the shorthand property 'actor'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[1] TS18004: No value exists in scope for the shorthand property 'tools'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[1] TS2304: Cannot find name 'body'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[1] TS2304: Cannot find name 'conversation'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[1] TS2304: Cannot find name 'generate'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[1] TS2304: Cannot find name 'model'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[2] TS18004: No value exists in scope for the shorthand property 'actor'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[2] TS18004: No value exists in scope for the shorthand property 'tools'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[2] TS2304: Cannot find name 'body'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[2] TS2304: Cannot find name 'model'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[2] TS2304: Cannot find name 'saved'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[2] TS2740: Type 'History' is missing the following properties from type 'readonly AiMessage[]': concat, join, slice, indexOf, and 25 more.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[2] TS7006: Parameter 'call' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#approvals[2] TS7006: Parameter 'entry' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#checkpointing-and-background-jobs[1] TS18004: No value exists in scope for the shorthand property 'tools'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#checkpointing-and-background-jobs[1] TS2304: Cannot find name 'conversations'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#checkpointing-and-background-jobs[1] TS2304: Cannot find name 'conversations'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#checkpointing-and-background-jobs[1] TS2304: Cannot find name 'model'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#checkpointing-and-background-jobs[1] TS2304: Cannot find name 'users'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#conversations[1] TS2304: Cannot find name 'actor'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#conversations[1] TS2304: Cannot find name 'id'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#conversations[1] TS2304: Cannot find name 'result'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#conversations[1] TS2304: Cannot find name 'store'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#conversations[1] TS2304: Cannot find name 'store'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#mcp-tools[1] TS18004: No value exists in scope for the shorthand property 'actor'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#mcp-tools[1] TS2304: Cannot find name 'client'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#mcp-tools[1] TS2304: Cannot find name 'generate'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#mcp-tools[1] TS2304: Cannot find name 'input'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#mcp-tools[1] TS2304: Cannot find name 'model'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#openai-compatible[1] TS2304: Cannot find name 'secrets'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[1] TS18004: No value exists in scope for the shorthand property 'actor'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[1] TS2304: Cannot find name 'body'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[1] TS2304: Cannot find name 'cancelOrder'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[1] TS2304: Cannot find name 'conversation'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[1] TS2304: Cannot find name 'lookupOrder'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[1] TS2304: Cannot find name 'model'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[2] TS18004: No value exists in scope for the shorthand property 'actor'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[2] TS18004: No value exists in scope for the shorthand property 'tools'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[2] TS2304: Cannot find name 'conversation'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[2] TS2304: Cannot find name 'conversation'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[2] TS2304: Cannot find name 'input'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[2] TS2304: Cannot find name 'model'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[2] TS2304: Cannot find name 'send'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#running-a-model[2] TS2740: Type 'History' is missing the following properties from type 'readonly AiMessage[]': concat, join, slice, indexOf, and 25 more.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#streaming-to-the-browser[1] TS18004: No value exists in scope for the shorthand property 'actor'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#streaming-to-the-browser[1] TS18004: No value exists in scope for the shorthand property 'tools'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#streaming-to-the-browser[1] TS2304: Cannot find name 'input'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#streaming-to-the-browser[1] TS2304: Cannot find name 'model'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#streaming-to-the-browser[1] TS2304: Cannot find name 'saveConversation'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#streaming-to-the-browser[1] TS2740: Type 'History' is missing the following properties from type 'readonly AiMessage[]': concat, join, slice, indexOf, and 25 more.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#streaming-to-the-browser[2] TS18004: No value exists in scope for the shorthand property 'body'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#streaming-to-the-browser[2] TS18004: No value exists in scope for the shorthand property 'signal'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#streaming-to-the-browser[2] TS18004: No value exists in scope for the shorthand property 'signal'. Either declare one or provide an initializer. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#streaming-to-the-browser[2] TS2304: Cannot find name 'render'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#structured-output[1] TS2304: Cannot find name 'invoiceText'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#structured-output[1] TS2304: Cannot find name 'model'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#testing[1] TS18004: No value exists in scope for the shorthand property 'actor'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#testing[1] TS18004: No value exists in scope for the shorthand property 'tools'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#testing[1] TS2304: Cannot find name 'actor'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#testing[1] TS2304: Cannot find name 'assert'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#tools[1] TS2304: Cannot find name 'orders'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#tools[1] TS2304: Cannot find name 'orders'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#tools[2] TS2304: Cannot find name 'preferences'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#untrusted-input[1] TS2304: Cannot find name 'body'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/ai.md#usage-and-cost[1] TS2304: Cannot find name 'response'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/api-resources.md#declarative-form[1] TS2304: Cannot find name 'isSignedIn'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/api-resources.md#declarative-form[1] TS2304: Cannot find name 'postStore'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/api-resources.md#handlers[1] TS2304: Cannot find name 'postSerializer'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/api-resources.md#handlers[1] TS2304: Cannot find name 'postStore'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/api-resources.md#handlers[2] TS2307: Cannot find module '../app/posts.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/api-resources.md#handlers[3] TS2307: Cannot find module '../../app/posts.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/api-resources.md#model-backed-resources[1] TS2307: Cannot find module '../models/post.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/api-resources.md#model-backed-resources[1] TS7006: Parameter 'context' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/attachments.md#attaching-reading-detaching[1] TS2304: Cannot find name 'avatar'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/attachments.md#attaching-reading-detaching[1] TS2304: Cannot find name 'avatar'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/attachments.md#attaching-reading-detaching[1] TS2304: Cannot find name 'avatar'. (3)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/attachments.md#attaching-reading-detaching[1] TS2304: Cannot find name 'avatar'. (4)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/attachments.md#attaching-reading-detaching[1] TS2304: Cannot find name 'bytes'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/attachments.md#attaching-reading-detaching[1] TS2304: Cannot find name 'user'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/attachments.md#attaching-reading-detaching[1] TS2304: Cannot find name 'user'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/attachments.md#attaching-reading-detaching[1] TS2304: Cannot find name 'user'. (3)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/attachments.md#attaching-reading-detaching[1] TS2304: Cannot find name 'user'. (4)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/attachments.md#declaring-an-attachment[1] TS18004: No value exists in scope for the shorthand property 'dataSource'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/auth.md#choosing-the-auth-database[2] TS2304: Cannot find name 'loadAuthMigrations'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/auth.md#roles[2] TS2304: Cannot find name 'adminOnly'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/auth.md#sessions[1] TS18004: No value exists in scope for the shorthand property 'dataSource'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/auth.md#sessions[1] TS2304: Cannot find name 'createDatabaseSessionStore'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/auth.md#the-auth-plugin[1] TS2307: Cannot find module './dist/components/task-list.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/auth.md#the-auth-plugin[2] TS7005: Variable 'authSessions' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/auth.md#the-auth-plugin[2] TS7005: Variable 'authSessions' implicitly has an 'any' type. (2)",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/auth.md#the-auth-plugin[2] TS7006: Parameter 'request' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/auth.md#the-auth-plugin[2] TS7031: Binding element 'services' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/auth.md#the-auth-plugin[2] TS7034: Variable 'authSessions' implicitly has type 'any' in some locations where its type cannot be determined.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/cli.md#user-defined-commands[1] TS7006: Parameter 'ctx' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/cli.md#user-defined-commands[1] TS7006: Parameter 'rawArgs' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/cli.md#user-defined-commands[2] TS2307: Cannot find module '../app/application-command.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/cli.md#user-defined-commands[2] TS2339: Property 'argument' does not exist on type 'HelloCommand'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/cli.md#user-defined-commands[2] TS2339: Property 'stdout' does not exist on type 'HelloCommand'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/client.md#hotwire-native-groundwork[1] TS2741: Property 'rules' is missing in type '{ patterns: string[]; properties: { context: string; }; }[]' but required in type 'PathConfigurationInput'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/client.md#model-projection-jsailsclientmodel[1] TS2304: Cannot find name 'snapshot'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/client.md#model-projection-jsailsclientmodel[2] TS2304: Cannot find name 'controller'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/client.md#registering-islands[1] TS2304: Cannot find name 'Counter'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/client.md#registering-islands[1] TS2304: Cannot find name 'startClient'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/client.md#starting-the-client[1] TS2834: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/client.md#the-toolset-one-authoring-model-for-islands-and-server-components[1] TS18004: No value exists in scope for the shorthand property 'count'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/client.md#the-toolset-one-authoring-model-for-islands-and-server-components[1] TS2304: Cannot find name 'isOpen'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/client.md#the-toolset-one-authoring-model-for-islands-and-server-components[1] TS2304: Cannot find name 'persist'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/client.md#the-toolset-one-authoring-model-for-islands-and-server-components[1] TS2304: Cannot find name 'reload'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/client.md#the-toolset-one-authoring-model-for-islands-and-server-components[1] TS2304: Cannot find name 'setDraft'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/client.md#the-toolset-one-authoring-model-for-islands-and-server-components[1] TS2304: Cannot find name 'setSort'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/config.md#registering-and-reading[1] TS2304: Cannot find name 'getDataSource'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/config.md#registering-and-reading[1] TS2304: Cannot find name 'shopConfig'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/config.md#registering-and-reading[1] TS2741: Property 'authorize' is missing in type '{ adminPlugins: AdminPlugin[]; }' but required in type 'AdminPanelOptions'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/config.md#registering-and-reading[2] TS2304: Cannot find name 'config'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/config.md#registering-and-reading[2] TS2304: Cannot find name 'shopConfig'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/configuration.md#environment-configuration[1] TS2307: Cannot find module './entities/user.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/configuration.md#health-route[1] TS2307: Cannot find module './jsails.database.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/configuration.md#health-route[1] TS2307: Cannot find module './valkey.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/configuration.md#health-route[1] TS7006: Parameter 'request' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/configuration.md#health-route[2] TS2304: Cannot find name 'createDataSourceReadinessProbe'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/configuration.md#health-route[2] TS2304: Cannot find name 'dataSource'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/configuration.md#health-route[2] TS2304: Cannot find name 'dataSourceToken'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/configuration.md#health-route[2] TS2304: Cannot find name 'dataSourceToken'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/content.md#contentcollectiondescriptor[1] TS2304: Cannot find name 'docs'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/content.md#createmarkdownstaticpaths[1] TS1308: 'await' expressions are only allowed within async functions and at the top levels of modules.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/content.md#createmarkdownstaticpaths[1] TS2304: Cannot find name 'blog'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/content.md#definesections[1] TS2304: Cannot find name 'docs'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/content.md#definetaxonomies[1] TS2304: Cannot find name 'docs'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/content.md#definetaxonomies[1] TS2532: Object is possibly 'undefined'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/content.md#definetaxonomy[1] TS2304: Cannot find name 'docs'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/content.md#definetaxonomy[1] TS2554: Expected 1 arguments, but got 2.",
+      "reason": "The sample calls a function with the wrong number of arguments.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/content.md#readcontentversions-definecontentversions[1] TS2322: Type 'string' is not assignable to type 'ContentVersionsManifest'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/content.md#renderrssfeed-renderatomfeed[1] TS2304: Cannot find name 'blog'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/content.md#rendersitemap[1] TS2304: Cannot find name 'docs'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/conventions.md#autoloading-no-imports-for-project-code[1] TS2304: Cannot find name 'Layout'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/conventions.md#autoloading-no-imports-for-project-code[1] TS2304: Cannot find name 'Layout'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/conventions.md#declarative-plugins-and-resources[1] TS2304: Cannot find name 'isStaff'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/conventions.md#declarative-plugins-and-resources[1] TS2304: Cannot find name 'store'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/conventions.md#declarative-plugins-and-resources[1] TS2307: Cannot find module './tokens.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/conventions.md#declarative-plugins-and-resources[1] TS2322: Type '(app: Hono<AppEnv, BlankSchema, \"/\">) => Hono<AppEnv, { \"/time\": { $get: { output: { now: number; }; outputFormat: \"json\"; status: ContentfulStatusCode; input: {}; }; }; }, \"/\", \"/time\">' is not assignable to type 'HttpExtensionHook'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/data-contracts.md#a-list-of-contracts[1] TS2304: Cannot find name 'Preferences'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/data-contracts.md#ai-tools[1] TS2304: Cannot find name 'Preferences'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/data-contracts.md#ai-tools[1] TS2304: Cannot find name 'User'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/data-contracts.md#ai-tools[1] TS2339: Property 'userId' does not exist on type 'AiToolContext<AiBaseContext>'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/data-contracts.md#ai-tools[2] TS2304: Cannot find name 'Preferences'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/data-contracts.md#ai-tools[2] TS2304: Cannot find name 'model'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/data-contracts.md#data-backed-json-columns[2] TS1146: Declaration expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/data-contracts.md#data-backed-json-columns[3] TS1146: Declaration expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/data-contracts.md#defining-a-contract[2] TS2304: Cannot find name 'Preferences'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/data-contracts.md#defining-a-contract[2] TS2304: Cannot find name 'input'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/data-contracts.md#deriving-the-value-type[1] TS2304: Cannot find name 'Preferences'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/data-contracts.md#deriving-the-value-type[1] TS2304: Cannot find name 'PreferencesList'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#loading-relations[1] TS2304: Cannot find name 'posts'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#loading-relations[2] TS2304: Cannot find name 'users'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#loading-relations[2] TS2304: Cannot find name 'users'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#loading-relations[2] TS2304: Cannot find name 'users'. (3)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#model-level-validation[1] TS2304: Cannot find name 'User'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#model-level-validation[1] TS2304: Cannot find name 'User'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#model-query[1] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#named-scopes[1] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#named-scopes[1] TS2304: Cannot find name 'Post'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#named-scopes[1] TS2345: Argument of type '(q: any, minimum?: number) => any' is not assignable to parameter of type 'ScopeFunction<object>'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#named-scopes[1] TS7006: Parameter 'q' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#named-scopes[1] TS7006: Parameter 'q' implicitly has an 'any' type. (2)",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#named-scopes[2] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#named-scopes[2] TS2304: Cannot find name 'Post'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#query-expressions[1] TS2304: Cannot find name 'repo'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#query-expressions[1] TS2304: Cannot find name 'repo'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#query-expressions[1] TS2304: Cannot find name 'repo'. (3)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#query-expressions[1] TS2304: Cannot find name 'repo'. (4)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#query-expressions[1] TS2448: Block-scoped variable 'qb' used before its declaration.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#query-expressions[2] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#query-expressions[2] TS2304: Cannot find name 'Post'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#query-expressions[2] TS2304: Cannot find name 'searchTerm'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#read-only-sources-and-seeders[1] TS1109: Expression expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#read-only-sources-and-seeders[1] TS1128: Declaration or statement expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#read-only-sources-and-seeders[1] TS1128: Declaration or statement expected. (2)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#read-only-sources-and-seeders[1] TS1128: Declaration or statement expected. (3)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#the-data-source[1] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#the-data-source[1] TS2304: Cannot find name 'User'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#transactions[1] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#transactions[1] TS2304: Cannot find name 'User'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#transactions[1] TS2304: Cannot find name 'dataSource'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/database.md#transactions[1] TS2339: Property 'id' does not exist on type '{ email: string; name: string; }'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/diagnostics-exporters.md#consoleexporter[2] TS2304: Cannot find name 'consoleExporter'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/diagnostics-exporters.md#consoleexporter[2] TS7006: Parameter 'line' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/diagnostics-exporters.md#exportonce[1] TS2322: Type 'string | undefined' is not assignable to type 'string'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/diagnostics-exporters.md#the-exporter-contract[1] TS2305: Module '\"@jsails/diagnostics\"' has no exported member 'DiagnosticsEntry'.",
+      "reason": "The sample imports a name the package does not export.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/editors.md#building-your-own-editor[1] TS2307: Cannot find module 'my-editor/preact' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/editors.md#rendering[1] TS2304: Cannot find name 'post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/editors.md#the-adapter-contract[1] TS2304: Cannot find name 'RichTextDocument'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/editors.md#the-adapter-contract[1] TS2304: Cannot find name 'RichTextDocument'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/editors.md#the-two-layers[1] TS2304: Cannot find name 'EditorJsonValue'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/editors.md#the-two-layers[1] TS2304: Cannot find name 'RichTextDocument'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/editors.md#using-an-adapter[1] TS2741: Property 'list' is missing in type '{ slug: string; label: string; columns: { name: string; label: string; }[]; fields: ({ name: string; label: string; type: \"text\"; } | { name: string; label: string; type: \"richText\"; editor: RichTextEditorAdapter<{ version: 1; blocks: ({ id: string; type: \"paragraph\"; text: string; } | { id: string; type: \"heading\";...' but required in type 'ResourceDefinition'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/editors.md#using-an-adapter[2] TS1005: ';' expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/editors.md#using-an-adapter[2] TS1005: ';' expected. (2)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/editors.md#using-an-adapter[2] TS1005: ';' expected. (3)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/editors.md#using-an-adapter[2] TS1005: ';' expected. (4)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/editors.md#using-an-adapter[3] TS18004: No value exists in scope for the shorthand property 'repository'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/encryption.md#deterministic-mode[1] TS2304: Cannot find name 'User'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/encryption.md#deterministic-mode[1] TS2304: Cannot find name 'User'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/encryption.md#deterministic-mode[1] TS2304: Cannot find name 'input'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/encryption.md#deterministic-mode[2] TS2304: Cannot find name 'User'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/encryption.md#deterministic-mode[2] TS2304: Cannot find name 'User'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/encryption.md#key-rotation[1] TS2304: Cannot find name 'currentKey'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/encryption.md#key-rotation[1] TS2304: Cannot find name 'oldKey'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/encryption.md#the-hook-bridge[1] TS2304: Cannot find name 'User'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/enums.md#predicates-and-scopes[1] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/enums.md#predicates-and-scopes[1] TS2304: Cannot find name 'Post'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/extending.md#the-extension-seam[1] TS7006: Parameter 'app' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/extending.md#the-extension-seam[1] TS7006: Parameter 'c' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/extending.md#the-extension-seam[1] TS7031: Binding element 'configureHttp' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/extending.md#the-extension-seam[1] TS7031: Binding element 'services' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/extending.md#the-extension-seam[1] TS7031: Binding element 'services' implicitly has an 'any' type. (2)",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/flags.md#branch-resolution[1] TS1108: A 'return' statement can only be used within a function body.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/flags.md#branch-resolution[1] TS2304: Cannot find name 'flags'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/flags.md#branch-resolution[1] TS2304: Cannot find name 'session'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/flags.md#database-store[1] TS2307: Cannot find module './entities/user.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/flags.md#through-the-plugin[1] TS18004: No value exists in scope for the shorthand property 'dataSource'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/flags.md#through-the-plugin[1] TS2304: Cannot find name 'createDatabaseFlagStore'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/flags.md#whenscope-scopevalue-active-inactive[1] TS2304: Cannot find name 'computeNewPrice'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/flags.md#whenscope-scopevalue-active-inactive[1] TS2304: Cannot find name 'computeOldPrice'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/forms.md#submitting-from-the-browser[1] TS2304: Cannot find name 'form'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/forms.md#submitting-from-the-browser[1] TS2304: Cannot find name 'form'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/forms.md#submitting-from-the-browser[1] TS2304: Cannot find name 'form'. (3)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/forms.md#submitting-from-the-browser[1] TS2304: Cannot find name 'form'. (4)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/forms.md#submitting-from-the-browser[1] TS2345: Argument of type 'FormData' is not assignable to parameter of type 'string | string[][] | Record<string, string> | URLSearchParams | undefined'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/forms.md#submitting-from-the-browser[1] TS7006: Parameter 'event' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/forms.md#uploads[1] TS1108: A 'return' statement can only be used within a function body.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/forms.md#uploads[1] TS2304: Cannot find name 'args'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/forms.md#uploads[1] TS2304: Cannot find name 'avatar'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/forms.md#uploads[1] TS2304: Cannot find name 'context'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/forms.md#uploads[1] TS2304: Cannot find name 'user'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/getting-started.md#database-config-jsailsdatabasejs[1] TS2307: Cannot find module './models/post.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/getting-started.md#presets-are-meta-modules[1] TS1005: ';' expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/getting-started.md#presets-are-meta-modules[1] TS1005: ';' expected. (2)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/i18n.md#catalogs-the-plugin-and-the-global-i18n[1] TS2304: Cannot find name 'I18n'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/i18n.md#catalogs-the-plugin-and-the-global-i18n[1] TS2304: Cannot find name 'I18n'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/i18n.md#internationalization[1] TS2304: Cannot find name 'messages'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/inertia.md#inertia[1] TS2304: Cannot find name 'carrierKey'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/inertia.md#inertia[1] TS2304: Cannot find name 'createTask'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/inertia.md#testing[1] TS18004: No value exists in scope for the shorthand property 'props'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/inertia.md#testing[1] TS2304: Cannot find name 'inertia'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/introspection.md#runtime-endpoint-get-_jsailsintrospect[1] TS7006: Parameter 'context' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#batching[1] TS18004: No value exists in scope for the shorthand property 'adapter'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#batching[1] TS18004: No value exists in scope for the shorthand property 'registry'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#chaining[1] TS18004: No value exists in scope for the shorthand property 'adapter'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#chaining[1] TS18004: No value exists in scope for the shorthand property 'registry'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#configuring-the-runtime-jsailsruntimejs[2] TS1109: Expression expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#per-job-middleware[1] TS18004: No value exists in scope for the shorthand property 'adapter'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#per-job-middleware[1] TS18004: No value exists in scope for the shorthand property 'registry'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#per-job-middleware[1] TS7006: Parameter 'ctx' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#per-job-middleware[1] TS7006: Parameter 'next' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#running-jobs-without-valkey[1] TS18004: No value exists in scope for the shorthand property 'registry'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#running-jobs-without-valkey[2] TS18004: No value exists in scope for the shorthand property 'registry'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#running-jobs-without-valkey[2] TS18046: 'payload' is of type 'unknown'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#running-jobs-without-valkey[2] TS2304: Cannot find name 'signUp'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#running-jobs-without-valkey[2] TS2304: Cannot find name 'user'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#running-jobs-without-valkey[2] TS2304: Cannot find name 'user'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#scheduling-a-cli-command[1] TS2307: Cannot find module './commands/reports.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#storing-the-history-in-the-database[1] TS2322: Type '(typeof JsailsFailedJob | undefined)[]' is not assignable to type 'MixedList<string | EntitySchema<any> | Function> | undefined'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#storing-the-history-in-the-database[2] TS2307: Cannot find module './jsails.database.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#task-scheduling-and-overlap-control[1] TS18004: No value exists in scope for the shorthand property 'registry'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#task-scheduling-and-overlap-control[2] TS18004: No value exists in scope for the shorthand property 'adapter'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#task-scheduling-and-overlap-control[2] TS18004: No value exists in scope for the shorthand property 'registry'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#task-scheduling-and-overlap-control[2] TS2304: Cannot find name 'MemoryMutexStore'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#task-scheduling-and-overlap-control[2] TS2353: Object literal may only specify known properties, and 'schedules' does not exist in type 'JobsRuntimeOptions'.",
+      "reason": "The sample passes an option the shipped type does not have.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/jobs.md#the-runtime[1] TS2304: Cannot find name 'Project'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/live.md#authorize[1] TS1109: Expression expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/live.md#defining-a-publication[1] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/live.md#defining-a-publication[1] TS2304: Cannot find name 'Post'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/live.md#ordering-via-a-position-column[1] TS1109: Expression expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/live.md#ordering-via-a-position-column[2] TS18046: 'a.position' is of type 'unknown'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/live.md#ordering-via-a-position-column[2] TS18046: 'b.position' is of type 'unknown'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/live.md#resolving-the-user[1] TS18004: No value exists in scope for the shorthand property 'registry'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/live.md#resolving-the-user[1] TS2339: Property 'id' does not exist on type 'string | number | true | JsonValue[] | { [key: string]: JsonValue; }'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/live.md#resolving-the-user[1] TS2339: Property 'id' does not exist on type 'string | number | true | JsonValue[] | { [key: string]: JsonValue; }'. (2)",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#messages[1] TS2304: Cannot find name 'csv'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#queued-delivery[1] TS2304: Cannot find name 'Mail'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#queued-delivery[1] TS2304: Cannot find name 'WelcomeMail'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#queued-delivery[1] TS2304: Cannot find name 'props'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#queued-delivery[1] TS2304: Cannot find name 'user'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#queued-delivery[3] TS2304: Cannot find name 'message'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#templates[2] TS18004: No value exists in scope for the shorthand property 'dashboardUrl'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#templates[2] TS2304: Cannot find name 'Mail'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#templates[2] TS2304: Cannot find name 'WelcomeMail'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#templates[2] TS2304: Cannot find name 'user'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#templates[2] TS2304: Cannot find name 'user'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#the-plugin[1] TS2304: Cannot find name 'defineApp'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mail.md#the-plugin[1] TS2307: Cannot find module './mail/welcome.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mcp.md#access[1] TS2739: Type '{ Arr: Readonly<{ chunk: <T>(items: readonly T[], size: number) => T[][]; clone: <T>(value: T) => T; cloneDeep: <T>(value: T) => T; compact: <T>(items: readonly (\"\" | 0 | false | T | null | undefined)[]) => T[]; compactBlank: <T>(items: readonly T[]) => T[]; ... 27 more ...; wrap: <T>(value: T | ... 2 more ... | und...' is missing the following properties from type 'McpServerDefinition': kind, name, version",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mcp.md#testing-with-connectinmemory[1] TS18004: No value exists in scope for the shorthand property 'authorize'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mcp.md#testing-with-connectinmemory[1] TS2739: Type '{ Arr: Readonly<{ chunk: <T>(items: readonly T[], size: number) => T[][]; clone: <T>(value: T) => T; cloneDeep: <T>(value: T) => T; compact: <T>(items: readonly (\"\" | 0 | false | T | null | undefined)[]) => T[]; compactBlank: <T>(items: readonly T[]) => T[]; ... 27 more ...; wrap: <T>(value: T | ... 2 more ... | und...' is missing the following properties from type 'McpServerDefinition': kind, name, version",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mcp.md#the-client[1] TS2304: Cannot find name 'tokens'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mcp.md#the-server[1] TS2304: Cannot find name 'add'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mcp.md#the-server[1] TS2304: Cannot find name 'page'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mcp.md#the-server[1] TS2304: Cannot find name 'readme'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mcp.md#the-server[1] TS2304: Cannot find name 'review'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/mcp.md#the-server[1] TS2304: Cannot find name 'upgrade'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/migrations.md#data-migrations[1] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/migrations.md#polymorphic-relations[1] TS1238: Unable to resolve signature of class decorator when called as an expression.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/migrations.md#polymorphic-relations[1] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/migrations.md#polymorphic-relations[2] TS2304: Cannot find name 'like'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/migrations.md#polymorphic-relations[2] TS2304: Cannot find name 'post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/migrations.md#tables-another-migrator-owns[2] TS2304: Cannot find name 'readDatabaseEnvironment'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#definemodel-and-the-compiler-pipeline[1] TS2304: Cannot find name 'Author'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#definemodel-and-the-compiler-pipeline[1] TS2307: Cannot find module '../src/models/post.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1003: Identifier expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1003: Identifier expected. (2)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1003: Identifier expected. (3)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1005: ')' expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1005: ':' expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1005: ':' expected. (2)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1068: Unexpected token. A constructor, method, accessor, or property was expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1068: Unexpected token. A constructor, method, accessor, or property was expected. (2)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1128: Declaration or statement expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1128: Declaration or statement expected. (2)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1138: Parameter declaration expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1138: Parameter declaration expected. (2)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1181: Array element destructuring pattern expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#delegate[1] TS1359: Identifier expected. 'true' is a reserved word that cannot be used here.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#models[1] TS2304: Cannot find name 'Author'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#one-to-one[1] TS2449: Class 'User' used before its declaration.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/models.md#one-to-one[2] TS1146: Declaration expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#custom-channels[1] TS2304: Cannot find name 'defineNotification'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#custom-channels[1] TS2304: Cannot find name 'notificationsPlugin'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#custom-channels[1] TS2304: Cannot find name 'smsClient'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#custom-channels[1] TS7031: Binding element 'code' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#custom-channels[1] TS7031: Binding element 'phone' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#defining-a-notification[1] TS2304: Cannot find name 'Invoice'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#defining-a-notification[1] TS2307: Cannot find module '../mail/invoice-paid.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#sending[1] TS18004: No value exists in scope for the shorthand property 'invoice'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#sending[1] TS2304: Cannot find name 'InvoicePaid'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#sending[1] TS2304: Cannot find name 'notificationsToken'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#sending[1] TS2304: Cannot find name 'services'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#sending[1] TS2304: Cannot find name 'user'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#sending[1] TS2304: Cannot find name 'user'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#the-database-inbox[1] TS2304: Cannot find name 'notificationId'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#the-database-inbox[1] TS2304: Cannot find name 'notificationId'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#the-database-inbox[1] TS2304: Cannot find name 'notificationId'. (3)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#the-database-inbox[1] TS2304: Cannot find name 'notificationStoreToken'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#the-database-inbox[1] TS2304: Cannot find name 'services'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#the-database-inbox[1] TS2304: Cannot find name 'user'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#the-plugin[1] TS2304: Cannot find name 'broadcastOptions'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#the-plugin[1] TS2304: Cannot find name 'defineApp'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/notifications.md#the-plugin[1] TS2307: Cannot find module './jsails.database.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/observability.md#diagnostics-recorder[1] TS2554: Expected 1 arguments, but got 2.",
+      "reason": "The sample calls a function with the wrong number of arguments.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/observability.md#exception-watcher[1] TS2304: Cannot find name 'registry'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/observability.md#exception-watcher[1] TS2322: Type 'void' is not assignable to type '() => void'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/observability.md#exception-watcher[1] TS2345: Argument of type '(error: any) => { class: any; }' is not assignable to parameter of type 'CapturedError'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/observability.md#exception-watcher[1] TS7006: Parameter 'error' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/observability.md#request-errors[1] TS2304: Cannot find name 'myLogger'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#core-primitives[3] TS2304: Cannot find name 'Page'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#core-primitives[3] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#core-primitives[3] TS2304: Cannot find name 'Post'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#core-primitives[3] TS2304: Cannot find name 'Post'. (3)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#core-primitives[3] TS2304: Cannot find name 'Post'. (4)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#core-primitives[3] TS2304: Cannot find name 'params'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#core-primitives[4] TS2304: Cannot find name 'allPosts'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#load-more[1] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#orm-batching[1] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#orm-batching[1] TS2304: Cannot find name 'Post'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#resource-handlers[1] TS18004: No value exists in scope for the shorthand property 'authorize'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#resource-handlers[1] TS2304: Cannot find name 'serializer'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#resource-handlers[1] TS2304: Cannot find name 'store'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#where-the-handlers-run[1] TS1005: ';' expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#where-the-handlers-run[1] TS1109: Expression expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#where-the-handlers-run[2] TS2304: Cannot find name 'Post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#where-the-handlers-run[2] TS2304: Cannot find name 'Post'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/pagination.md#where-the-handlers-run[2] TS2322: Type 'Ref<HTMLElement>' is not assignable to type 'Ref<HTMLDivElement> | undefined'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/plugins.md#declaring-plugins[1] TS2304: Cannot find name 'pluginState'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/plugins.md#managed-state[1] TS2307: Cannot find module './entities/user.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/plugins.md#managed-state[2] TS2307: Cannot find module './jsails.database.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/plugins.md#plugin-owned-schema[1] TS2307: Cannot find module './tenant.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/plugins.md#two-source-enablement[1] TS1109: Expression expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/routing.md#api-modules[1] TS2304: Cannot find name 'RequestContext'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/routing.md#nested-layouts[1] TS2322: Type 'unknown' is not assignable to type 'ComponentChildren'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/routing.md#page-modules[1] TS2304: Cannot find name 'listPublishedPosts'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/routing.md#per-route-middleware[1] TS2304: Cannot find name 'RequestContext'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/routing.md#per-route-middleware[1] TS7006: Parameter 'c' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/routing.md#per-route-middleware[1] TS7006: Parameter 'next' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/routing.md#progressive-streaming[1] TS2304: Cannot find name 'fetchItems'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/routing.md#request-body-limits[2] TS2304: Cannot find name 'configureHttp'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/routing.md#request-body-limits[2] TS2304: Cannot find name 'handler'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/routing.md#request-body-limits[2] TS7006: Parameter 'app' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/routing.md#streaming-rendering[2] TS2307: Cannot find module '../../components/comments.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/routing.md#streaming-rendering[2] TS7031: Binding element 'post' implicitly has an 'any' type.",
+      "reason": "The sample has an implicit any under the starter's strict compiler options.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/search.md#jamal-services[1] TS1005: ';' expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/search.md#jamal-services[1] TS1005: ';' expected. (2)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/search.md#jamal-services[1] TS1128: Declaration or statement expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/search.md#jamal-services[1] TS1128: Declaration or statement expected. (2)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/search.md#jamal-services[1] TS1128: Declaration or statement expected. (3)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/search.md#jamal-services[1] TS1128: Declaration or statement expected. (4)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/search.md#jamal-services[1] TS1128: Declaration or statement expected. (5)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/search.md#jamal-services[1] TS1128: Declaration or statement expected. (6)",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/search.md#selecting-an-engine[1] TS2304: Cannot find name 'blogRepository'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/search.md#selecting-an-engine[1] TS2322: Type 'string' is not assignable to type 'BlogSearchDriver'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/security.md#csrf-tokens[2] TS2531: Object is possibly 'null'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/security.md#csrf-tokens[2] TS2769: No overload matches this call.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/security.md#sessions[1] TS2304: Cannot find name 'previousId'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/security.md#sessions[1] TS2304: Cannot find name 'user'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/security.md#signed-urls[2] TS2304: Cannot find name 'signer'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/seo.md#json-ld[1] TS2353: Object literal may only specify known properties, and ''@context'' does not exist in type 'ArticleLeaf | readonly Thing[]'.",
+      "reason": "The sample passes an option the shipped type does not have.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/server-components.md#file-uploads[1] TS2739: Type '{ name: string; uploads: { maxBytes: number; contentTypes: string[]; }; }' is missing the following properties from type 'ServerComponentDefinition<JsonObject>': stateSchema, initialState, authorize, render",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/server-components.md#form-objects[1] TS2353: Object literal may only specify known properties, and 'extra' does not exist in type 'Partial<{ email: string; }>'.",
+      "reason": "The sample passes an option the shipped type does not have.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/server-components.md#nested-components[1] TS1005: ';' expected.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/server-components.md#nested-components[1] TS1434: Unexpected keyword or identifier.",
+      "reason": "The sample is not valid TypeScript on its own: an elided or partial snippet.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/server-components.md#registering-with-servercomponentsplugin[1] TS2307: Cannot find module './dist/components/task-list.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/server-components.md#rendering-from-a-page[1] TS2322: Type 'unknown' is not assignable to type 'ComponentChildren'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#domain-services[2] TS2304: Cannot find name 'sendInvoice'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#facades[1] TS18004: No value exists in scope for the shorthand property 'Logger'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#facades[1] TS2304: Cannot find name 'Encrypter'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#facades[2] TS18004: No value exists in scope for the shorthand property 'req'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#facades[2] TS2304: Cannot find name 'Logger'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#facades[2] TS2339: Property 'get' does not exist on type '{ new (): Cache; prototype: Cache; }'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#facades[3] TS18004: No value exists in scope for the shorthand property 'sendEmail'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#facades[3] TS2304: Cannot find name 'cachePlugin'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#filesystem[1] TS2304: Cannot find name 'files'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#mail[1] TS2304: Cannot find name 'InMemoryMailTransport'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#mail[1] TS2304: Cannot find name 'mailPlugin'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#media[1] TS2304: Cannot find name 'createDiskFromEnv'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#media[1] TS2304: Cannot find name 'filesystemPlugin'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#multi-method-services[1] TS2304: Cannot find name 'UserRepository'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#multi-method-services[1] TS2304: Cannot find name 'userRepository'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#notifications[1] TS2304: Cannot find name 'InMemoryNotificationChannel'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#notifications[1] TS2304: Cannot find name 'notificationsPlugin'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#validation[1] TS2304: Cannot find name 'schema'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/services.md#validation[1] TS2304: Cannot find name 'values'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/support.md#num-numbers[1] TS2339: Property 'multiply' does not exist on type 'Dinero<number>'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/symbols.md#installframeworksymbols[1] TS2304: Cannot find name 'rootDir'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/symbols.md#symbolsinstallerror[1] TS2304: Cannot find name 'installProjectSymbols'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/symbols.md#symbolsinstallerror[1] TS2304: Cannot find name 'rootDir'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#access-enforcement[1] TS2304: Cannot find name 'context'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#access-enforcement[1] TS2304: Cannot find name 'request'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#access-enforcement[1] TS2304: Cannot find name 'services'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#access-enforcement[1] TS2304: Cannot find name 'tenancyToken'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#invitations[1] TS18004: No value exists in scope for the shorthand property 'expiresAt'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#invitations[1] TS2304: Cannot find name 'inviter'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#invitations[1] TS2304: Cannot find name 'tenant'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#invitations[1] TS2304: Cannot find name 'tokenFromLink'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#opting-out[1] TS2304: Cannot find name 'Project'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#opting-out[1] TS2304: Cannot find name 'Project'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#settings-and-limits[1] TS2304: Cannot find name 'memberCount'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#settings-and-limits[1] TS2304: Cannot find name 'projectCount'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#the-ambient-tenant[1] TS2304: Cannot find name 'Project'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/tenancy.md#the-ambient-tenant[1] TS2304: Cannot find name 'job'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/testing.md#direct-handler-and-server-component-tests[1] TS2307: Cannot find module '../api/health.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/testing.md#direct-handler-and-server-component-tests[1] TS2307: Cannot find module '../components/task-list.js' or its corresponding type declarations.",
+      "reason": "The sample imports a module that does not exist outside an app.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/testing.md#the-createtestapp-surface[1] TS2304: Cannot find name 'createTestApp'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/theming.md#declarative-templates-and-previews[1] TS2304: Cannot find name 'post'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/theming.md#declarative-templates-and-previews[1] TS2304: Cannot find name 'renderRichText'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/theming.md#emitting-css[1] TS18004: No value exists in scope for the shorthand property 'active'. Either declare one or provide an initializer.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/theming.md#emitting-css[1] TS2304: Cannot find name 'appTokens'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/theming.md#emitting-css[1] TS2304: Cannot find name 'contributions'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/theming.md#resolving-themes[1] TS2741: Property 'source' is missing in type '{ name: string; tokens: { '--jsails-accent': string; }; }' but required in type 'ThemeContribution'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/theming.md#resolving-themes[1] TS2741: Property 'source' is missing in type '{ tokens: { '--jsails-radius': string; }; }' but required in type 'ThemeContribution'.",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/webhooks.md#sending-a-webhook[1] TS2304: Cannot find name 'rawBody'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/webhooks.md#sending-a-webhook[1] TS2304: Cannot find name 'rawBody'. (2)",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/webhooks.md#sending-a-webhook[1] TS2304: Cannot find name 'secret'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/webhooks.md#the-plugin[1] TS2304: Cannot find name 'cachePlugin'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/webhooks.md#the-plugin[1] TS2304: Cannot find name 'defineApp'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/webhooks.md#the-plugin[1] TS2304: Cannot find name 'handleStripeEvent'.",
+      "reason": "The sample uses a name it neither imports nor declares: it assumes an app around it (fragment) or a global that does not exist.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "website/content/docs/webhooks.md#the-plugin[1] TS2739: Type 'ServiceToken<CacheStore>' is missing the following properties from type 'CacheStore': get, set, delete, remember, close",
+      "reason": "The sample does not match the shipped types.",
+      "fixedBy": "KRN-24"
+    }
+  ]
+}

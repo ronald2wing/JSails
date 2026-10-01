@@ -1,0 +1,178 @@
+{
+  "node": "v26.13.1",
+  "band": 0.15,
+  "scenarios": {
+    "api-small-json/fetch": {
+      "exact": {
+        "fs": 0,
+        "zlib": 1,
+        "responses": 4,
+        "readableStreams": 1,
+        "bodyStreams": 3,
+        "alsRuns": 2,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 15
+      },
+      "banded": {
+        "promises": 135,
+        "allocBytes": 327852
+      }
+    },
+    "api-small-json/listener": {
+      "exact": {
+        "fs": 0,
+        "zlib": 1,
+        "responses": 8,
+        "readableStreams": 1,
+        "bodyStreams": 4,
+        "alsRuns": 2,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 15
+      },
+      "banded": {
+        "promises": 159,
+        "allocBytes": 429148
+      }
+    },
+    "assemble-200-routes": {
+      "exact": {
+        "assembly.fs": 26,
+        "assembly.modules": 622,
+        "firstRequest.fs": 0,
+        "firstRequest.modules": 0,
+        "firstRequest.zlib": 0,
+        "firstRequest.hashes": 0
+      }
+    },
+    "assemble-5-routes": {
+      "exact": {
+        "assembly.fs": 26,
+        "assembly.modules": 427,
+        "firstRequest.fs": 0,
+        "firstRequest.modules": 0,
+        "firstRequest.zlib": 0,
+        "firstRequest.hashes": 0
+      }
+    },
+    "not-found-json/fetch": {
+      "exact": {
+        "fs": 1,
+        "zlib": 1,
+        "responses": 4,
+        "readableStreams": 1,
+        "bodyStreams": 3,
+        "alsRuns": 2,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 63
+      },
+      "banded": {
+        "promises": 132,
+        "allocBytes": 320082
+      }
+    },
+    "not-found-json/listener": {
+      "exact": {
+        "fs": 1,
+        "zlib": 1,
+        "responses": 8,
+        "readableStreams": 1,
+        "bodyStreams": 4,
+        "alsRuns": 2,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 63
+      },
+      "banded": {
+        "promises": 156,
+        "allocBytes": 436904
+      }
+    },
+    "page-small/fetch": {
+      "exact": {
+        "fs": 0,
+        "zlib": 1,
+        "responses": 4,
+        "readableStreams": 1,
+        "bodyStreams": 3,
+        "alsRuns": 2,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 65
+      },
+      "banded": {
+        "promises": 136,
+        "allocBytes": 333027
+      }
+    },
+    "page-small/listener": {
+      "exact": {
+        "fs": 0,
+        "zlib": 1,
+        "responses": 8,
+        "readableStreams": 1,
+        "bodyStreams": 4,
+        "alsRuns": 2,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 65
+      },
+      "banded": {
+        "promises": 160,
+        "allocBytes": 436186
+      }
+    },
+    "static-small/fetch": {
+      "exact": {
+        "fs": 10,
+        "zlib": 0,
+        "responses": 1,
+        "readableStreams": 0,
+        "bodyStreams": 1,
+        "alsRuns": 2,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 14
+      },
+      "banded": {
+        "promises": 138,
+        "allocBytes": 378723
+      }
+    },
+    "static-small/listener": {
+      "exact": {
+        "fs": 10,
+        "zlib": 0,
+        "responses": 2,
+        "readableStreams": 0,
+        "bodyStreams": 1,
+        "alsRuns": 2,
+        "modules": 0,
+        "hashes": 0,
+        "renders": 0,
+        "stores": 0,
+        "bytesOut": 14
+      },
+      "banded": {
+        "promises": 161,
+        "allocBytes": 424424
+      }
+    }
+  }
+}

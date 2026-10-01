@@ -1,0 +1,649 @@
+{
+  "description": "Jobs conformance (JOB-01): scenarios of @jsails/jobs/testing that today's jsails/jobs runtime fails, plus the shipped jsails work wiring and the two-process memory-adapter split. Entries on legacy-*.test.ts record defects of the old runtime: fixedBy names the package whose new runtime passes the scenario on its own driver; the legacy driver and its entries are deleted in JOB-08 at the latest. The same scenarios, less the virtual-time schedules group, fail on the BullMQ adapter against a live Valkey: legacy-valkey.test.ts runs only with JSAILS_TEST_VALKEY=1 and VALKEY_URL, so its entries are scoped to runs that declare the valkey service (the jobs stage of verify:integrations). legacy-memory-explicit-overlap.test.ts runs the overlap scenarios with overlap registered by hand after the chain middleware, where the runtime installs no automatic overlap. packages/jobs/test/memory/conformance.test.ts runs the same scenarios on the new @jsails/jobs code (defineJob, the producer, the envelope and memoryJobs) with a stand-in processor; its entries name the work package that supplies the missing piece: the worker runtime with bounded abort (JOB-03) or flows, failed-job operations, overlap leases and schedules (JOB-04).",
+  "kind": "tests",
+  "entries": [
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "keys",
+        "a key still deduplicates after the first job was evicted"
+      ],
+      "failure": {
+        "message": "ran again after the first job completed and was evicted",
+        "name": "AssertionError"
+      },
+      "reason": "A key is a jobId, and both adapters free a jobId once the job completes (the memory adapter at once, BullMQ at retention eviction), so the key has no window.",
+      "fixedBy": "JOB-02"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "envelope",
+        "a retried attempt sees the stored payload, not the previous attempt mutation"
+      ],
+      "failure": {
+        "message": "each attempt should start from the stored payload; the handler counted \\[2,2\\]",
+        "name": "AssertionError"
+      },
+      "reason": "The memory adapter hands every attempt the same payload object it was given at dispatch, so a handler that mutates its payload changes what the retry sees; a serializing transport stores a copy.",
+      "fixedBy": "JOB-02"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "outcomes",
+        "an in-flight handler can dispatch while its worker drains"
+      ],
+      "failure": {
+        "message": "an in-flight handler could not dispatch while its worker drained",
+        "name": "AssertionError"
+      },
+      "reason": "close() marks the whole runtime closed before draining, so ctx.dispatch from an in-flight handler throws JobsRuntimeClosedError and the handler fails.",
+      "fixedBy": "JOB-03"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "outcomes",
+        "an overlap skip is reported as skipped, not completed"
+      ],
+      "failure": {
+        "message": "an overlap skip was not reported as skipped",
+        "name": "AssertionError"
+      },
+      "reason": "The overlap middleware returns without calling the handler; no event is emitted and the adapter counts the attempt as completed.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "abort",
+        "abort is bounded with a middleware that never returns"
+      ],
+      "failure": {
+        "message": "abort did not resolve within 5000 ms with a middleware that never returns",
+        "name": "Error"
+      },
+      "reason": "Only the handler is raced against the abort signal; middleware runs outside the race, and the memory adapter's force close returns the graceful close promise, so shutdown waits for the middleware forever.",
+      "fixedBy": "JOB-03"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "abort",
+        "a job never runs alongside its own attempt abandoned by abort"
+      ],
+      "failure": {
+        "message": "a job ran alongside its own abandoned attempt \\(2 runs in flight\\)",
+        "name": "AssertionError"
+      },
+      "reason": "An aborted attempt is requeued as soon as the race rejects while its handler keeps running, so the next worker runs the job concurrently with it (no grace or poisoned-worker rule).",
+      "fixedBy": "JOB-03"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "flows",
+        "a batch with an invalid item enqueues nothing"
+      ],
+      "failure": {
+        "message": "a batch with an invalid item enqueued 3 of its items",
+        "name": "AssertionError"
+      },
+      "reason": "createJobBatch registers the batch and dispatches items concurrently; payloads are validated per dispatch, so valid items are enqueued before the invalid one throws, and the batch can never settle.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "flows",
+        "a redelivered chain step does not enqueue the next step twice"
+      ],
+      "failure": {
+        "message": "redelivering chain step 1 ran step 2 2 times",
+        "name": "AssertionError"
+      },
+      "reason": "chainMiddleware dispatches the next step with no key after every successful run, so a redelivered step forks the chain.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "flows",
+        "batch callbacks fire after the producer restarts"
+      ],
+      "failure": {
+        "message": "batch callbacks after a producer restart fired \\{\"then\":0,\"catch\":0,\"finally\":0\\}",
+        "name": "AssertionError"
+      },
+      "reason": "Batch callbacks are closures held in the registering process (SharedBatchCoordinator keeps only progress in the store), so they are lost when that process restarts.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "flows",
+        "batch status counts children and reports settlement"
+      ],
+      "failure": {
+        "message": "the implementation reports no batch status",
+        "name": "AssertionError"
+      },
+      "reason": "The legacy batch API has no status read; progress lives in coordinator-private keys.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "failed jobs",
+        "retrying a failed chain step continues the chain"
+      ],
+      "failure": {
+        "message": "retrying a failed chain step did not continue the chain \\(0 runs of the next step\\)",
+        "name": "AssertionError"
+      },
+      "reason": "queue:retry replays only allowlisted options and drops the chain descriptor, so a retried step cannot rejoin its chain.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "schedules",
+        "a 30-day interval fires once in its first 30 days"
+      ],
+      "failure": {
+        "message": "cannot hold a schedule interval longer than 2147483647 ms",
+        "name": "JobsRuntimeError"
+      },
+      "reason": "The memory adapter refuses an interval above the Node timer limit (the M0 guard against the 1 ms clamp) instead of holding it with a long timer. setLongInterval exists since JOB-02; the new memory driver runs schedules on it in JOB-04.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory",
+        "skew",
+        "a job unknown to a worker is released, then run by a worker that knows it"
+      ],
+      "failure": {
+        "message": "a job unknown to the first worker was not left for a worker that knows it",
+        "name": "AssertionError"
+      },
+      "reason": "An unknown job name fails terminally (JobNotRegisteredError marked non-retryable) instead of being released, so a worker of an older release burns jobs of a newer one.",
+      "fixedBy": "JOB-03"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory-explicit-overlap.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory-explicit-overlap",
+        "outcomes",
+        "an overlap skip is reported as skipped, not completed"
+      ],
+      "failure": {
+        "message": "an overlap skip was not reported as skipped",
+        "name": "AssertionError"
+      },
+      "reason": "With overlap registered by hand the middleware still returns without calling the handler; no event is emitted and the adapter counts the attempt as completed.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-memory-explicit-overlap.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-memory-explicit-overlap",
+        "outcomes",
+        "an overlap skip does not advance a chain"
+      ],
+      "failure": {
+        "message": "an overlap-skipped chain step advanced the chain",
+        "name": "AssertionError"
+      },
+      "reason": "With the documented per-job stack [chainMiddleware, batch, createOverlapMiddleware(mutex)] the runtime adds no automatic overlap, so overlap runs inside chainMiddleware; it skips without running the handler, next() resolves, and chainMiddleware dispatches the next step.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-valkey.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-valkey",
+        "keys",
+        "a key still deduplicates after the first job was evicted"
+      ],
+      "failure": {
+        "message": "ran again after the first job completed and was evicted",
+        "name": "AssertionError"
+      },
+      "reason": "A key is a jobId, and BullMQ frees a jobId once the completed job is evicted (removeOnComplete), so the key has no window. The new memory driver holds the window (JOB-02); the Valkey transport maps keys to a deduplication ttl in JOB-05.",
+      "fixedBy": "JOB-05",
+      "services": ["valkey"]
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-valkey.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-valkey",
+        "outcomes",
+        "an in-flight handler can dispatch while its worker drains"
+      ],
+      "failure": {
+        "message": "an in-flight handler could not dispatch while its worker drained",
+        "name": "AssertionError"
+      },
+      "reason": "close() marks the whole runtime closed before draining, so ctx.dispatch from an in-flight handler throws JobsRuntimeClosedError and the handler fails.",
+      "fixedBy": "JOB-03",
+      "services": ["valkey"]
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-valkey.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-valkey",
+        "outcomes",
+        "an overlap skip is reported as skipped, not completed"
+      ],
+      "failure": {
+        "message": "an overlap skip was not reported as skipped",
+        "name": "AssertionError"
+      },
+      "reason": "The overlap middleware returns without calling the handler; no event is emitted and the adapter counts the attempt as completed.",
+      "fixedBy": "JOB-04",
+      "services": ["valkey"]
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-valkey.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-valkey",
+        "abort",
+        "abort is bounded with a middleware that never returns"
+      ],
+      "failure": {
+        "message": "abort did not resolve within 5000 ms with a middleware that never returns",
+        "name": "Error"
+      },
+      "reason": "Only the handler is raced against the abort signal; middleware runs outside the race, so shutdown waits for a middleware that never returns.",
+      "fixedBy": "JOB-03",
+      "services": ["valkey"]
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-valkey.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-valkey",
+        "abort",
+        "a job never runs alongside its own attempt abandoned by abort"
+      ],
+      "failure": {
+        "message": "a job ran alongside its own abandoned attempt \\(2 runs in flight\\)",
+        "name": "AssertionError"
+      },
+      "reason": "An aborted attempt is requeued as soon as the race rejects while its handler keeps running, so the next worker runs the job concurrently with it (no grace or poisoned-worker rule).",
+      "fixedBy": "JOB-03",
+      "services": ["valkey"]
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-valkey.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-valkey",
+        "flows",
+        "a batch with an invalid item enqueues nothing"
+      ],
+      "failure": {
+        "message": "a batch with an invalid item enqueued 3 of its items",
+        "name": "AssertionError"
+      },
+      "reason": "createJobBatch registers the batch and dispatches items concurrently; payloads are validated per dispatch, so valid items are enqueued before the invalid one throws, and the batch can never settle.",
+      "fixedBy": "JOB-04",
+      "services": ["valkey"]
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-valkey.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-valkey",
+        "flows",
+        "a redelivered chain step does not enqueue the next step twice"
+      ],
+      "failure": {
+        "message": "redelivering chain step 1 ran step 2 2 times",
+        "name": "AssertionError"
+      },
+      "reason": "chainMiddleware dispatches the next step with no key after every successful run, so a redelivered step forks the chain.",
+      "fixedBy": "JOB-04",
+      "services": ["valkey"]
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-valkey.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-valkey",
+        "flows",
+        "batch callbacks fire after the producer restarts"
+      ],
+      "failure": {
+        "message": "batch callbacks after a producer restart fired \\{\"then\":0,\"catch\":0,\"finally\":0\\}",
+        "name": "AssertionError"
+      },
+      "reason": "Batch callbacks are closures held in the registering process (SharedBatchCoordinator keeps only progress in the store), so they are lost when that process restarts.",
+      "fixedBy": "JOB-04",
+      "services": ["valkey"]
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-valkey.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-valkey",
+        "flows",
+        "batch status counts children and reports settlement"
+      ],
+      "failure": {
+        "message": "the implementation reports no batch status",
+        "name": "AssertionError"
+      },
+      "reason": "The legacy batch API has no status read; progress lives in coordinator-private keys.",
+      "fixedBy": "JOB-04",
+      "services": ["valkey"]
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-valkey.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-valkey",
+        "failed jobs",
+        "retrying a failed chain step continues the chain"
+      ],
+      "failure": {
+        "message": "retrying a failed chain step did not continue the chain \\(0 runs of the next step\\)",
+        "name": "AssertionError"
+      },
+      "reason": "queue:retry replays only allowlisted options and drops the chain descriptor, so a retried step cannot rejoin its chain.",
+      "fixedBy": "JOB-04",
+      "services": ["valkey"]
+    },
+    {
+      "file": "packages/jobs/test/conformance/legacy-valkey.test.ts",
+      "test": [
+        "jobs adapter conformance: legacy-valkey",
+        "skew",
+        "a job unknown to a worker is released, then run by a worker that knows it"
+      ],
+      "failure": {
+        "message": "a job unknown to the first worker was not left for a worker that knows it",
+        "name": "AssertionError"
+      },
+      "reason": "An unknown job name fails terminally (JobNotRegisteredError marked non-retryable) instead of being released, so a worker of an older release burns jobs of a newer one.",
+      "fixedBy": "JOB-03",
+      "services": ["valkey"]
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "outcomes",
+        "an overlap skip is reported as skipped, not completed"
+      ],
+      "failure": {
+        "message": "the overlapping run was not skipped",
+        "name": "AssertionError"
+      },
+      "reason": "The adapter has no lease capability yet, so the stand-in processor runs an overlapping job instead of skipping it.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "outcomes",
+        "an overlap skip does not advance a chain"
+      ],
+      "failure": {
+        "message": "the memory driver cannot run a chain until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "Chains and overlap leases are not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "abort",
+        "abort is bounded with a handler that ignores its signal"
+      ],
+      "failure": {
+        "message": "abort did not resolve within 5000 ms with a handler that ignores its signal",
+        "name": "Error"
+      },
+      "reason": "The stand-in processor does not bound an attempt, and the adapter holds a job until its processor settles, so abort waits for a handler that ignores its signal.",
+      "fixedBy": "JOB-03"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "abort",
+        "abort is bounded with a middleware that never returns"
+      ],
+      "failure": {
+        "message": "abort did not resolve within 5000 ms with a middleware that never returns",
+        "name": "Error"
+      },
+      "reason": "The stand-in processor does not bound an attempt, so abort waits for a middleware that never returns.",
+      "fixedBy": "JOB-03"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "abort",
+        "a job never runs alongside its own attempt abandoned by abort"
+      ],
+      "failure": {
+        "message": "abort did not resolve",
+        "name": "Error"
+      },
+      "reason": "Without the processor's grace and poisoned-worker rule, abort waits for the stuck handler instead of resolving; the adapter keeps the job held, so it never runs twice at once.",
+      "fixedBy": "JOB-03"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "flows",
+        "a batch whose children all succeed fires then and finally, not catch"
+      ],
+      "failure": {
+        "message": "the memory driver cannot run a batch until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "Batches (the flow transport and the finalizer job) are not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "flows",
+        "a batch with a failed child fires catch and finally, not then"
+      ],
+      "failure": {
+        "message": "the memory driver cannot run a batch until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "Batches (the flow transport and the finalizer job) are not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "flows",
+        "finally fires exactly once when batch children are redelivered"
+      ],
+      "failure": {
+        "message": "the memory driver cannot run a batch until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "Batches (the flow transport and the finalizer job) are not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "flows",
+        "a redelivered chain step does not enqueue the next step twice"
+      ],
+      "failure": {
+        "message": "the memory driver cannot run a chain until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "Chains are not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "flows",
+        "batch callbacks fire after the producer restarts"
+      ],
+      "failure": {
+        "message": "the memory driver cannot run a batch until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "Batches (the flow transport and the finalizer job) are not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "flows",
+        "batch status counts children and reports settlement"
+      ],
+      "failure": {
+        "message": "the memory driver cannot run a batch until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "Batches (the flow transport and the finalizer job) are not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "failed jobs",
+        "50 concurrent retries of one failed job run it once"
+      ],
+      "failure": {
+        "message": "the memory driver cannot retry a failed job until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "The failed-jobs capability (atomic retry) is not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "failed jobs",
+        "a retried job keeps its payload and tags"
+      ],
+      "failure": {
+        "message": "the memory driver cannot retry a failed job until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "The failed-jobs capability (atomic retry) is not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "failed jobs",
+        "retrying a failed chain step continues the chain"
+      ],
+      "failure": {
+        "message": "the memory driver cannot run a chain until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "Chains and the failed-jobs capability are not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "failed jobs",
+        "a successful retry removes the job from the failed set"
+      ],
+      "failure": {
+        "message": "the memory driver cannot retry a failed job until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "The failed-jobs capability (atomic retry) is not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "schedules",
+        "a 30-day interval fires once in its first 30 days"
+      ],
+      "failure": {
+        "message": "the memory driver cannot reconcile schedules until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "Schedules (reconcile and the memory ticker) are not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/memory/conformance.test.ts",
+      "test": [
+        "jobs adapter conformance: memory",
+        "schedules",
+        "a paused schedule stays paused across reconcile"
+      ],
+      "failure": {
+        "message": "the memory driver cannot reconcile schedules until JOB-04 lands",
+        "name": "NotYetSupported"
+      },
+      "reason": "Schedules (reconcile and the memory ticker) are not implemented yet.",
+      "fixedBy": "JOB-04"
+    },
+    {
+      "file": "packages/jobs/test/conformance/two-process.test.ts",
+      "test": ["a job dispatched in another process than the worker is run or refused"],
+      "failure": {
+        "message": "neither run nor refused",
+        "name": "AssertionError"
+      },
+      "reason": "The memory adapter is process-local and declares no reach, so splitting producer and worker over it silently loses jobs instead of being refused with adapter_not_shared.",
+      "fixedBy": "JOB-06"
+    },
+    {
+      "file": "core/test/jobs/conformance/work-wiring.test.ts",
+      "test": ["jsails work wiring", "a chain advances on a worker started by jsails work"],
+      "failure": {
+        "message": "jsails work ran \\[\"first\"\\] of a two-step chain",
+        "name": "AssertionError"
+      },
+      "reason": "jobsRuntimeOptions passes no middleware and the runtime config has no field for it, so chainMiddleware never runs under jsails work; only a hand-built runtime can chain. The test is deleted with the old work command in JOB-08.",
+      "fixedBy": "JOB-06"
+    },
+    {
+      "file": "core/test/jobs/conformance/work-wiring.test.ts",
+      "test": ["jsails work wiring", "a batch settles on a worker started by jsails work"],
+      "failure": {
+        "message": "a batch on a jsails work worker settled 0 times",
+        "name": "AssertionError"
+      },
+      "reason": "jsails work registers no batch middleware, so batch children never record progress and callbacks never fire. The test is deleted with the old work command in JOB-08.",
+      "fixedBy": "JOB-06"
+    }
+  ]
+}

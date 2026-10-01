@@ -1,0 +1,26 @@
+{
+  "node": "v26.13.1",
+  "rolldown": "1.2.15",
+  "fixtures": {
+    "island-model": {
+      "initial": 22857,
+      "lazy": 25176
+    },
+    "island": {
+      "initial": 19512,
+      "lazy": 25176
+    },
+    "live-client": {
+      "initial": 35950,
+      "lazy": 25176
+    },
+    "rich-text-island": {
+      "initial": 108352,
+      "lazy": 89747
+    },
+    "support": {
+      "initial": 35780,
+      "lazy": 0
+    }
+  }
+}

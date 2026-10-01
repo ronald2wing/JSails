@@ -1,0 +1,512 @@
+{
+  "description": "Pieces of the 1.0 inclusion criterion (scripts/api-report-criteria.mjs) that published entries and packages miss today, ratcheted by scripts/gates/inclusion-criterion.mjs. KRN-26 closes the four packages owner decision 9 keeps in 1.0 (@jsails/ai, @jsails/inertia, @jsails/mcp, @jsails/tenancy); KRN-24 meets or cuts the rest.",
+  "kind": "gate",
+  "gate": "inclusion-criterion",
+  "entries": [
+    {
+      "id": "@jsails/admin integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/admin versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/admin-plugin-manager guide-sample",
+      "reason": "No docs page has a code sample that imports the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/admin-plugin-manager integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/admin-plugin-manager starter-or-guide",
+      "reason": "Neither a starter nor a docs code sample imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/admin-plugin-manager verify-starter",
+      "reason": "No starter preset or verify:starter stage installs the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/admin-plugin-manager versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/ai verify-starter",
+      "reason": "Ships in 1.0 (owner decision 9) but no verify:starter stage installs it; KRN-26 adds the fixture-app stage.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/ai versioning",
+      "reason": "Ships in 1.0 (owner decision 9). No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/ai/anthropic versioning",
+      "reason": "Ships in 1.0 (owner decision 9). No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/ai/client versioning",
+      "reason": "Ships in 1.0 (owner decision 9). No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/ai/mcp versioning",
+      "reason": "Ships in 1.0 (owner decision 9). No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/ai/openai-compatible versioning",
+      "reason": "Ships in 1.0 (owner decision 9). No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/ai/testing versioning",
+      "reason": "Ships in 1.0 (owner decision 9). No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/auth integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/auth versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/blog integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/blog versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/blog/admin versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/cache integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/cache versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/config integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/config versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/config/admin versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/content integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/content versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/diagnostics integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/diagnostics verify-starter",
+      "reason": "No starter preset or verify:starter stage installs the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/diagnostics versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/editor integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/editor versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/editor/preact versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/editor/server versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/filesystem integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/filesystem versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/flags integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/flags versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/flags/admin versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/inertia integration-test",
+      "reason": "Ships in 1.0 (owner decision 9) but has no integration test (nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, no verify:integrations stage).",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/inertia verify-starter",
+      "reason": "Ships in 1.0 (owner decision 9) but no verify:starter stage installs it; KRN-26 adds the fixture-app stage.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/inertia versioning",
+      "reason": "Ships in 1.0 (owner decision 9). No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/inertia/testing versioning",
+      "reason": "Ships in 1.0 (owner decision 9). No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/jamal integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package (the docker stage only probes the daemon).",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/jamal versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/live integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/live versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/live/client versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/logging integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/logging verify-starter",
+      "reason": "No starter preset or verify:starter stage installs the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/logging versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/mail integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/mail versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/mcp integration-test",
+      "reason": "Ships in 1.0 (owner decision 9) but has no integration test (nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, no verify:integrations stage).",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/mcp verify-starter",
+      "reason": "Ships in 1.0 (owner decision 9) but no verify:starter stage installs it; KRN-26 adds the fixture-app stage.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/mcp versioning",
+      "reason": "Ships in 1.0 (owner decision 9). No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/media guide-sample",
+      "reason": "No docs page has a code sample that imports the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/media integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/media versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/media/admin versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/notifications integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/notifications verify-starter",
+      "reason": "No starter preset or verify:starter stage installs the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/notifications versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/tenancy integration-test",
+      "reason": "Ships in 1.0 (owner decision 9) but has no integration test (nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, no verify:integrations stage).",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/tenancy versioning",
+      "reason": "Ships in 1.0 (owner decision 9). No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-26"
+    },
+    {
+      "id": "@jsails/theme integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/theme versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/webhook integration-test",
+      "reason": "No integration test: nothing under test/integration/, no *.integration.test.ts or *.database.test.ts, and no verify:integrations stage names the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/webhook verify-starter",
+      "reason": "No starter preset or verify:starter stage installs the package.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "@jsails/webhook versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/api versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/app versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/cache versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/client versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/client/model versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/encryption versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/extensions versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/filesystem versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/http versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/i18n versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/i18n/loader versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/i18n/server starter-or-guide",
+      "reason": "Neither a starter nor a docs code sample imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/i18n/server versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/pages versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/plugins versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/render-to-string starter-or-guide",
+      "reason": "Neither a starter nor a docs code sample imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/render-to-string versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/rich-text starter-or-guide",
+      "reason": "Neither a starter nor a docs code sample imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/rich-text versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/routing versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/security versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/semver starter-or-guide",
+      "reason": "Neither a starter nor a docs code sample imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/semver versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/server-components versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/services starter-or-guide",
+      "reason": "Neither a starter nor a docs code sample imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/services versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/support/server versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/testing versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/validation starter-or-guide",
+      "reason": "Neither a starter nor a docs code sample imports this entry.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/validation versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "jsails/zod versioning",
+      "reason": "No owner-approved versioning line: the entry has no \"versioning\" sentence in api/criteria.json.",
+      "fixedBy": "KRN-24"
+    }
+  ]
+}

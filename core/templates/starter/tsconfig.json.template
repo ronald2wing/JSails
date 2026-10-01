@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": ".",
+    "outDir": "dist",
+    "sourceMap": true,
+    "strict": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "jsails",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "include": [
+    ".jsails/project-symbols.app.d.ts",
+    ".jsails/project-symbols.server.d.ts",
+    ".jsails/framework-symbols.d.ts",
+    ".jsails/auto-imports.d.ts",
+    "pages/**/*.ts",
+    "pages/**/*.tsx",
+    "app/**/*.ts",
+    "server/**/*.ts",
+    "services/**/*.ts",
+    "shared/**/*.ts",
+    "ui/**/*.ts",
+    "ui/**/*.tsx"
+  ],
+  "exclude": ["node_modules", "dist", "public", "out"]
+}

@@ -1,0 +1,162 @@
+{
+  "description": "Known authorization and request-security holes (SEC-01): each entry is a known-holes test that asserts the safe behaviour against a real assembled app and fails today. Each reason ends with the finding it records: 'audit <area> #n' is the n-th finding of that area in the rebuild audit, 'critic <theme> missed #n' the n-th missed root cause in that design theme's critique, 'design <theme> RC n' that theme's n-th root cause. The closing package removes its entry with the fix; holes closed before SEC-01 are passing tests in the same files and have no entry.",
+  "kind": "tests",
+  "entries": [
+    {
+      "file": "core/test/security/known-holes.test.tsx",
+      "test": [
+        "known holes: cross-site unsafe requests",
+        "refuses a cross-origin POST to an extension hook route"
+      ],
+      "failure": {
+        "message": "a cross-origin hook-route POST is refused",
+        "name": "AssertionError"
+      },
+      "reason": "Extension hook routes (configureHttp) are outside the filesystem API pipeline, so no Origin check runs on them: a cross-site POST, with or without the visitor's cookie, reaches the handler (200). Finding: design auth-authorization RC 3 (two-tier HTTP: hook routes are raw Hono outside the security pipeline).",
+      "fixedBy": "SEC-05"
+    },
+    {
+      "file": "core/test/security/known-holes.test.tsx",
+      "test": [
+        "known holes: cross-site unsafe requests",
+        "refuses an unsafe request with neither Origin nor Sec-Fetch-Site: same-origin"
+      ],
+      "failure": {
+        "message": "an unsafe request with no Origin or Sec-Fetch-Site",
+        "name": "AssertionError"
+      },
+      "reason": "requestSite (core/src/security/trusted-mutation.ts) answers 'unknown' when Origin, Sec-Fetch-Site and Referer are all absent, and the anonymous path lets 'unknown' through, so a POST with none of them reaches the handler (200). Owner decision 5 and SEC-04 require Sec-Fetch-Site: same-origin when Origin is absent and deny otherwise. Finding: critic auth-authorization missed #2 (anonymous unsafe requests are exempt from cross-site protection).",
+      "fixedBy": "SEC-04"
+    },
+    {
+      "file": "core/test/security/known-holes.test.tsx",
+      "test": [
+        "known holes: the gate runs before the body is read",
+        "reads no body bytes for a request the authorize gate denies"
+      ],
+      "failure": {
+        "message": "body bytes read before the gate denied",
+        "name": "AssertionError"
+      },
+      "reason": "The global body-limit stage (core/src/server/body-limits.ts) runs before authorize and buffers a body without Content-Length (Hono bodyLimit reads it to the cap), so a request the gate denies still costs the server its whole body. REQ-06 deletes that stage (createBodyLimitMiddleware) for a lazy body budget; SEC-04's order test then requires zero bytes before the gate, so if REQ-06 still pulls a chunk the entry passes to SEC-04. Finding: audit core-http #7.",
+      "fixedBy": "REQ-06"
+    },
+    {
+      "file": "core/test/security/known-holes.test.tsx",
+      "test": [
+        "known holes: the gate runs before the body is read",
+        "reads no body bytes for a cross-origin request the origin check refuses"
+      ],
+      "failure": {
+        "message": "body bytes read before the origin check refused",
+        "name": "AssertionError"
+      },
+      "reason": "The global body-limit stage runs before the CSRF/Origin middleware and buffers a body without Content-Length, so a cross-site request is read in full before it is refused. REQ-06 deletes that stage (createBodyLimitMiddleware) for a lazy body budget; SEC-04's order test then requires zero bytes before the gate, so if REQ-06 still pulls a chunk the entry passes to SEC-04. Finding: audit core-http #7.",
+      "fixedBy": "REQ-06"
+    },
+    {
+      "file": "core/test/security/known-holes.test.tsx",
+      "test": [
+        "known holes: a throwing authorize is a reported fault",
+        "reports a throwing resource-handler authorize"
+      ],
+      "failure": {
+        "message": "the resource authorize failure reached onError",
+        "name": "AssertionError"
+      },
+      "reason": "createResourceHandlers (core/src/api/resource.ts assertResourceAuthorized) turns a throwing authorize into a silent 403; the fault never reaches the app's onError. Finding: audit core-http #22.",
+      "fixedBy": "SEC-10"
+    },
+    {
+      "file": "core/test/security/known-holes.test.tsx",
+      "test": [
+        "known holes: a throwing authorize is a reported fault",
+        "reports a throwing server-component authorize"
+      ],
+      "failure": {
+        "message": "the component authorize failure reached onError",
+        "name": "AssertionError"
+      },
+      "reason": "The initial render (core/src/server-components/runtime/mount.ts) asks authorizeAllows (runtime/authorize.ts), which catches a throwing component authorize and returns false, so the mount answers 500 'component access denied' and the fault itself is never reported. CNT-05 owns both files; its deny matrix covers the update, upload and download lanes, and the shared authorizeAllows change flips this mount case with them. Finding: design auth-authorization RC 2 (eleven authorize shapes, no single evaluation point); audit framework-improvements #9.",
+      "fixedBy": "CNT-05"
+    },
+    {
+      "file": "core/test/security/known-holes.test.tsx",
+      "test": [
+        "known holes: a throwing authorize is a reported fault",
+        "reports a throwing readiness authorize"
+      ],
+      "failure": {
+        "message": "the readiness authorize failure reached onError",
+        "name": "AssertionError"
+      },
+      "reason": "mayShowDetails (core/src/server/readiness.ts) swallows a throwing readiness.authorize: the caller sees the aggregate status and the fault is never reported. Finding: design auth-authorization RC 2; audit framework-improvements #9.",
+      "fixedBy": "SEC-11"
+    },
+    {
+      "file": "core/test/security/known-holes.test.tsx",
+      "test": [
+        "known holes: a throwing authorize is a reported fault",
+        "reports a throwing introspection authorize"
+      ],
+      "failure": {
+        "message": "the introspection authorize failure reached onError",
+        "name": "AssertionError"
+      },
+      "reason": "The introspection route (core/src/introspect/route.ts) answers 403 for a throwing authorize without reporting it. Finding: design auth-authorization RC 2; audit framework-improvements #9.",
+      "fixedBy": "SEC-11"
+    },
+    {
+      "file": "packages/admin/test/known-holes.test.ts",
+      "test": [
+        "known holes: the panel gate runs before the body is read",
+        "reads no body bytes for a POST from a session the panel refuses"
+      ],
+      "failure": {
+        "message": "body bytes read before the panel refused the session",
+        "name": "AssertionError"
+      },
+      "reason": "Admin routes check the session before they read the form, but they are hook routes behind core's global body-limit stage, which buffers a body without Content-Length before the panel's gate runs. The stage is the whole cause, so this flips with the core body entries: REQ-06 deletes that stage (createBodyLimitMiddleware) for a lazy body budget; SEC-04's order test then requires zero bytes before the gate, so if REQ-06 still pulls a chunk the entry passes to SEC-04. Finding: audit core-http #7.",
+      "fixedBy": "REQ-06"
+    },
+    {
+      "file": "packages/live/test/known-holes.test.ts",
+      "test": [
+        "known holes: a grant does not outlive a demotion",
+        "refuses a new admin-only subscription on the same socket after a demotion"
+      ],
+      "failure": {
+        "message": "a demoted user opened an admin-only subscription",
+        "name": "AssertionError"
+      },
+      "reason": "The transport decides a subscribe with the user resolved at the handshake (or the last revalidation, every 60 s by default), so a demoted user still opens admin-only subscriptions on the same socket until the next revalidation. Finding: audit pkg-content-io #12 and #30; design auth-authorization RC 6.",
+      "fixedBy": "CNT-11"
+    },
+    {
+      "file": "packages/live/test/known-holes.test.ts",
+      "test": [
+        "known holes: a tenant-scoped publication stays inside its tenant",
+        "delivers a subscriber its own tenant's rows and nothing else"
+      ],
+      "failure": {
+        "message": "the subscription was refused: unsupported_tenant_scope",
+        "name": "AssertionError"
+      },
+      "reason": "Delivery is not tenant-aware (the fan-out key has no tenant), so the service refuses any publication over a tenant-scoped model outright: it fails closed, but a tenant cannot have live data at all. Finding: critic content-realtime-io missed #1 (live has no tenant model).",
+      "fixedBy": "CNT-11"
+    },
+    {
+      "file": "packages/live/test/known-holes.test.ts",
+      "test": [
+        "known holes: a throwing publication authorize is a reported fault",
+        "denies the subscription and reports the failure"
+      ],
+      "failure": {
+        "message": "the authorize failure reached onError",
+        "name": "AssertionError"
+      },
+      "reason": "authorizeRequest (packages/live/src/live-service.ts) catches a throwing publication authorize and answers unauthorized without calling onError. Finding: design auth-authorization RC 2; audit framework-improvements #9.",
+      "fixedBy": "CNT-11"
+    }
+  ]
+}

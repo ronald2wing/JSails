@@ -1,0 +1,16 @@
+node_modules/
+dist/
+storage/
+.env
+.env.*
+!.env.*.example
+config/credentials/*.key
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

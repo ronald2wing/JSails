@@ -1,0 +1,169 @@
+/**
+ * Page and renderer contracts for filesystem pages, layouts, and static site
+ * generation. Server-component authoring contracts live in `server-components/`.
+ */
+
+import type { Readable } from 'node:stream';
+
+import type { RenderChild } from './component.js';
+import type { RequestContext } from './http.js';
+import type { PageMetadata } from '../seo/metadata.js';
+import type { RouteMiddlewareRef } from '../routing/middleware.js';
+import type { RouteManifestEntry } from '../routing/routes.js';
+import type { Awaitable } from './awaitable.js';
+
+/** Props passed to a page's default export. */
+export type PageProps = Record<string, unknown>;
+
+/**
+ * A stream of HTML chunks from a page's streaming export.
+ *
+ * `AsyncIterable<string>` is the friendliest author shape: each yielded chunk
+ * is encoded incrementally by the runtime. `ReadableStream<Uint8Array>` and
+ * Node `Readable` pass through as-is.
+ */
+export type PageStream = AsyncIterable<string> | ReadableStream<Uint8Array> | Readable;
+
+/**
+ * The default export of a page: renders props to a render child.
+ *
+ * May be async: the framework resolves the promise through its async renderer
+ * (`renderToStringAsync`). Preact function components stay synchronous; async
+ * data should be loaded in {@link PageModule.load} and passed in as props.
+ */
+export interface PageComponent<P = PageProps> {
+  (props: P, context?: RequestContext): Awaitable<RenderChild>;
+}
+
+/**
+ * A filesystem-routed page module.
+ *
+ * `default` renders the page; `context` is omitted during static generation.
+ * `load` resolves dynamic props from the request context (async data fetch).
+ * `getStaticPaths` enumerates the params for static generation. `middleware`
+ * is an optional array of handlers run (in order) before `load` during live
+ * serving; a handler may short-circuit with a `Response` (e.g. a redirect) or
+ * await `next()` to proceed. Filename-to-route mapping is owned elsewhere.
+ */
+export interface PageModule<P = PageProps> {
+  default: PageComponent<P>;
+  load?(context: RequestContext): Awaitable<P>;
+  getStaticPaths?(): Awaitable<Array<Record<string, string>>>;
+  middleware?: readonly RouteMiddlewareRef[];
+  /**
+   * Opt-in route data cache TTL in seconds. When set (a positive finite
+   * number) and a cache store is available on the request context, the
+   * page's `load()` result is cached under a key derived from the route
+   * pattern, resolved params, and query string. Absent means `load` runs
+   * fresh on every request.
+   *
+   * Caching is only active when the module also declares `cache: 'public'`.
+   * A page whose props depend on the session must not be shared between
+   * visitors, so sharing is an explicit declaration rather than a default.
+   */
+  revalidate?: number;
+  /**
+   * Declares who may read the cached `load()` result. `'public'` opts into a
+   * single shared cache entry for every visitor; the key omits session
+   * identity. Absent means the page is never cached, even when `revalidate`
+   * is set — a personalized page would otherwise leak one visitor's props to
+   * another. There is no `'private'` mode: a per-session cache key still
+   * serves stale props after a permission change, so personalized pages
+   * should load fresh on every request.
+   */
+  cache?: 'public';
+  /**
+   * Query parameter names that participate in the shared cache key. Absent
+   * means every query parameter does (each distinct query string is its own
+   * entry, up to a per-route budget of live variants; past it a request loads
+   * fresh and nothing is written). A declared list ignores every other
+   * parameter, so `?utm_source=...` links share the entry of the bare page.
+   */
+  cacheQuery?: readonly string[];
+  /**
+   * Opt-in invalidation tags. When combined with `revalidate`, every tag is
+   * recorded against the page's cache key so `revalidateTag(tag)` can purge it
+   * on demand (the Next.js tag-invalidation analog). Absent means the page is
+   * reachable only by `revalidatePath` or TTL expiry.
+   */
+  tags?: readonly string[];
+  /**
+   * Streaming for live serving. `true` or `false` turns streaming rendering of
+   * `default` + `load` on or off for this page (the shell first, each
+   * suspended subtree as it resolves), overriding the app-wide
+   * `createApp({ render: { stream } })` default; `true` together with a public
+   * `cacheControl` is refused when the route is assembled. A function is the
+   * progressive producer: live serving calls `stream(context)` instead of the
+   * string renderer, and it wins over both the boolean form and the app-wide
+   * default. Static export (`jsails build`) ignores `stream` and renders
+   * `default` + `load` as usual.
+   */
+  stream?: boolean | ((context: RequestContext) => Awaitable<PageStream>);
+  /**
+   * Reserved SEO export. A static {@link PageMetadata} object, or a function
+   * resolving one from the request context. When both `metadata` and
+   * `generateMetadata` are present, `generateMetadata` wins.
+   */
+  metadata?: PageMetadata | ((context: RequestContext) => Awaitable<PageMetadata>);
+  /**
+   * Reserved SEO export. Resolves the page's {@link PageMetadata} from the
+   * request context; takes precedence over a static `metadata` object.
+   */
+  generateMetadata?(context: RequestContext): Awaitable<PageMetadata>;
+}
+
+/**
+ * Props passed to a layout's default export: `children` plus any page props.
+ *
+ * Non-generic — page props flow through as `Record<string, unknown>`.
+ * A layout that needs narrower typing casts its props at the component level.
+ */
+export interface LayoutProps {
+  readonly children: RenderChild;
+  readonly [key: string]: unknown;
+}
+
+/**
+ * A compiled layout module.
+ *
+ * `default` wraps its `children` (the inner rendered output) plus any page
+ * props the layout consumes. The `context` parameter is omitted during static
+ * generation, like {@link PageComponent}. Unlike {@link PageModule}, a layout
+ * module carries no `load`, `getStaticPaths`, or `middleware` surface.
+ */
+export interface LayoutModule {
+  readonly default: (props: LayoutProps, context?: RequestContext) => Awaitable<RenderChild>;
+}
+
+/** Options controlling a single page render, shared by every renderer. */
+export interface PageRenderOptions {
+  /**
+   * Reject a default component annotated `SERVER_ONLY` instead of rendering it
+   * to a static file. Nested annotations are not inspected.
+   */
+  readonly staticMode?: boolean;
+  /**
+   * Receives the page metadata the renderer resolved for this render. The
+   * static exporter uses it to build the sitemap without calling a page's
+   * `generateMetadata` a second time; a renderer that does not call it is
+   * still valid, and the exporter then resolves the metadata itself.
+   */
+  readonly onMetadata?: (metadata: PageMetadata) => void;
+}
+
+/**
+ * Adapter seam for rendering one page route.
+ *
+ * A renderer receives the manifest entry, the request context, and render
+ * options, and returns the complete HTML document as a string (or a promise of
+ * one). The returned string is trusted producer output: JSails never sanitizes
+ * it. The built-in Preact renderer keeps Preact's escaping; a custom renderer
+ * owns the escaping and safety of everything it emits.
+ */
+export interface PageRenderer {
+  render(
+    entry: RouteManifestEntry,
+    context: RequestContext,
+    options?: PageRenderOptions,
+  ): Awaitable<string>;
+}

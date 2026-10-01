@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+
+# Compiled output. Every workspace and the docs site compile into their own
+# `dist/`; the docs site exports to `out/` and bundles its client into
+# `public/assets/`.
+dist/
+/website/out/
+/website/public/assets/
+# Compiled output must never land beside its source. `tsc <file>` ignores
+# tsconfig.json and emits next to the file; this keeps such output out of
+# the index.
+/core/src/**/*.js
+/core/src/**/*.d.ts
+/core/src/**/*.map
+/core/test/**/*.js
+/core/test/**/*.d.ts
+/core/test/**/*.map
+/packages/*/src/**/*.js
+/packages/*/src/**/*.d.ts
+/packages/*/src/**/*.map
+/packages/*/test/**/*.js
+/packages/*/test/**/*.d.ts
+/packages/*/test/**/*.map
+# A hand-written ambient fixture, not compiler output.
+!/core/test/starter/auto-imports.d.ts
+# An incremental build without `outDir` writes its build info beside tsconfig.
+*.tsbuildinfo
+
+# Caches the framework's own tooling writes into the working directory.
+# `.content-cache/` is unanchored: @jsails/content caches under the cwd, which
+# is the workspace under `npm test -w <name>` and the repo root under
+# `node --test core/dist/test/...`. `.jsails/` is the generated-meta directory
+# `jsails build:meta`/`dev` write into the cwd.
+.content-cache/
+.jsails/
+/.eslintcache
+
+# Local services and evidence from the opt-in harnesses
+/.jamal/
+/.netlify/
+/test-results/
+
+# Environment files. The committed examples and the starter templates stay tracked.
+.env
+.env.*
+!/.env.example
+!/.env.testing.example
+!/core/templates/**/.env.*.template
+# Key material
+*.pem
+*.key
+*.p12
+*.crt
+
+# `npm pack` without `--pack-destination` writes the tarball into the cwd.
+*.tgz
+
+# Coding-agent scratch: isolated git worktrees and per-user settings
+/.claude/worktrees/
+/.claude/settings.local.json

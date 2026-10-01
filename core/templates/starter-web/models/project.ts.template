@@ -1,0 +1,25 @@
+/**
+ * Project model: an example of a tenant-owned record.
+ *
+ * `tenantScoped('tenantId')` holds every query for this model to the current
+ * tenant. The `@jsails/tenancy` plugin sets that tenant for a request only
+ * after the session's user is confirmed as a member, so a page or API route
+ * reads and writes only that tenant's projects. A new project is stamped with
+ * the current tenant on insert. With no current tenant (a global request, a
+ * job, or a command that has not called `runWithTenant`), reads return
+ * nothing and writes are refused.
+ *
+ * The compiler derives the `project` table from the fields below: `tenantId`
+ * becomes an integer `tenantId` column holding the owning tenant's id, and
+ * `name` a varchar. `npm run build` compiles the model and `npm run db:push`
+ * creates the table. `@jsails.index()` indexes `tenantId`, because every
+ * scoped query filters on it.
+ */
+import { ApplicationRecord, tenantScoped } from 'jsails/database';
+
+@tenantScoped('tenantId')
+export class Project extends ApplicationRecord {
+  @jsails.index()
+  declare tenantId: number;
+  declare name: string;
+}

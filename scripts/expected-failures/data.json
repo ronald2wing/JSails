@@ -1,0 +1,348 @@
+{
+  "description": "Data layer harness (DAT-01): audit repros and critic predictions against today's stack on SQLite, MariaDB and PostgreSQL, from core/test/database/regressions and packages/database/test/regressions. Server-scoped entries apply to the database suite's legs; DAT-02..DAT-15 empty it.",
+  "kind": "tests",
+  "entries": [
+    {
+      "file": "core/test/database/regressions/ambient-transaction.database.test.ts",
+      "test": [
+        "writes inside a transaction roll back with it",
+        "a write through dataSource.getRepository inside transaction()"
+      ],
+      "failure": {
+        "message": "^the repository write committed on another connection and survived the rollback",
+        "name": "AssertionError"
+      },
+      "reason": "Audit: withRollback/loadFixtures do not roll back writes made through dataSource.getRepository on server drivers. transaction() keeps its manager in AsyncLocalStorage and only ApplicationRecord.getRepository reads it, so a write through the data source takes another pooled connection, commits on its own and survives the rollback (sql.js joins through the connection lease, so SQLite passes).",
+      "fixedBy": "DAT-04",
+      "databases": ["mariadb", "postgres"]
+    },
+    {
+      "file": "core/test/database/regressions/ambient-transaction.database.test.ts",
+      "test": [
+        "writes inside a transaction roll back with it",
+        "a write through dataSource.manager inside transaction()"
+      ],
+      "failure": {
+        "message": "^the manager write committed on another connection and survived the rollback",
+        "name": "AssertionError"
+      },
+      "reason": "Audit: withRollback/loadFixtures do not roll back writes made through dataSource.getRepository on server drivers. transaction() keeps its manager in AsyncLocalStorage and only ApplicationRecord.getRepository reads it, so a write through the data source takes another pooled connection, commits on its own and survives the rollback (sql.js joins through the connection lease, so SQLite passes).",
+      "fixedBy": "DAT-04",
+      "databases": ["mariadb", "postgres"]
+    },
+    {
+      "file": "core/test/database/regressions/ambient-transaction.database.test.ts",
+      "test": [
+        "writes inside a transaction roll back with it",
+        "a write through dataSource.getRepository inside withRollback"
+      ],
+      "failure": {
+        "message": "^withRollback left the repository write behind for the next test",
+        "name": "AssertionError"
+      },
+      "reason": "Audit: withRollback/loadFixtures do not roll back writes made through dataSource.getRepository on server drivers. transaction() keeps its manager in AsyncLocalStorage and only ApplicationRecord.getRepository reads it, so a write through the data source takes another pooled connection, commits on its own and survives the rollback (sql.js joins through the connection lease, so SQLite passes).",
+      "fixedBy": "DAT-12",
+      "databases": ["mariadb", "postgres"]
+    },
+    {
+      "file": "core/test/database/regressions/ambient-transaction.database.test.ts",
+      "test": [
+        "writes inside a transaction roll back with it",
+        "fixtures loaded inside withRollback"
+      ],
+      "failure": {
+        "message": "^withRollback left the fixture rows behind",
+        "name": "AssertionError"
+      },
+      "reason": "Audit: withRollback/loadFixtures do not roll back writes made through dataSource.getRepository on server drivers. transaction() keeps its manager in AsyncLocalStorage and only ApplicationRecord.getRepository reads it, so a write through the data source takes another pooled connection, commits on its own and survives the rollback (sql.js joins through the connection lease, so SQLite passes). loadFixtures saves through dataSource.getRepository (core/src/database/fixtures.ts).",
+      "fixedBy": "DAT-12",
+      "databases": ["mariadb", "postgres"]
+    },
+    {
+      "file": "core/test/database/regressions/change-capture.database.test.ts",
+      "test": ["live change capture of set-form writes", "Model.update(criteria, set) is captured"],
+      "failure": {
+        "message": "^the committed update reached no live subscriber",
+        "name": "AssertionError"
+      },
+      "reason": "Critic prediction: live capture silently drops set-form writes. The capture reads the primary key off the event entity, and a query-builder UPDATE carries only the SET map, outside any transaction frame (core/src/live/change-capture.ts), so no change record is emitted.",
+      "fixedBy": "DAT-08"
+    },
+    {
+      "file": "core/test/database/regressions/change-capture.database.test.ts",
+      "test": ["live change capture of set-form writes", "repository.increment is captured"],
+      "failure": {
+        "message": "^the committed increment reached no live subscriber",
+        "name": "AssertionError"
+      },
+      "reason": "Critic prediction: live capture silently drops set-form writes. The capture reads the primary key off the event entity, and a query-builder UPDATE carries only the SET map, outside any transaction frame (core/src/live/change-capture.ts), so no change record is emitted.",
+      "fixedBy": "DAT-08"
+    },
+    {
+      "file": "core/test/database/regressions/datetime-column.database.test.ts",
+      "test": ["a model with a datetime column", "builds its metadata and table on this driver"],
+      "failure": {
+        "message": "^Data type \"datetime\" in \"Appointment\\.starts_at\" is not supported by \"postgres\" database\\.$"
+      },
+      "reason": "Audit: every app model with a Date field fails on Postgres. ModelColumnType names the MySQL/SQLite type 'datetime' and defineModel lowers it verbatim before the driver is known; TypeORM's postgres driver rejects it.",
+      "fixedBy": "DAT-03",
+      "databases": ["postgres"]
+    },
+    {
+      "file": "core/test/database/regressions/datetime-column.database.test.ts",
+      "test": [
+        "a model with a datetime column",
+        "reads back the Date it wrote, to the millisecond"
+      ],
+      "failure": {
+        "message": "^(?:the Date came back as 2026-03-04T05:06:07\\.000Z, not 2026-03-04T05:06:07\\.089Z(?:\\n|$)|Data type \"datetime\" in \"Appointment\\.starts_at\" is not supported by \"postgres\" database\\.)"
+      },
+      "reason": "DAT-03 fidelity rule (millisecond timestamps). MariaDB: 'datetime' lowers to DATETIME with no fractional precision, so the milliseconds are dropped; the message pins exactly that value, so any other change (a timezone shift) fails as unexpected. PostgreSQL: the model cannot be built at all ('datetime' is not a postgres type).",
+      "fixedBy": "DAT-03",
+      "databases": ["mariadb", "postgres"]
+    },
+    {
+      "file": "core/test/database/regressions/foreign-key-index.database.test.ts",
+      "test": [
+        "foreign key columns are indexed",
+        "a many-to-one join column has an index after the schema push"
+      ],
+      "failure": {
+        "message": "^regression_books\\.author_id has no index",
+        "name": "AssertionError"
+      },
+      "reason": "Audit: defineModel creates foreign keys without an index on the join column (Postgres and SQLite). A many-to-one lowers to ManyToOne + JoinColumn with no index; MariaDB passes only because InnoDB indexes every foreign key itself.",
+      "fixedBy": "DAT-03",
+      "databases": ["sqlite", "postgres"]
+    },
+    {
+      "file": "core/test/database/regressions/in-batches.test.ts",
+      "test": [
+        "ModelQuery.in_batches",
+        "leaves the query as it was: getMany() afterwards returns every row"
+      ],
+      "failure": {
+        "message": "^the query kept the batch walk state",
+        "name": "AssertionError"
+      },
+      "reason": "Audit: ModelQuery.in_batches permanently mutates the query. It writes ORDER BY, LIMIT and the cursor predicate into the shared builder and leaves the last cursor set (core/src/database/model-query.ts).",
+      "fixedBy": "DAT-07"
+    },
+    {
+      "file": "core/test/database/regressions/in-batches.test.ts",
+      "test": [
+        "ModelQuery.in_batches",
+        "reads each page after the first through the primary key index on SQLite"
+      ],
+      "failure": {
+        "message": "^the page scans the table: ",
+        "name": "AssertionError"
+      },
+      "reason": "Audit: in_batches/find_each are quadratic on SQLite. The cursor predicate '(:active = 0 OR (id > :cursor OR ...))' switches on a parameter, which SQLite cannot turn into an index range, so every page is a full SCAN.",
+      "fixedBy": "DAT-07"
+    },
+    {
+      "file": "core/test/database/regressions/plugin-removal.test.ts",
+      "test": [
+        "db:push after a plugin is removed from plugins.use",
+        "a push with nothing destructive of the app's own is not blocked"
+      ],
+      "failure": {
+        "message": "^the removed plugin's table blocked a push that changes nothing",
+        "name": "AssertionError"
+      },
+      "reason": "Audit: the db:push destructive gate is all-or-nothing and one stray table blocks every safe change. planSchema diffs against the declared models only, so the removed plugin's table is a planned drop and the whole push needs --allow-destructive.",
+      "fixedBy": "DAT-06"
+    },
+    {
+      "file": "core/test/database/regressions/plugin-removal.test.ts",
+      "test": [
+        "db:push after a plugin is removed from plugins.use",
+        "--allow-destructive does not drop the removed plugin's table"
+      ],
+      "failure": {
+        "message": "^the app's push dropped the removed plugin's table and its data",
+        "name": "AssertionError"
+      },
+      "reason": "Critic prediction: removing a plugin from plugins.use turns its tables into drops, and one --allow-destructive authorises them. The schema core has no record of who owns a table (planSchema in core/src/cli/commands/db.ts always plans with allowDestructive: true).",
+      "fixedBy": "DAT-11"
+    },
+    {
+      "file": "core/test/database/regressions/schema-lock-name.test.ts",
+      "test": [
+        "MariaDB schema lock name",
+        "differs for url-configured connections to different databases"
+      ],
+      "failure": {
+        "message": "^two databases on one server share one lock name",
+        "name": "AssertionError"
+      },
+      "reason": "Critic prediction: the MySQL/MariaDB lock name digests options.database, which a url configuration leaves empty (core/src/migrations/schema-lock.ts), so every url-configured app on one server shares jsails_schema_<sha256('')>.",
+      "fixedBy": "DAT-06"
+    },
+    {
+      "file": "core/test/database/regressions/schema-lock.database.test.ts",
+      "test": [
+        "schema lock",
+        "a url-configured push waits for a database-configured push to the same database"
+      ],
+      "failure": {
+        "message": "^the url-configured push took the schema lock while the other push held it",
+        "name": "AssertionError"
+      },
+      "reason": "Critic prediction, live: a push configured by url and one configured by database name against the same MariaDB database take different GET_LOCK names and run at once. PostgreSQL's advisory lock is per database, so it passes.",
+      "fixedBy": "DAT-06",
+      "databases": ["mariadb"]
+    },
+    {
+      "file": "core/test/database/regressions/statement-counts.database.test.ts",
+      "test": [
+        "statement budgets",
+        "loading a has-many relation for many parents costs one statement for the children"
+      ],
+      "failure": {
+        "message": "^expected 2 SELECTs \\(the parents, then their replies\\), got 3:\\n",
+        "name": "AssertionError"
+      },
+      "reason": "Audit: eager loading runs two queries per relation. The loader selects (pk, fk) pairs and then re-selects the same children by primary key, because the hydrated child does not carry its foreign key (core/src/database/relation-loader/loaders.ts). Today's count, 3, is pinned in the message, so a worse count fails as unexpected.",
+      "fixedBy": "DAT-09"
+    },
+    {
+      "file": "core/test/database/regressions/statement-counts.database.test.ts",
+      "test": ["statement budgets", "saving a loaded, modified record sends no SELECT"],
+      "failure": {
+        "message": "^expected no SELECT before the UPDATE, got 1:\\n",
+        "name": "AssertionError"
+      },
+      "reason": "Critic prediction: save() on a loaded record pays a SELECT before every UPDATE; TypeORM's SubjectExecutor reloads the row to diff it. Today's count, 1, is pinned in the message, so a second SELECT fails as unexpected.",
+      "fixedBy": "DAT-08"
+    },
+    {
+      "file": "packages/database/test/regressions/framework-entities.database.test.ts",
+      "test": [
+        "framework and package entities",
+        "jsails/database active storage: tables are created on this driver"
+      ],
+      "failure": {
+        "message": "^Data type \"datetime\" in \"JsailsAttachment\\.createdAt\" is not supported by \"postgres\" database\\.$"
+      },
+      "reason": "Audit: framework and package entities declare type 'datetime', which TypeORM's postgres driver rejects; nothing built every entity's metadata on every driver, so the break shipped.",
+      "fixedBy": "DAT-14",
+      "databases": ["postgres"]
+    },
+    {
+      "file": "packages/database/test/regressions/framework-entities.database.test.ts",
+      "test": [
+        "framework and package entities",
+        "jsails/jobs failed jobs: tables are created on this driver"
+      ],
+      "failure": {
+        "message": "^Data type \"datetime\" in \"JsailsFailedJob\\.failedAt\" is not supported by \"postgres\" database\\.$"
+      },
+      "reason": "Audit: framework and package entities declare type 'datetime', which TypeORM's postgres driver rejects; nothing built every entity's metadata on every driver, so the break shipped.",
+      "fixedBy": "JOB-08",
+      "databases": ["postgres"]
+    },
+    {
+      "file": "packages/database/test/regressions/framework-entities.database.test.ts",
+      "test": [
+        "framework and package entities",
+        "jsails/plugins plugin state: tables are created on this driver"
+      ],
+      "failure": {
+        "message": "^Data type \"datetime\" in \"DatabasePluginState\\.updatedAt\" is not supported by \"postgres\" database\\.$"
+      },
+      "reason": "Audit: framework and package entities declare type 'datetime', which TypeORM's postgres driver rejects; nothing built every entity's metadata on every driver, so the break shipped.",
+      "fixedBy": "MKT-15a",
+      "databases": ["postgres"]
+    },
+    {
+      "file": "packages/database/test/regressions/framework-entities.database.test.ts",
+      "test": ["framework and package entities", "@jsails/blog: tables are created on this driver"],
+      "failure": {
+        "message": "^Data type \"datetime\" in \"JsailsBlogPost\\.publishedAt\" is not supported by \"postgres\" database\\.$"
+      },
+      "reason": "Audit: framework and package entities declare type 'datetime', which TypeORM's postgres driver rejects; nothing built every entity's metadata on every driver, so the break shipped.",
+      "fixedBy": "CNT-15",
+      "databases": ["postgres"]
+    },
+    {
+      "file": "packages/database/test/regressions/framework-entities.database.test.ts",
+      "test": [
+        "framework and package entities",
+        "@jsails/config: tables are created on this driver"
+      ],
+      "failure": {
+        "message": "^Data type \"datetime\" in \"JsailsConfigEntry\\.updatedAt\" is not supported by \"postgres\" database\\.$"
+      },
+      "reason": "Audit: framework and package entities declare type 'datetime', which TypeORM's postgres driver rejects; nothing built every entity's metadata on every driver, so the break shipped.",
+      "fixedBy": "DAT-13",
+      "databases": ["postgres"]
+    },
+    {
+      "file": "packages/database/test/regressions/framework-entities.database.test.ts",
+      "test": [
+        "framework and package entities",
+        "@jsails/flags: tables are created on this driver"
+      ],
+      "failure": {
+        "message": "^Data type \"datetime\" in \"JsailsFeatureFlag\\.updatedAt\" is not supported by \"postgres\" database\\.$"
+      },
+      "reason": "Audit: framework and package entities declare type 'datetime', which TypeORM's postgres driver rejects; nothing built every entity's metadata on every driver, so the break shipped.",
+      "fixedBy": "DAT-13",
+      "databases": ["postgres"]
+    },
+    {
+      "file": "packages/database/test/regressions/framework-entities.database.test.ts",
+      "test": [
+        "framework and package entities",
+        "@jsails/media: tables are created on this driver"
+      ],
+      "failure": {
+        "message": "^Data type \"datetime\" in \"JsailsMediaAsset\\.createdAt\" is not supported by \"postgres\" database\\.$"
+      },
+      "reason": "Audit: framework and package entities declare type 'datetime', which TypeORM's postgres driver rejects; nothing built every entity's metadata on every driver, so the break shipped.",
+      "fixedBy": "DAT-14",
+      "databases": ["postgres"]
+    },
+    {
+      "file": "packages/database/test/regressions/framework-entities.database.test.ts",
+      "test": [
+        "framework and package entities",
+        "@jsails/notifications: tables are created on this driver"
+      ],
+      "failure": {
+        "message": "^Data type \"datetime\" in \"JsailsNotification\\.readAt\" is not supported by \"postgres\" database\\.$"
+      },
+      "reason": "Audit: framework and package entities declare type 'datetime', which TypeORM's postgres driver rejects; nothing built every entity's metadata on every driver, so the break shipped.",
+      "fixedBy": "DAT-14",
+      "databases": ["postgres"]
+    },
+    {
+      "file": "packages/database/test/regressions/framework-entities.database.test.ts",
+      "test": [
+        "framework and package entities",
+        "@jsails/sessions: tables are created on this driver"
+      ],
+      "failure": {
+        "message": "^Data type \"datetime\" in \"JsailsSession\\.expiresAt\" is not supported by \"postgres\" database\\.$"
+      },
+      "reason": "Audit: framework and package entities declare type 'datetime', which TypeORM's postgres driver rejects; nothing built every entity's metadata on every driver, so the break shipped.",
+      "fixedBy": "DAT-13",
+      "databases": ["postgres"]
+    },
+    {
+      "file": "packages/database/test/regressions/package-stores.database.test.ts",
+      "test": [
+        "package stores inside a test transaction",
+        "a flag set inside withTestTransaction is rolled back with it"
+      ],
+      "failure": {
+        "message": "^(?:the flag write survived the rollback of its test transaction(?:\\n|$)|Data type \"datetime\" in \"JsailsFeatureFlag\\.updatedAt\" is not supported by \"postgres\" database\\.$)"
+      },
+      "reason": "Critic prediction: framework stores that capture a repository from the data source do not join an ambient transaction. On MariaDB the flags store's write takes its own pooled connection and commits, so it survives withTestTransaction's rollback (the assertion). On PostgreSQL the store fails before that point: its entity declares 'datetime'. Once that is fixed the PostgreSQL branch becomes the same rollback assertion, which stays failing until DAT-04 binds transactions at the lease.",
+      "fixedBy": "DAT-13",
+      "databases": ["mariadb", "postgres"]
+    }
+  ]
+}

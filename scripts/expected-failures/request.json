@@ -1,0 +1,921 @@
+{
+  "description": "Request conformance (REQ-01): rows of the scope matrix, response model and request-cost suites under core/test/server/conformance that fail against today's pipeline. Each entry names the REQ package whose change makes it pass; that package deletes it.",
+  "kind": "tests",
+  "entries": [
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "app.fetch", "not-found page", "sees the tenant"],
+      "failure": {
+        "message": "^not-found page saw tenant undefined, expected \"acme\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The not-found page renders from app.notFound, outside the route chain, so the extension request scopes (the tenant) never run around it.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "app.fetch", "error page 404", "sees the tenant"],
+      "failure": {
+        "message": "^error page 404 saw tenant undefined, expected \"acme\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The 404 error page renders from app.notFound, outside the route chain, so the extension request scopes (the tenant) never run around it.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "app.fetch", "error page 405", "sees the locale"],
+      "failure": {
+        "message": "^error page 405 saw locale undefined, expected \"fr\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The 405 error page renders from the method-not-allowed stage, which runs before the i18n stage, so no locale is ambient.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "app.fetch", "error page 405", "sees the tenant"],
+      "failure": {
+        "message": "^error page 405 saw tenant undefined, expected \"acme\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The 405 error page renders from the method-not-allowed stage, outside every request scope.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "app.fetch", "error page 413", "sees the locale"],
+      "failure": {
+        "message": "^error page 413 saw locale undefined, expected \"fr\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The 413 error page renders from the body-limit stage, which runs before the i18n stage, so no locale is ambient.",
+      "fixedBy": "REQ-06"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "app.fetch", "error page 413", "sees the tenant"],
+      "failure": {
+        "message": "^error page 413 saw tenant undefined, expected \"acme\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The 413 error page renders from the body-limit stage, outside every request scope.",
+      "fixedBy": "REQ-06"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "app.fetch", "error page 413", "sees the session"],
+      "failure": {
+        "message": "^error page 413 saw session null, expected \"s1\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The body-limit stage answers before the session middleware installs loadSession, so the 413 error page sees no session.",
+      "fixedBy": "REQ-06"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "app.fetch", "late failure report", "sees the request id"],
+      "failure": {
+        "message": "^late failure report was never observed(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A stream-export page passes no onError to renderStreamResponse, so a failure after the first chunk never reaches the onError hook.",
+      "fixedBy": "REQ-08"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "app.fetch", "late failure report", "sees the services"],
+      "failure": {
+        "message": "^late failure report was never observed(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A stream-export page passes no onError to renderStreamResponse, so a failure after the first chunk never reaches the onError hook.",
+      "fixedBy": "REQ-08"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "app.fetch", "late failure report", "sees the locale"],
+      "failure": {
+        "message": "^late failure report was never observed(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A stream-export page passes no onError to renderStreamResponse, so a failure after the first chunk never reaches the onError hook.",
+      "fixedBy": "REQ-08"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "app.fetch", "late failure report", "sees the tenant"],
+      "failure": {
+        "message": "^late failure report was never observed(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A stream-export page passes no onError to renderStreamResponse, so a failure after the first chunk never reaches the onError hook.",
+      "fixedBy": "REQ-08"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "app.fetch", "late failure report", "sees the route"],
+      "failure": {
+        "message": "^late failure report was never observed(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A stream-export page passes no onError to renderStreamResponse, so a failure after the first chunk never reaches the onError hook.",
+      "fixedBy": "REQ-08"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "listener", "not-found page", "sees the tenant"],
+      "failure": {
+        "message": "^not-found page saw tenant undefined, expected \"acme\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The not-found page renders from app.notFound, outside the route chain, so the extension request scopes (the tenant) never run around it.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "listener", "error page 404", "sees the tenant"],
+      "failure": {
+        "message": "^error page 404 saw tenant undefined, expected \"acme\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The 404 error page renders from app.notFound, outside the route chain, so the extension request scopes (the tenant) never run around it.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "listener", "error page 405", "sees the locale"],
+      "failure": {
+        "message": "^error page 405 saw locale undefined, expected \"fr\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The 405 error page renders from the method-not-allowed stage, which runs before the i18n stage, so no locale is ambient.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "listener", "error page 405", "sees the tenant"],
+      "failure": {
+        "message": "^error page 405 saw tenant undefined, expected \"acme\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The 405 error page renders from the method-not-allowed stage, outside every request scope.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "listener", "error page 413", "sees the locale"],
+      "failure": {
+        "message": "^error page 413 saw locale undefined, expected \"fr\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The 413 error page renders from the body-limit stage, which runs before the i18n stage, so no locale is ambient.",
+      "fixedBy": "REQ-06"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "listener", "error page 413", "sees the tenant"],
+      "failure": {
+        "message": "^error page 413 saw tenant undefined, expected \"acme\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The 413 error page renders from the body-limit stage, outside every request scope.",
+      "fixedBy": "REQ-06"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "listener", "error page 413", "sees the session"],
+      "failure": {
+        "message": "^error page 413 saw session null, expected \"s1\"(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The body-limit stage answers before the session middleware installs loadSession, so the 413 error page sees no session.",
+      "fixedBy": "REQ-06"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "listener", "late failure report", "sees the request id"],
+      "failure": {
+        "message": "^late failure report was never observed(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A stream-export page passes no onError to renderStreamResponse, so a failure after the first chunk never reaches the onError hook.",
+      "fixedBy": "REQ-08"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "listener", "late failure report", "sees the services"],
+      "failure": {
+        "message": "^late failure report was never observed(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A stream-export page passes no onError to renderStreamResponse, so a failure after the first chunk never reaches the onError hook.",
+      "fixedBy": "REQ-08"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "listener", "late failure report", "sees the locale"],
+      "failure": {
+        "message": "^late failure report was never observed(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A stream-export page passes no onError to renderStreamResponse, so a failure after the first chunk never reaches the onError hook.",
+      "fixedBy": "REQ-08"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "listener", "late failure report", "sees the tenant"],
+      "failure": {
+        "message": "^late failure report was never observed(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A stream-export page passes no onError to renderStreamResponse, so a failure after the first chunk never reaches the onError hook.",
+      "fixedBy": "REQ-08"
+    },
+    {
+      "file": "core/test/server/conformance/scope-matrix.test.ts",
+      "test": ["scope matrix", "listener", "late failure report", "sees the route"],
+      "failure": {
+        "message": "^late failure report was never observed(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A stream-export page passes no onError to renderStreamResponse, so a failure after the first chunk never reaches the onError hook.",
+      "fixedBy": "REQ-08"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "respond-json", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": [
+        "response model",
+        "app.fetch",
+        "respond-json",
+        "sends a small body whole and unencoded"
+      ],
+      "failure": {
+        "message": "^sends a small body whole and unencoded: small body encoded as br \\(ae=br\\); small body encoded as gzip \\(ae=gzip\\)(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Compression applies regardless of size, so a body under 1024 bytes is encoded and loses its Content-Length.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "raw-string", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": [
+        "response model",
+        "app.fetch",
+        "raw-string",
+        "sends a small body whole and unencoded"
+      ],
+      "failure": {
+        "message": "^sends a small body whole and unencoded: small body encoded as br \\(ae=br\\); small body encoded as gzip \\(ae=gzip\\)(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Compression applies regardless of size, so a body under 1024 bytes is encoded and loses its Content-Length.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "response-json", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": [
+        "response model",
+        "app.fetch",
+        "response-json",
+        "sends a small body whole and unencoded"
+      ],
+      "failure": {
+        "message": "^sends a small body whole and unencoded: small body encoded as br \\(ae=br\\); small body encoded as gzip \\(ae=gzip\\)(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Compression applies regardless of size, so a body under 1024 bytes is encoded and loses its Content-Length.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "large-json", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "redirect", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "fetched", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "fetched", "sends a small body whole and unencoded"],
+      "failure": {
+        "message": "^sends a small body whole and unencoded: small body encoded as br \\(ae=br\\); small body encoded as gzip \\(ae=gzip\\)(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Compression applies regardless of size, so a body under 1024 bytes is encoded and loses its Content-Length.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "stream", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "event-stream", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "partial", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "page", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "page", "sends a small body whole and unencoded"],
+      "failure": {
+        "message": "^sends a small body whole and unencoded: small body encoded as br \\(ae=br\\); small body encoded as gzip \\(ae=gzip\\)(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Compression applies regardless of size, so a body under 1024 bytes is encoded and loses its Content-Length.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "app.fetch", "page-stream", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "respond-json", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": [
+        "response model",
+        "listener",
+        "respond-json",
+        "sends a small body whole and unencoded"
+      ],
+      "failure": {
+        "message": "^sends a small body whole and unencoded: small body encoded as br \\(ae=br\\), no Content-Length; small body encoded as gzip \\(ae=gzip\\), no Content-Length(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Compression applies regardless of size, so a body under 1024 bytes is encoded and loses its Content-Length.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "raw-string", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": [
+        "response model",
+        "listener",
+        "raw-string",
+        "sends a small body whole and unencoded"
+      ],
+      "failure": {
+        "message": "^sends a small body whole and unencoded: small body encoded as br \\(ae=br\\), no Content-Length; small body encoded as gzip \\(ae=gzip\\), no Content-Length(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Compression applies regardless of size, so a body under 1024 bytes is encoded and loses its Content-Length.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "response-json", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": [
+        "response model",
+        "listener",
+        "response-json",
+        "sends a small body whole and unencoded"
+      ],
+      "failure": {
+        "message": "^sends a small body whole and unencoded: small body encoded as br \\(ae=br\\), no Content-Length; small body encoded as gzip \\(ae=gzip\\), no Content-Length(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Compression applies regardless of size, so a body under 1024 bytes is encoded and loses its Content-Length.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "large-json", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "redirect", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "fetched", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "fetched", "sends a small body whole and unencoded"],
+      "failure": {
+        "message": "^sends a small body whole and unencoded: small body encoded as br \\(ae=br\\), no Content-Length; small body encoded as gzip \\(ae=gzip\\), no Content-Length(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Compression applies regardless of size, so a body under 1024 bytes is encoded and loses its Content-Length.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "stream", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "event-stream", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "partial", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "page", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "page", "sends a small body whole and unencoded"],
+      "failure": {
+        "message": "^sends a small body whole and unencoded: small body encoded as br \\(ae=br\\), no Content-Length; small body encoded as gzip \\(ae=gzip\\), no Content-Length(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Compression applies regardless of size, so a body under 1024 bytes is encoded and loses its Content-Length.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "page-stream", "keeps staged headers and cookies"],
+      "failure": {
+        "message": "^keeps staged headers and cookies: pre-next header lost, pre-next cookie lost(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Headers and cookies a middleware stages with c.header() before next() are dropped when the handler returns its own Response; nothing merges them into the final response.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/response-model.test.ts",
+      "test": ["response model", "listener", "edge cases", "answers HEAD like GET, without a body"],
+      "failure": {
+        "message": "^HEAD Content-Length differs from GET(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "HEAD is answered with an empty body and no Content-Length, while GET of the same route carries one.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "app.fetch",
+        "anonymous API GET",
+        "builds at most one Response after the handler"
+      ],
+      "failure": {
+        "message": "^3 Responses built after the handler(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The compression stage sets Vary with c.header() on the finished response (core/src/server/response-compression.ts); Hono rebuilds the response from it, and the Node adapter's lightweight Response materializes a native one for the body and another for the new response's init: one lightweight and two native Responses after the handler.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "app.fetch",
+        "anonymous API GET",
+        "builds no ReadableStream for a bytes body"
+      ],
+      "failure": {
+        "message": "^3 ReadableStreams for a bytes body(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The ETag stage tees and re-wraps a bytes body that declares no length, building streams for a body that is already complete.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "app.fetch",
+        "anonymous API GET",
+        "runs one AsyncLocalStorage scope"
+      ],
+      "failure": {
+        "message": "^2 AsyncLocalStorage runs(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The request id and the facade scope each open their own AsyncLocalStorage run per request.",
+      "fixedBy": "REQ-02"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "app.fetch",
+        "anonymous API GET",
+        "resolves no session for a request without a credential"
+      ],
+      "failure": {
+        "message": "^1 session resolutions(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Route chains resolve the session on entry whether or not the request carries a credential.",
+      "fixedBy": "REQ-02"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "app.fetch", "HTML 404 without a credential", "resolves no session"],
+      "failure": {
+        "message": "^1 session resolutions(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The HTML error page resolves the session for a request that carries no credential.",
+      "fixedBy": "REQ-02"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "app.fetch",
+        "small response under Accept-Encoding: br",
+        "creates no zlib engine"
+      ],
+      "failure": {
+        "message": "^1 zlib engines(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Compression creates an engine for every compressible response, including bodies under 1024 bytes.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "app.fetch",
+        "cached page hit",
+        "makes exactly one store round trip"
+      ],
+      "failure": {
+        "message": "^2 store round trips: remember, remember(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A page cache hit reads the generation token and the entry in two store round trips.",
+      "fixedBy": "REQ-09"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "app.fetch", "cached page hit", "renders nothing"],
+      "failure": {
+        "message": "^1 renders(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The page cache stores load() props, not the response, so a hit renders the page again.",
+      "fixedBy": "REQ-09"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "app.fetch", "cached page hit", "creates no zlib engine"],
+      "failure": {
+        "message": "^1 zlib engines(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The page cache stores load() props only; a hit still renders and compresses the document.",
+      "fixedBy": "REQ-09"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "app.fetch",
+        "asset 200",
+        "resolves the file with at most one open and no other path operation"
+      ],
+      "failure": {
+        "message": "^path operations: \\{\"fs/promises\\.lstat\":3,\"fs/promises\\.realpath\":1,\"fs\\.statSync\":1,\"fs\\.open\":1\\}(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Before serving, the public-files middleware lstats the file and probes its .br and .gz siblings with two more lstat calls, realpaths it, and the serve-static handler stats it again (statSync) before its read stream opens it once. REQ-10 serves small assets from inline bytes (no open) and larger ones with a single open.",
+      "fixedBy": "REQ-10"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "app.fetch", "asset 304", "performs no fs operation"],
+      "failure": {
+        "message": "^fs operations: \\{\"fs/promises\\.lstat\":3,\"fs/promises\\.realpath\":1\\}(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The public-files middleware lstats the file, probes its .br and .gz siblings (two more lstat calls) and realpaths it before it can answer 304.",
+      "fixedBy": "REQ-10"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "app.fetch", "asset miss", "performs no fs operation"],
+      "failure": {
+        "message": "^fs operations: \\{\"fs/promises\\.lstat\":1\\}(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A request for a missing file probes the file system before falling through to the 404.",
+      "fixedBy": "REQ-10"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "listener",
+        "anonymous API GET",
+        "builds at most one Response after the handler"
+      ],
+      "failure": {
+        "message": "^3 Responses built after the handler(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The compression stage sets Vary with c.header() on the finished response (core/src/server/response-compression.ts); Hono rebuilds the response from it, and the Node adapter's lightweight Response materializes a native one for the body and another for the new response's init: one lightweight and two native Responses after the handler.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "listener",
+        "anonymous API GET",
+        "builds no ReadableStream for a bytes body"
+      ],
+      "failure": {
+        "message": "^3 ReadableStreams for a bytes body(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The ETag stage tees and re-wraps a bytes body that declares no length, building streams for a body that is already complete.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "listener", "anonymous API GET", "runs one AsyncLocalStorage scope"],
+      "failure": {
+        "message": "^2 AsyncLocalStorage runs(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The request id and the facade scope each open their own AsyncLocalStorage run per request.",
+      "fixedBy": "REQ-02"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "listener",
+        "anonymous API GET",
+        "resolves no session for a request without a credential"
+      ],
+      "failure": {
+        "message": "^1 session resolutions(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Route chains resolve the session on entry whether or not the request carries a credential.",
+      "fixedBy": "REQ-02"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "listener",
+        "anonymous API GET",
+        "writes the body in one end() call"
+      ],
+      "failure": {
+        "message": "^1 write\\(\\) calls(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The finalization stages re-wrap the body as a stream, so the adapter pumps it with write() instead of one end(bytes).",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "listener", "HTML 404 without a credential", "resolves no session"],
+      "failure": {
+        "message": "^1 session resolutions(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The HTML error page resolves the session for a request that carries no credential.",
+      "fixedBy": "REQ-02"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "listener",
+        "small response under Accept-Encoding: br",
+        "creates no zlib engine"
+      ],
+      "failure": {
+        "message": "^1 zlib engines(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Compression creates an engine for every compressible response, including bodies under 1024 bytes.",
+      "fixedBy": "REQ-03"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "listener", "cached page hit", "makes exactly one store round trip"],
+      "failure": {
+        "message": "^2 store round trips: remember, remember(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A page cache hit reads the generation token and the entry in two store round trips.",
+      "fixedBy": "REQ-09"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "listener", "cached page hit", "renders nothing"],
+      "failure": {
+        "message": "^1 renders(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The page cache stores load() props, not the response, so a hit renders the page again.",
+      "fixedBy": "REQ-09"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "listener", "cached page hit", "creates no zlib engine"],
+      "failure": {
+        "message": "^1 zlib engines(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The page cache stores load() props only; a hit still renders and compresses the document.",
+      "fixedBy": "REQ-09"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "listener",
+        "asset 200",
+        "resolves the file with at most one open and no other path operation"
+      ],
+      "failure": {
+        "message": "^path operations: \\{\"fs/promises\\.lstat\":3,\"fs/promises\\.realpath\":1,\"fs\\.statSync\":1,\"fs\\.open\":1\\}(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "Before serving, the public-files middleware lstats the file and probes its .br and .gz siblings with two more lstat calls, realpaths it, and the serve-static handler stats it again (statSync) before its read stream opens it once. REQ-10 serves small assets from inline bytes (no open) and larger ones with a single open.",
+      "fixedBy": "REQ-10"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "listener", "asset 304", "performs no fs operation"],
+      "failure": {
+        "message": "^fs operations: \\{\"fs/promises\\.lstat\":3,\"fs/promises\\.realpath\":1\\}(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The public-files middleware lstats the file, probes its .br and .gz siblings (two more lstat calls) and realpaths it before it can answer 304.",
+      "fixedBy": "REQ-10"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "listener", "asset miss", "performs no fs operation"],
+      "failure": {
+        "message": "^fs operations: \\{\"fs/promises\\.lstat\":1\\}(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A request for a missing file probes the file system before falling through to the 404.",
+      "fixedBy": "REQ-10"
+    }
+  ]
+}

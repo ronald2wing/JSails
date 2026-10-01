@@ -1,0 +1,483 @@
+{
+  "description": "Marketplace conformance (MKT-01): owner decision 1 as executable scenarios over the conformance driver, the bundle archive reader against real tar, bsdtar and git archive output, and the preset modes. Entries are today's failures; MKT-03, MKT-07, MKT-08, MKT-09 and MKT-14 remove theirs, and MKT-15 deletes the legacy driver with an empty list.",
+  "kind": "tests",
+  "entries": [
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "locked mode",
+        "refuses every code-changing admin action"
+      ],
+      "failure": {
+        "message": "^locked mode must refuse install",
+        "name": "AssertionError"
+      },
+      "reason": "The installer and the state store do not know the mode: an admin install in a locked deployment writes the bundle and a state row. LockedMarketplace (status and saveSettings only) does not exist yet.",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "locked mode",
+        "loads exactly the plugins pinned in the lock"
+      ],
+      "failure": {
+        "message": "^a plugin pinned in the lock runs",
+        "name": "AssertionError"
+      },
+      "reason": "There is no jsails.plugins.lock: a locked deployment runs plugins.use only and has no way to pin a verified bundle.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "locked mode",
+        "fails the boot when a pinned plugin's bytes differ from the lock digest"
+      ],
+      "failure": {
+        "message": "^a lock digest mismatch must fail a locked boot",
+        "name": "AssertionError"
+      },
+      "reason": "There is no lock and no digest check on stored bundle bytes, so nothing fails the boot.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: a database-only attacker",
+        "a row inserted through SQL for a stored bundle never loads"
+      ],
+      "failure": {
+        "message": "^a row the app did not seal: acme-notes@1\\.0\\.0 must not run",
+        "name": "AssertionError"
+      },
+      "reason": "State rows carry no seal: any row in jsails_plugin_state whose bundle is on disk activates its code at the next managed boot.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: a database-only attacker",
+        "flipping a disabled row to enabled through SQL does not load it"
+      ],
+      "failure": {
+        "message": "^a disabled row flipped through SQL: acme-notes@1\\.0\\.0 must not run",
+        "name": "AssertionError"
+      },
+      "reason": "The enabled column is trusted as stored; an UPDATE through SQL re-enables a plugin the owner disabled.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: a database-only attacker",
+        "switching the active version through SQL does not load the other version"
+      ],
+      "failure": {
+        "message": "^an older version selected through SQL: acme-notes@1\\.0\\.0 must not run",
+        "name": "AssertionError"
+      },
+      "reason": "activeVersion is trusted as stored, so SQL can select any installed version, including an older vulnerable one.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: a database-only attacker",
+        "replaying an earlier valid row after a disable does not load it"
+      ],
+      "failure": {
+        "message": "^a replayed row: acme-notes@1\\.0\\.0 must not run",
+        "name": "AssertionError"
+      },
+      "reason": "No seal and no sealed head row: an earlier row written back after a disable is accepted.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: a database-only attacker",
+        "knowing the seal key does not make an unsigned bundle load"
+      ],
+      "failure": {
+        "message": "^an unsigned bundle behind a sealed row: acme-notes@1\\.0\\.0 must not run",
+        "name": "AssertionError"
+      },
+      "reason": "Activation checks no release signature: a row naming any bundle in the plugins folder loads it, signed or not.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: a database-only attacker",
+        "bytes replaced in the bundle store are refused and the site still boots"
+      ],
+      "failure": {
+        "message": "^replaced bundle bytes: acme-notes@1\\.0\\.0#evil must not run",
+        "name": "AssertionError"
+      },
+      "reason": "Stored bundles are extracted files with no recorded digest; replaced files are imported as they are.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: publishers and ceilings",
+        "an admin install of an unsigned bundle is refused"
+      ],
+      "failure": {
+        "message": "^an unsigned bundle must not install",
+        "name": "AssertionError"
+      },
+      "reason": "The installer accepts a SHA-256 checksum as integrity (or allowUnverified); a checksum is not authority and no release signature is required.",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: publishers and ceilings",
+        "an admin install from a publisher the config does not trust is refused"
+      ],
+      "failure": {
+        "message": "^an untrusted publisher must not install",
+        "name": "AssertionError"
+      },
+      "reason": "There are no configured publishers: any bundle with a matching checksum installs.",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: publishers and ceilings",
+        "a publisher cannot release an id outside its namespace"
+      ],
+      "failure": {
+        "message": "^an id outside the namespace must not install",
+        "name": "AssertionError"
+      },
+      "reason": "There are no publisher id namespaces, so any source can install any plugin id.",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: publishers and ceilings",
+        "an install whose permissions exceed the ceiling is refused"
+      ],
+      "failure": {
+        "message": "^a permission above the ceiling must not install",
+        "name": "AssertionError"
+      },
+      "reason": "There is no permission ceiling in config: a bundle declaring http.middleware installs on any site.",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: publishers and ceilings",
+        "a stored plugin above a tightened ceiling is skipped at boot"
+      ],
+      "failure": {
+        "message": "^a plugin above the ceiling: acme-spy@1\\.0\\.0 must not run",
+        "name": "AssertionError"
+      },
+      "reason": "Grants are not recomputed against a ceiling at boot; manifest permissions are the only input to the capability gate.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: publishers and ceilings",
+        "a plugin released under a revoked key stops loading"
+      ],
+      "failure": {
+        "message": "^a release under a revoked key: acme-notes@1\\.0\\.0 must not run",
+        "name": "AssertionError"
+      },
+      "reason": "There are no release keys and no revocation list, so nothing can withdraw an installed release.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: publishers and ceilings",
+        "a catalog whose sequence goes backwards is refused"
+      ],
+      "failure": {
+        "message": "^a signed catalog with a new sequence is accepted",
+        "name": "AssertionError"
+      },
+      "reason": "There is no signed catalog: the plugin directory is in-repo data with no publisher, sequence or expiry, so neither freshness nor rollback can be checked.",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: degraded boots and code precedence",
+        "a row whose bundle is missing is skipped and the site still boots"
+      ],
+      "failure": {
+        "message": "^a boot with a row whose bundle is missing: the site must still boot \\(managed plugin\\(s\\) failed to load: acme-ghost \\(enabled_plugin_missing\\)\\)",
+        "name": "AssertionError"
+      },
+      "reason": "Every managed load failure is fatal (MANAGED_LOAD_FAILURES), so one database row naming a missing bundle takes the site down at the next boot.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: degraded boots and code precedence",
+        "a code-declared plugin shadows a managed row with the same id"
+      ],
+      "failure": {
+        "message": "^a boot where code and a row declare one id: the site must still boot \\(duplicate extension name \"acme-notes\"\\)",
+        "name": "AssertionError"
+      },
+      "reason": "A managed row with the id of a code-declared plugin is activated too, and the duplicate extension name fails the boot instead of the row being inert.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: degraded boots and code precedence",
+        "safe mode runs code-declared plugins only"
+      ],
+      "failure": {
+        "message": "^safe mode: acme-notes@1\\.0\\.0 must not run",
+        "name": "AssertionError"
+      },
+      "reason": "There is no safe-mode kernel input: managed plugins always load.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: admin operations",
+        "settings saved by the admin reach the plugin through ctx.settings"
+      ],
+      "failure": {
+        "message": "^saved settings must reach ctx\\.settings\\.current\\(\\)",
+        "name": "AssertionError"
+      },
+      "reason": "Saved plugin settings are stored in the state row but never delivered to plugin code: the setup context has no settings.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "managed mode: admin operations",
+        "a code-changing action needs authentication within the last 15 minutes"
+      ],
+      "failure": {
+        "message": "^an install on a 20-minute-old login must be refused",
+        "name": "AssertionError"
+      },
+      "reason": "No framework code checks how recently the actor authenticated (owner decision 4); the manager only calls an app-supplied authorizeInstall.",
+      "fixedBy": "MKT-08"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "lifecycle across nodes and generations",
+        "every node, including a fresh one with empty storage, runs the installed set"
+      ],
+      "failure": {
+        "message": "^a fresh node: the site must still boot \\(managed plugin\\(s\\) failed to load: acme-notes \\(enabled_plugin_missing\\)\\)",
+        "name": "AssertionError"
+      },
+      "reason": "Bundles live only in the installing node's plugins folder; a second node or a fresh container finds the row, not the bytes, and fails to boot.",
+      "fixedBy": "MKT-07"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "lifecycle across nodes and generations",
+        "a plugin that throws in setup does not take the site down"
+      ],
+      "failure": {
+        "message": "^a boot with a plugin that throws in setup: the site must still boot \\(conformance plugin setup failed\\)",
+        "name": "AssertionError"
+      },
+      "reason": "A managed plugin's setup error fails the whole boot; there is no candidate generation, no promotion check and no revert.",
+      "fixedBy": "MKT-09"
+    },
+    {
+      "file": "core/test/plugins/conformance/legacy.test.ts",
+      "test": [
+        "marketplace conformance (legacy driver)",
+        "lifecycle across nodes and generations",
+        "an install applies to the running site without a redeploy"
+      ],
+      "failure": {
+        "message": "^the running site serves the new plugin",
+        "name": "AssertionError"
+      },
+      "reason": "Activation happens only at process start and nothing restarts the process, so an install needs a redeploy or a terminal.",
+      "fixedBy": "MKT-09"
+    },
+    {
+      "file": "core/test/plugins/conformance/archive-reader.test.ts",
+      "test": [
+        "marketplace archive reader",
+        "archives real tools write",
+        "reads a bsdtar pax bundle, applying pax path records"
+      ],
+      "failure": {
+        "message": "^archive contains an unsupported entry"
+      },
+      "reason": "The reader refuses pax extended headers (typeflag x), which bsdtar writes for every entry.",
+      "fixedBy": "MKT-03"
+    },
+    {
+      "file": "core/test/plugins/conformance/archive-reader.test.ts",
+      "test": [
+        "marketplace archive reader",
+        "archives real tools write",
+        "reads a git archive bundle, skipping the pax global header"
+      ],
+      "failure": {
+        "message": "^archive contains an unsupported entry"
+      },
+      "reason": "The reader refuses the pax global header (typeflag g) that git archive writes first.",
+      "fixedBy": "MKT-03"
+    },
+    {
+      "file": "core/test/plugins/conformance/archive-reader.test.ts",
+      "test": [
+        "marketplace archive reader",
+        "archives real tools write",
+        "decodes entry names as UTF-8"
+      ],
+      "failure": {
+        "message": "^the archive holds lib/café\\.js",
+        "name": "AssertionError"
+      },
+      "reason": "Entry names are read one byte per character (Latin-1), so a UTF-8 name extracts under a different path.",
+      "fixedBy": "MKT-03"
+    },
+    {
+      "file": "core/test/plugins/conformance/archive-reader.test.ts",
+      "test": [
+        "marketplace archive reader",
+        "refusals",
+        "refuses an entry name that is not valid UTF-8"
+      ],
+      "failure": {
+        "message": "^Missing expected exception: a name that is not UTF-8 is refused as an unsafe path$",
+        "name": "AssertionError"
+      },
+      "reason": "Header names are decoded byte by byte as Latin-1, so a name that is not UTF-8 reads as another valid name and the entry is accepted.",
+      "fixedBy": "MKT-03"
+    },
+    {
+      "file": "core/test/plugins/conformance/archive-reader.test.ts",
+      "test": ["marketplace archive reader", "refusals", "refuses a native addon"],
+      "failure": {
+        "message": "^Missing expected exception: a \\.node file is refused with native_addon_entry$",
+        "name": "AssertionError"
+      },
+      "reason": "The reader has no native_addon_entry rule; a .node file is extracted like any other.",
+      "fixedBy": "MKT-03"
+    },
+    {
+      "file": "core/test/plugins/conformance/archive-reader.test.ts",
+      "test": [
+        "marketplace archive reader",
+        "limits at their boundary",
+        "bsdtar-pax.tar.gz: opens at its tightest limits and is refused one below"
+      ],
+      "failure": {
+        "message": "^archive contains an unsupported entry"
+      },
+      "reason": "The reader refuses the pax `x` header, so the archive never opens and its limits cannot be checked at the boundary.",
+      "fixedBy": "MKT-03"
+    },
+    {
+      "file": "core/test/plugins/conformance/archive-reader.test.ts",
+      "test": [
+        "marketplace archive reader",
+        "limits at their boundary",
+        "git-archive.tar.gz: opens at its tightest limits and is refused one below"
+      ],
+      "failure": {
+        "message": "^archive contains an unsupported entry"
+      },
+      "reason": "The reader refuses the pax `g` header, so the archive never opens and its limits cannot be checked at the boundary.",
+      "fixedBy": "MKT-03"
+    },
+    {
+      "file": "core/test/plugins/conformance/archive-reader.test.ts",
+      "test": [
+        "marketplace archive reader",
+        "header mutation fuzz",
+        "bsdtar-pax.tar.gz: every mutation fails with an archive error or stays inside the limits"
+      ],
+      "failure": {
+        "message": "^bsdtar-pax\\.tar\\.gz: too few mutated archives were read \\(0 of 400",
+        "name": "AssertionError"
+      },
+      "reason": "The reader refuses the pax `x` header the archive starts with, so no mutated archive gets past it and the fuzz cannot reach pax handling.",
+      "fixedBy": "MKT-03"
+    },
+    {
+      "file": "core/test/plugins/conformance/archive-reader.test.ts",
+      "test": [
+        "marketplace archive reader",
+        "header mutation fuzz",
+        "git-archive.tar.gz: every mutation fails with an archive error or stays inside the limits"
+      ],
+      "failure": {
+        "message": "^git-archive\\.tar\\.gz: too few mutated archives were read \\(0 of 400",
+        "name": "AssertionError"
+      },
+      "reason": "The reader refuses the pax `g` header the archive starts with, so no mutated archive gets past it and the fuzz cannot reach pax handling.",
+      "fixedBy": "MKT-03"
+    },
+    {
+      "file": "core/test/plugins/conformance/presets.test.ts",
+      "test": [
+        "marketplace presets",
+        "the web presets state locked mode in code and commit a lock file"
+      ],
+      "failure": {
+        "message": "^the admin preset states activation: 'locked'",
+        "name": "AssertionError"
+      },
+      "reason": "The web presets are locked only by omission (no plugins.managed); there is no activation option and no jsails.plugins.lock to commit.",
+      "fixedBy": "MKT-14"
+    },
+    {
+      "file": "core/test/plugins/conformance/presets.test.ts",
+      "test": ["marketplace presets", "the blog preset with the managed option ships managed mode"],
+      "failure": {
+        "message": "^--blog --managed states activation: 'managed'",
+        "name": "AssertionError"
+      },
+      "reason": "createStarterFiles and jsails create have no managed option, so a casual owner cannot opt into managed mode (owner decision 1).",
+      "fixedBy": "MKT-14"
+    }
+  ]
+}

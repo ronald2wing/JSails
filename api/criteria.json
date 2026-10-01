@@ -1,0 +1,536 @@
+{
+  "description": "The 1.0 classification of every workspace and entry point: target tier, and the fate of what leaves before 1.0. Checked by scripts/gates/inclusion-criterion.mjs; the criterion itself is documented in scripts/api-report-criteria.mjs. KRN-21 assigns TSDoc tiers from it; KRN-24 makes it final.",
+  "packages": {
+    "jsails": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        },
+        "./plugin-sdk": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "jsails/plugin-sdk/*",
+            "by": "KRN-21",
+            "note": "Split into `jsails/plugin-sdk/http`, `/validation` and `/build`."
+          }
+        },
+        "./security": {
+          "tier": "public"
+        },
+        "./semver": {
+          "tier": "public"
+        },
+        "./api": {
+          "tier": "public"
+        },
+        "./app": {
+          "tier": "public"
+        },
+        "./broadcast": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/broadcast",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/broadcast`."
+          }
+        },
+        "./broadcast/client": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/broadcast/client",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/broadcast/client`."
+          }
+        },
+        "./build": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/dev",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/dev`, a development dependency."
+          }
+        },
+        "./cache": {
+          "tier": "public"
+        },
+        "./client": {
+          "tier": "public"
+        },
+        "./client/model": {
+          "tier": "public"
+        },
+        "./data": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/database",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/database`."
+          }
+        },
+        "./database": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/database",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/database`."
+          }
+        },
+        "./dev": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/dev",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/dev`, a development dependency."
+          }
+        },
+        "./diagnostics": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/diagnostics",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/diagnostics`."
+          }
+        },
+        "./encryption": {
+          "tier": "public"
+        },
+        "./extensions": {
+          "tier": "public"
+        },
+        "./facades": {
+          "tier": "public",
+          "fate": {
+            "action": "delete",
+            "by": "KRN-15",
+            "note": "Removed; use the request context instead."
+          }
+        },
+        "./filesystem": {
+          "tier": "public"
+        },
+        "./http": {
+          "tier": "public"
+        },
+        "./i18n": {
+          "tier": "public"
+        },
+        "./i18n/loader": {
+          "tier": "public"
+        },
+        "./i18n/server": {
+          "tier": "public"
+        },
+        "./introspect": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/dev",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/dev`, a development dependency."
+          }
+        },
+        "./jobs": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/jobs",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/jobs`."
+          }
+        },
+        "./jsx-runtime": {
+          "tier": "public",
+          "fate": {
+            "action": "delete",
+            "by": "KRN-21",
+            "note": "Removed; the JSX runtime is configured by the build."
+          }
+        },
+        "./live": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/live",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/live`."
+          }
+        },
+        "./mcp": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/mcp",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/mcp`."
+          }
+        },
+        "./models": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/database",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/database`."
+          }
+        },
+        "./pages": {
+          "tier": "public"
+        },
+        "./plugins": {
+          "tier": "public"
+        },
+        "./render-to-string": {
+          "tier": "public"
+        },
+        "./routing": {
+          "tier": "public"
+        },
+        "./seo": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "@jsails/seo",
+            "by": "KRN-22",
+            "note": "Moves to `@jsails/seo`."
+          }
+        },
+        "./server-components": {
+          "tier": "public"
+        },
+        "./services": {
+          "tier": "public"
+        },
+        "./signals": {
+          "tier": "public",
+          "fate": {
+            "action": "delete",
+            "by": "KRN-08",
+            "note": "Removed; observe events through telemetry instead."
+          }
+        },
+        "./support": {
+          "tier": "public",
+          "fate": {
+            "action": "move",
+            "to": "jsails/support/*",
+            "by": "KRN-21",
+            "note": "Split into one subpath per namespace (`jsails/support/strings`, `/collections`, ...)."
+          }
+        },
+        "./support/server": {
+          "tier": "public"
+        },
+        "./symbols": {
+          "tier": "public",
+          "fate": {
+            "action": "delete",
+            "by": "KRN-15",
+            "note": "Removed; bare names are injected at compile time."
+          }
+        },
+        "./symbols/client": {
+          "tier": "public",
+          "fate": {
+            "action": "delete",
+            "by": "KRN-15",
+            "note": "Removed; bare names are injected at compile time."
+          }
+        },
+        "./testing": {
+          "tier": "public"
+        },
+        "./validation": {
+          "tier": "public"
+        },
+        "./zod": {
+          "tier": "public"
+        },
+        "./rich-text": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/admin": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/admin-plugin-manager": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/ai": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        },
+        "./client": {
+          "tier": "public"
+        },
+        "./anthropic": {
+          "tier": "public"
+        },
+        "./openai-compatible": {
+          "tier": "public"
+        },
+        "./testing": {
+          "tier": "public"
+        },
+        "./mcp": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/auth": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/blog": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        },
+        "./admin": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/cache": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/config": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        },
+        "./admin": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/content": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/database": {
+      "publish": false,
+      "note": "Private skeleton; not published until its cluster fills it.",
+      "entries": {
+        ".": {
+          "tier": "public"
+        },
+        "./testing": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/diagnostics": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/editor": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        },
+        "./preact": {
+          "tier": "public"
+        },
+        "./server": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/filesystem": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/flags": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        },
+        "./admin": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/inertia": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        },
+        "./testing": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/jamal": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/jobs": {
+      "publish": false,
+      "note": "Private skeleton; not published until its cluster fills it.",
+      "entries": {
+        ".": {
+          "tier": "public"
+        },
+        "./testing": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/live": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        },
+        "./client": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/logging": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/mail": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/mcp": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/media": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        },
+        "./admin": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/notifications": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/resources": {
+      "publish": true,
+      "fate": {
+        "action": "delete",
+        "by": "SEC-10",
+        "note": "Removed; resources are declared through the API module."
+      },
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/sessions": {
+      "publish": true,
+      "fate": {
+        "action": "delete",
+        "by": "SEC-07",
+        "note": "Removed; sessions are part of authentication."
+      },
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/tenancy": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/theme": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    },
+    "@jsails/webhook": {
+      "publish": true,
+      "entries": {
+        ".": {
+          "tier": "public"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "description": "Tests that fail only on the Windows CI leg (KRN-02; Windows is supported for development). Every entry is scoped with \"platforms\": [\"win32\"]. Recorded from reading the tests, not from a Windows run: the first run of the test-windows job confirms or corrects each entry. A test of a POSIX-only fact (file modes, chmod-denied directories, graceful signals, /bin/sh) states its platform with a win32 skip instead of an entry here; what remains is owned by a later package: the filesystem package by CNT-17. No entry may name core/test/app, core/test/cli or a starter (scripts/test/windows-ledger.test.mjs).",
+  "kind": "tests",
+  "entries": [
+    {
+      "file": "packages/filesystem/test/filesystem.test.ts",
+      "test": [
+        "LocalDisk",
+        "refuses a stream whose temp file cannot be written, without crashing the process"
+      ],
+      "failure": {
+        "message": "^Missing expected rejection",
+        "name": "AssertionError"
+      },
+      "reason": "The test denies access with chmod 0o000/0o555 on a directory; Windows maps chmod to the read-only attribute, which does not stop listing or creating files in a directory, so the expected EACCES never happens.",
+      "fixedBy": "CNT-17",
+      "platforms": ["win32"]
+    }
+  ]
+}

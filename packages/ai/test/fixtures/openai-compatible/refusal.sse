@@ -1,0 +1,8 @@
+data: {"id":"chatcmpl-refuse","object":"chat.completion.chunk","created":1763500000,"model":"gpt-5.2","choices":[{"index":0,"delta":{"role":"assistant","content":null,"refusal":"I can't help with that."},"finish_reason":null}],"usage":null}
+
+data: {"id":"chatcmpl-refuse","object":"chat.completion.chunk","created":1763500000,"model":"gpt-5.2","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null}
+
+data: {"id":"chatcmpl-refuse","object":"chat.completion.chunk","created":1763500000,"model":"gpt-5.2","choices":[],"usage":{"prompt_tokens":9,"completion_tokens":7,"total_tokens":16}}
+
+data: [DONE]
+

@@ -1,0 +1,1022 @@
+{
+  "description": "Third-party packages each public entry and scenario process loads beyond its tier in scripts/import-graph/policy.mjs, browser-tier closures that reach a builtin or a server package, and browser-tier subpaths core does not declare browser-safe; judged by the import-graph gate (KRN-03). KRN-22 empties it when the package split lands.",
+  "kind": "gate",
+  "gate": "import-graph",
+  "entries": [
+    {
+      "id": "@jsails/admin enters bullmq",
+      "reason": "@jsails/admin (plugin tier) loads bullmq, imported by core/dist/src/jobs/bullmq-adapter.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/admin enters date-fns",
+      "reason": "@jsails/admin (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/admin enters dinero.js",
+      "reason": "@jsails/admin (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/admin enters pretty-ms",
+      "reason": "@jsails/admin (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/admin enters typeorm",
+      "reason": "@jsails/admin (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/admin-plugin-manager enters bullmq",
+      "reason": "@jsails/admin-plugin-manager (plugin tier) loads bullmq, imported by core/dist/src/jobs/bullmq-adapter.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/admin-plugin-manager enters date-fns",
+      "reason": "@jsails/admin-plugin-manager (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/admin-plugin-manager enters dinero.js",
+      "reason": "@jsails/admin-plugin-manager (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/admin-plugin-manager enters pretty-ms",
+      "reason": "@jsails/admin-plugin-manager (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/admin-plugin-manager enters typeorm",
+      "reason": "@jsails/admin-plugin-manager (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai enters date-fns",
+      "reason": "@jsails/ai (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai enters dinero.js",
+      "reason": "@jsails/ai (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai enters pretty-ms",
+      "reason": "@jsails/ai (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/anthropic enters date-fns",
+      "reason": "@jsails/ai/anthropic (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/anthropic enters dinero.js",
+      "reason": "@jsails/ai/anthropic (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/anthropic enters pretty-ms",
+      "reason": "@jsails/ai/anthropic (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/client enters date-fns",
+      "reason": "@jsails/ai/client (browser tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/client enters dinero.js",
+      "reason": "@jsails/ai/client (browser tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/client enters pretty-ms",
+      "reason": "@jsails/ai/client (browser tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/mcp enters date-fns",
+      "reason": "@jsails/ai/mcp (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/mcp enters dinero.js",
+      "reason": "@jsails/ai/mcp (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/mcp enters pretty-ms",
+      "reason": "@jsails/ai/mcp (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/openai-compatible enters date-fns",
+      "reason": "@jsails/ai/openai-compatible (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/openai-compatible enters dinero.js",
+      "reason": "@jsails/ai/openai-compatible (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/openai-compatible enters pretty-ms",
+      "reason": "@jsails/ai/openai-compatible (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/testing enters date-fns",
+      "reason": "@jsails/ai/testing (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/testing enters dinero.js",
+      "reason": "@jsails/ai/testing (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/ai/testing enters pretty-ms",
+      "reason": "@jsails/ai/testing (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/auth enters date-fns",
+      "reason": "@jsails/auth (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/auth enters dinero.js",
+      "reason": "@jsails/auth (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/auth enters pretty-ms",
+      "reason": "@jsails/auth (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/auth enters typeorm",
+      "reason": "@jsails/auth (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog enters date-fns",
+      "reason": "@jsails/blog (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog enters dinero.js",
+      "reason": "@jsails/blog (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog enters file-type",
+      "reason": "@jsails/blog (plugin tier) loads file-type, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog enters image-size",
+      "reason": "@jsails/blog (plugin tier) loads image-size, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog enters markdown-it",
+      "reason": "@jsails/blog (plugin tier) loads markdown-it, imported by packages/content/dist/src/render.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog enters pretty-ms",
+      "reason": "@jsails/blog (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog enters reflect-metadata",
+      "reason": "@jsails/blog (plugin tier) loads reflect-metadata, imported by core/dist/src/database/index.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog enters shiki",
+      "reason": "@jsails/blog (plugin tier) loads shiki, imported by packages/content/dist/src/highlight.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog enters tinyglobby",
+      "reason": "@jsails/blog (plugin tier) loads tinyglobby, imported by core/dist/src/support/files.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog enters yaml",
+      "reason": "@jsails/blog (plugin tier) loads yaml, imported by core/dist/src/support/frontmatter.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog/admin enters bullmq",
+      "reason": "@jsails/blog/admin (plugin tier) loads bullmq, imported by core/dist/src/jobs/bullmq-adapter.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog/admin enters date-fns",
+      "reason": "@jsails/blog/admin (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog/admin enters dinero.js",
+      "reason": "@jsails/blog/admin (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog/admin enters file-type",
+      "reason": "@jsails/blog/admin (plugin tier) loads file-type, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog/admin enters image-size",
+      "reason": "@jsails/blog/admin (plugin tier) loads image-size, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog/admin enters markdown-it",
+      "reason": "@jsails/blog/admin (plugin tier) loads markdown-it, imported by packages/content/dist/src/render.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog/admin enters pretty-ms",
+      "reason": "@jsails/blog/admin (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog/admin enters reflect-metadata",
+      "reason": "@jsails/blog/admin (plugin tier) loads reflect-metadata, imported by core/dist/src/database/index.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog/admin enters shiki",
+      "reason": "@jsails/blog/admin (plugin tier) loads shiki, imported by packages/content/dist/src/highlight.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog/admin enters tinyglobby",
+      "reason": "@jsails/blog/admin (plugin tier) loads tinyglobby, imported by core/dist/src/support/files.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/blog/admin enters yaml",
+      "reason": "@jsails/blog/admin (plugin tier) loads yaml, imported by core/dist/src/support/frontmatter.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/cache enters typeorm",
+      "reason": "@jsails/cache (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/config/admin enters bullmq",
+      "reason": "@jsails/config/admin (plugin tier) loads bullmq, imported by core/dist/src/jobs/bullmq-adapter.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/config/admin enters date-fns",
+      "reason": "@jsails/config/admin (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/config/admin enters dinero.js",
+      "reason": "@jsails/config/admin (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/config/admin enters pretty-ms",
+      "reason": "@jsails/config/admin (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/content enters date-fns",
+      "reason": "@jsails/content (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/content enters dinero.js",
+      "reason": "@jsails/content (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/content enters file-type",
+      "reason": "@jsails/content (plugin tier) loads file-type, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/content enters image-size",
+      "reason": "@jsails/content (plugin tier) loads image-size, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/content enters pretty-ms",
+      "reason": "@jsails/content (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/content enters tinyglobby",
+      "reason": "@jsails/content (plugin tier) loads tinyglobby, imported by core/dist/src/support/files.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/content enters typeorm",
+      "reason": "@jsails/content (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/content enters yaml",
+      "reason": "@jsails/content (plugin tier) loads yaml, imported by core/dist/src/support/frontmatter.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/database enters date-fns",
+      "reason": "@jsails/database (data tier) loads date-fns, imported by core/dist/src/support/time.js: the engine's DatabaseError extends JsailsError, which only the jsails/support barrel exports. KRN-07 moves the error base into a light module and DatabaseError onto it.",
+      "fixedBy": "KRN-07"
+    },
+    {
+      "id": "@jsails/database enters dinero.js",
+      "reason": "@jsails/database (data tier) loads dinero.js, imported by core/dist/src/support/numbers.js: the engine's DatabaseError extends JsailsError, which only the jsails/support barrel exports. KRN-07 moves the error base into a light module and DatabaseError onto it.",
+      "fixedBy": "KRN-07"
+    },
+    {
+      "id": "@jsails/database enters pretty-ms",
+      "reason": "@jsails/database (data tier) loads pretty-ms, imported by core/dist/src/support/time.js: the engine's DatabaseError extends JsailsError, which only the jsails/support barrel exports. KRN-07 moves the error base into a light module and DatabaseError onto it.",
+      "fixedBy": "KRN-07"
+    },
+    {
+      "id": "@jsails/database/testing enters bullmq",
+      "reason": "@jsails/database/testing (data tier) loads bullmq, imported by core/dist/src/jobs/bullmq-adapter.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/database/testing enters sitemap",
+      "reason": "@jsails/database/testing (data tier) loads sitemap, imported by core/dist/src/seo/sitemap.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/database/testing enters socket.io",
+      "reason": "@jsails/database/testing (data tier) loads socket.io, imported by core/dist/src/broadcast/socketio-adapter.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/database/testing enters unhead",
+      "reason": "@jsails/database/testing (data tier) loads unhead, imported by core/dist/src/seo/head.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/diagnostics enters date-fns",
+      "reason": "@jsails/diagnostics (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/diagnostics enters dinero.js",
+      "reason": "@jsails/diagnostics (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/diagnostics enters file-type",
+      "reason": "@jsails/diagnostics (plugin tier) loads file-type, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/diagnostics enters image-size",
+      "reason": "@jsails/diagnostics (plugin tier) loads image-size, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/diagnostics enters pretty-ms",
+      "reason": "@jsails/diagnostics (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/diagnostics enters tinyglobby",
+      "reason": "@jsails/diagnostics (plugin tier) loads tinyglobby, imported by core/dist/src/support/files.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/diagnostics enters typeorm",
+      "reason": "@jsails/diagnostics (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/diagnostics enters yaml",
+      "reason": "@jsails/diagnostics (plugin tier) loads yaml, imported by core/dist/src/support/frontmatter.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/editor enters date-fns",
+      "reason": "@jsails/editor (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/editor enters dinero.js",
+      "reason": "@jsails/editor (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/editor enters pretty-ms",
+      "reason": "@jsails/editor (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/editor/preact enters @editorjs/code",
+      "reason": "@jsails/editor/preact (browser tier) loads @editorjs/code, imported by packages/editor/dist/src/editorjs/mount.js.",
+      "fixedBy": "CNT-12"
+    },
+    {
+      "id": "@jsails/editor/preact enters @editorjs/delimiter",
+      "reason": "@jsails/editor/preact (browser tier) loads @editorjs/delimiter, imported by packages/editor/dist/src/editorjs/mount.js.",
+      "fixedBy": "CNT-12"
+    },
+    {
+      "id": "@jsails/editor/preact enters @editorjs/header",
+      "reason": "@jsails/editor/preact (browser tier) loads @editorjs/header, imported by packages/editor/dist/src/editorjs/mount.js.",
+      "fixedBy": "CNT-12"
+    },
+    {
+      "id": "@jsails/editor/preact enters @editorjs/list",
+      "reason": "@jsails/editor/preact (browser tier) loads @editorjs/list, imported by packages/editor/dist/src/editorjs/mount.js.",
+      "fixedBy": "CNT-12"
+    },
+    {
+      "id": "@jsails/editor/preact enters @editorjs/quote",
+      "reason": "@jsails/editor/preact (browser tier) loads @editorjs/quote, imported by packages/editor/dist/src/editorjs/mount.js.",
+      "fixedBy": "CNT-12"
+    },
+    {
+      "id": "@jsails/editor/preact enters date-fns",
+      "reason": "@jsails/editor/preact (browser tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/editor/preact enters dinero.js",
+      "reason": "@jsails/editor/preact (browser tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/editor/preact enters pretty-ms",
+      "reason": "@jsails/editor/preact (browser tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/editor/preact reaches @editorjs/editorjs in its browser closure",
+      "reason": "@jsails/editor/preact is browser tier, but its closure imports @editorjs/editorjs, which is not in its allowlist.",
+      "fixedBy": "CNT-12"
+    },
+    {
+      "id": "@jsails/editor/server enters date-fns",
+      "reason": "@jsails/editor/server (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/editor/server enters dinero.js",
+      "reason": "@jsails/editor/server (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/editor/server enters pretty-ms",
+      "reason": "@jsails/editor/server (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/editor/server enters typeorm",
+      "reason": "@jsails/editor/server (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/filesystem enters date-fns",
+      "reason": "@jsails/filesystem (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/filesystem enters dinero.js",
+      "reason": "@jsails/filesystem (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/filesystem enters file-type",
+      "reason": "@jsails/filesystem (plugin tier) loads file-type, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/filesystem enters image-size",
+      "reason": "@jsails/filesystem (plugin tier) loads image-size, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/filesystem enters pretty-ms",
+      "reason": "@jsails/filesystem (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/filesystem enters tinyglobby",
+      "reason": "@jsails/filesystem (plugin tier) loads tinyglobby, imported by core/dist/src/support/files.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/filesystem enters typeorm",
+      "reason": "@jsails/filesystem (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/filesystem enters yaml",
+      "reason": "@jsails/filesystem (plugin tier) loads yaml, imported by core/dist/src/support/frontmatter.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/flags/admin enters bullmq",
+      "reason": "@jsails/flags/admin (plugin tier) loads bullmq, imported by core/dist/src/jobs/bullmq-adapter.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/flags/admin enters date-fns",
+      "reason": "@jsails/flags/admin (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/flags/admin enters dinero.js",
+      "reason": "@jsails/flags/admin (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/flags/admin enters pretty-ms",
+      "reason": "@jsails/flags/admin (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/inertia enters typeorm",
+      "reason": "@jsails/inertia (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/inertia/testing enters typeorm",
+      "reason": "@jsails/inertia/testing (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/jamal enters date-fns",
+      "reason": "@jsails/jamal (tooling tier) loads date-fns, imported by core/dist/src/support/time.js through the jsails/support barrel; KRN-07 moves JsailsError to a light module.",
+      "fixedBy": "KRN-07"
+    },
+    {
+      "id": "@jsails/jamal enters dinero.js",
+      "reason": "@jsails/jamal (tooling tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/jamal enters pretty-ms",
+      "reason": "@jsails/jamal (tooling tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/jobs enters date-fns",
+      "reason": "@jsails/jobs (plugin tier) loads date-fns, imported by core/dist/src/support/time.js through the jsails/support barrel; KRN-07 moves JsailsError to a light module.",
+      "fixedBy": "KRN-07"
+    },
+    {
+      "id": "@jsails/jobs enters dinero.js",
+      "reason": "@jsails/jobs (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js through the jsails/support barrel; KRN-07 moves JsailsError to a light module.",
+      "fixedBy": "KRN-07"
+    },
+    {
+      "id": "@jsails/jobs enters pretty-ms",
+      "reason": "@jsails/jobs (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js through the jsails/support barrel; KRN-07 moves JsailsError to a light module.",
+      "fixedBy": "KRN-07"
+    },
+    {
+      "id": "@jsails/live enters date-fns",
+      "reason": "@jsails/live (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/live enters dinero.js",
+      "reason": "@jsails/live (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/live enters pretty-ms",
+      "reason": "@jsails/live (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/live enters reflect-metadata",
+      "reason": "@jsails/live (plugin tier) loads reflect-metadata, imported by core/dist/src/database/index.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/live enters typeorm",
+      "reason": "@jsails/live (plugin tier) loads typeorm, imported by core/dist/src/database/index.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/logging enters typeorm",
+      "reason": "@jsails/logging (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/mail enters typeorm",
+      "reason": "@jsails/mail (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/mcp enters date-fns",
+      "reason": "@jsails/mcp (tooling tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/mcp enters dinero.js",
+      "reason": "@jsails/mcp (tooling tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/mcp enters pretty-ms",
+      "reason": "@jsails/mcp (tooling tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/mcp enters typeorm",
+      "reason": "@jsails/mcp (tooling tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media enters date-fns",
+      "reason": "@jsails/media (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media enters dinero.js",
+      "reason": "@jsails/media (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media enters file-type",
+      "reason": "@jsails/media (plugin tier) loads file-type, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media enters image-size",
+      "reason": "@jsails/media (plugin tier) loads image-size, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media enters pretty-ms",
+      "reason": "@jsails/media (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media enters tinyglobby",
+      "reason": "@jsails/media (plugin tier) loads tinyglobby, imported by core/dist/src/support/files.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media enters yaml",
+      "reason": "@jsails/media (plugin tier) loads yaml, imported by core/dist/src/support/frontmatter.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media/admin enters bullmq",
+      "reason": "@jsails/media/admin (plugin tier) loads bullmq, imported by core/dist/src/jobs/bullmq-adapter.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media/admin enters date-fns",
+      "reason": "@jsails/media/admin (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media/admin enters dinero.js",
+      "reason": "@jsails/media/admin (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media/admin enters file-type",
+      "reason": "@jsails/media/admin (plugin tier) loads file-type, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media/admin enters image-size",
+      "reason": "@jsails/media/admin (plugin tier) loads image-size, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media/admin enters pretty-ms",
+      "reason": "@jsails/media/admin (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media/admin enters tinyglobby",
+      "reason": "@jsails/media/admin (plugin tier) loads tinyglobby, imported by core/dist/src/support/files.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/media/admin enters yaml",
+      "reason": "@jsails/media/admin (plugin tier) loads yaml, imported by core/dist/src/support/frontmatter.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/notifications enters reflect-metadata",
+      "reason": "@jsails/notifications (plugin tier) loads reflect-metadata, imported by core/dist/src/models/index.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/notifications enters typeorm",
+      "reason": "@jsails/notifications (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/resources enters reflect-metadata",
+      "reason": "@jsails/resources (plugin tier) loads reflect-metadata, imported by core/dist/src/models/index.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/tenancy enters date-fns",
+      "reason": "@jsails/tenancy (plugin tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/tenancy enters dinero.js",
+      "reason": "@jsails/tenancy (plugin tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/tenancy enters pretty-ms",
+      "reason": "@jsails/tenancy (plugin tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/tenancy enters reflect-metadata",
+      "reason": "@jsails/tenancy (plugin tier) loads reflect-metadata, imported by core/dist/src/database/index.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/theme enters date-fns",
+      "reason": "@jsails/theme (browser tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/theme enters dinero.js",
+      "reason": "@jsails/theme (browser tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/theme enters pretty-ms",
+      "reason": "@jsails/theme (browser tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/theme enters typeorm",
+      "reason": "@jsails/theme (browser tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/theme reaches ioredis in its browser closure",
+      "reason": "@jsails/theme is browser tier, but its closure imports ioredis, which is not in its allowlist.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/theme reaches node:async_hooks in its browser closure",
+      "reason": "@jsails/theme is browser tier, but its closure imports node:async_hooks.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/theme reaches node:crypto in its browser closure",
+      "reason": "@jsails/theme is browser tier, but its closure imports node:crypto.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/theme reaches node:fs in its browser closure",
+      "reason": "@jsails/theme is browser tier, but its closure imports node:fs.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/theme reaches node:path in its browser closure",
+      "reason": "@jsails/theme is browser tier, but its closure imports node:path.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/theme reaches node:url in its browser closure",
+      "reason": "@jsails/theme is browser tier, but its closure imports node:url.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/theme reaches node:util in its browser closure",
+      "reason": "@jsails/theme is browser tier, but its closure imports node:util.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "@jsails/webhook enters typeorm",
+      "reason": "@jsails/webhook (plugin tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails enters bullmq",
+      "reason": "jsails (runtime tier) loads bullmq, imported by core/dist/src/jobs/bullmq-adapter.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails enters reflect-metadata",
+      "reason": "jsails (runtime tier) loads reflect-metadata, imported by core/dist/src/database/index.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails enters sitemap",
+      "reason": "jsails (runtime tier) loads sitemap, imported by core/dist/src/seo/sitemap.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails enters socket.io",
+      "reason": "jsails (runtime tier) loads socket.io, imported by core/dist/src/broadcast/socketio-adapter.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails enters typeorm",
+      "reason": "jsails (runtime tier) loads typeorm, imported by core/dist/src/plugins/database-state-store.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails enters unhead",
+      "reason": "jsails (runtime tier) loads unhead, imported by core/dist/src/seo/head.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/app enters sitemap",
+      "reason": "jsails/app (runtime tier) loads sitemap, imported by core/dist/src/seo/sitemap.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/app enters unhead",
+      "reason": "jsails/app (runtime tier) loads unhead, imported by core/dist/src/seo/head.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/broadcast enters socket.io",
+      "reason": "jsails/broadcast (runtime tier) loads socket.io, imported by core/dist/src/broadcast/socketio-adapter.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/extensions reaches node:async_hooks in its browser closure",
+      "reason": "jsails/extensions is browser tier, but its closure imports node:async_hooks.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/jobs enters bullmq",
+      "reason": "jsails/jobs (runtime tier) loads bullmq, imported by core/dist/src/jobs/bullmq-adapter.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/jobs enters typeorm",
+      "reason": "jsails/jobs (runtime tier) loads typeorm, imported by core/dist/src/jobs/database-failed-job-history.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/jsx-runtime is browser tier but core does not declare it browser-safe",
+      "reason": "jsails/jsx-runtime is browser tier in the policy but missing from core's BROWSER_SAFE_SUBPATHS; the declaration and the documented browser-safe set disagree.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/live enters typeorm",
+      "reason": "jsails/live (runtime tier) loads typeorm, imported by core/dist/src/live/change-capture.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/pages enters sitemap",
+      "reason": "jsails/pages (runtime tier) loads sitemap, imported by core/dist/src/seo/sitemap.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/pages enters unhead",
+      "reason": "jsails/pages (runtime tier) loads unhead, imported by core/dist/src/seo/head.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/plugin-sdk enters typeorm",
+      "reason": "jsails/plugin-sdk (runtime tier) loads typeorm, imported by core/dist/src/database/unique-violation.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/plugins enters typeorm",
+      "reason": "jsails/plugins (runtime tier) loads typeorm, imported by core/dist/src/plugins/database-state-entity.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/rich-text is browser tier but core does not declare it browser-safe",
+      "reason": "jsails/rich-text is browser tier in the policy but missing from core's BROWSER_SAFE_SUBPATHS; the declaration and the documented browser-safe set disagree.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/support enters date-fns",
+      "reason": "jsails/support (browser tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/support enters dinero.js",
+      "reason": "jsails/support (browser tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/support enters pretty-ms",
+      "reason": "jsails/support (browser tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/support/server enters date-fns",
+      "reason": "jsails/support/server (runtime tier) loads date-fns, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/support/server enters dinero.js",
+      "reason": "jsails/support/server (runtime tier) loads dinero.js, imported by core/dist/src/support/numbers.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/support/server enters file-type",
+      "reason": "jsails/support/server (runtime tier) loads file-type, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/support/server enters image-size",
+      "reason": "jsails/support/server (runtime tier) loads image-size, imported by core/dist/src/support/media-detect.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/support/server enters pretty-ms",
+      "reason": "jsails/support/server (runtime tier) loads pretty-ms, imported by core/dist/src/support/time.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/support/server enters tinyglobby",
+      "reason": "jsails/support/server (runtime tier) loads tinyglobby, imported by core/dist/src/support/files.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/support/server enters yaml",
+      "reason": "jsails/support/server (runtime tier) loads yaml, imported by core/dist/src/support/frontmatter.server.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/symbols/client is browser tier but core does not declare it browser-safe",
+      "reason": "jsails/symbols/client is browser tier in the policy but missing from core's BROWSER_SAFE_SUBPATHS; the declaration and the documented browser-safe set disagree.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/symbols/client reaches date-fns in its browser closure",
+      "reason": "jsails/symbols/client is browser tier, but its closure imports date-fns, which is not in its allowlist.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/symbols/client reaches dinero.js in its browser closure",
+      "reason": "jsails/symbols/client is browser tier, but its closure imports dinero.js, which is not in its allowlist.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/symbols/client reaches node:async_hooks in its browser closure",
+      "reason": "jsails/symbols/client is browser tier, but its closure imports node:async_hooks.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/symbols/client reaches pretty-ms in its browser closure",
+      "reason": "jsails/symbols/client is browser tier, but its closure imports pretty-ms, which is not in its allowlist.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/testing enters sitemap",
+      "reason": "jsails/testing (tooling tier) loads sitemap, imported by core/dist/src/seo/sitemap.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/testing enters typeorm",
+      "reason": "jsails/testing (tooling tier) loads typeorm, imported by core/dist/src/plugins/database-state-store.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "jsails/testing enters unhead",
+      "reason": "jsails/testing (tooling tier) loads unhead, imported by core/dist/src/seo/head.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "serve-first-request enters sitemap",
+      "reason": "serve-first-request (runtime tier) loads sitemap, imported by core/dist/src/seo/sitemap.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "serve-first-request enters unhead",
+      "reason": "serve-first-request (runtime tier) loads unhead, imported by core/dist/src/seo/head.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "serve-first-request-database enters sitemap",
+      "reason": "serve-first-request-database (data tier) loads sitemap, imported by core/dist/src/seo/sitemap.js.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "serve-first-request-database enters unhead",
+      "reason": "serve-first-request-database (data tier) loads unhead, imported by core/dist/src/seo/head.js.",
+      "fixedBy": "KRN-22"
+    }
+  ]
+}

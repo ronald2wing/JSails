@@ -1,0 +1,106 @@
+// Create a user in the Better Auth database, or give an existing one a role.
+//
+// Usage: node scripts/create-user.mjs <email> [password] [name] [--role <role>]
+//
+// `--role admin` makes the account an admin: the starter's admin panel admits
+// only sessions whose user holds the `admin` role, and this script (through
+// `setUserRole`) is how the first admin is made. No sign-up endpoint can set a
+// role. When the email already has an account (registered at `/register`, or
+// created by an earlier run whose role step failed), `--role` assigns the role
+// to that account and leaves its password untouched, so the command can always
+// be rerun. A new account needs a password.
+//
+// The password is read from the arguments but is never printed or logged. It
+// uses the same environment the app does (`npm run user:create` loads `.env`
+// and `.env.local` with Node's `--env-file-if-exists`), and it runs the Better Auth
+// `signUpEmail` endpoint directly (no HTTP server involved). `createAuth`,
+// `findUserByEmail`, and `setUserRole` come from the `auth` plugin
+// (`@jsails/auth`).
+import { parseArgs } from 'node:util';
+
+import { createAuth, findUserByEmail, setUserRole } from '@jsails/auth';
+
+const USAGE = 'Usage: node scripts/create-user.mjs <email> [password] [name] [--role <role>]';
+
+let parsed;
+try {
+  parsed = parseArgs({
+    args: process.argv.slice(2),
+    options: { role: { type: 'string' } },
+    allowPositionals: true,
+    strict: true,
+  });
+} catch {
+  console.error(USAGE);
+  process.exit(1);
+}
+
+const [email, password, name] = parsed.positionals;
+const role = parsed.values.role?.trim();
+
+if (!email || parsed.positionals.length > 3) {
+  console.error(USAGE);
+  process.exit(1);
+}
+
+if (role !== undefined && role === '') {
+  console.error('Error: --role needs a role name (for example --role admin).');
+  process.exit(1);
+}
+
+// Minimal, readable validation. Better Auth performs the authoritative checks
+// (email shape, password policy) on sign-up; these only catch obviously wrong
+// invocations before doing any work.
+if (!email.includes('@')) {
+  console.error(`Error: <email> must be an email address (got "${email}").`);
+  process.exit(1);
+}
+
+// Sign-up is off by default on a Better Auth instance this package builds, so
+// the script turns it on for its own instance only. `autoSignIn: false` keeps
+// the script from minting a session nobody uses.
+const auth = createAuth({ emailAndPassword: { disableSignUp: false, autoSignIn: false } });
+
+// With `autoSignIn: false`, Better Auth answers a duplicate sign-up with a
+// generic success (so a public form cannot probe for accounts), which would
+// make this script report an account it never created. Look the email up
+// first instead (`findUserByEmail` matches case-insensitively).
+try {
+  const existing = await findUserByEmail(auth, email);
+  if (existing !== null) {
+    if (role === undefined) {
+      throw new Error('a user with this email already exists (pass --role to assign a role)');
+    }
+    if (!(await setUserRole(auth, email, role))) {
+      throw new Error('the existing account could not be found to assign its role');
+    }
+    console.log(`User already exists: ${existing.email}; password unchanged`);
+    console.log(`Assigned role: ${role}`);
+  } else {
+    if (!password) {
+      throw new Error('a new account needs a password');
+    }
+    // Better Auth requires a name on sign-up; derive one from the email's local
+    // part when the caller did not supply one.
+    const displayName = name || email.split('@')[0] || 'User';
+    const result = await auth.api.signUpEmail({
+      body: { name: displayName, email, password },
+    });
+    console.log(`Created user: ${result.user.email} (id: ${result.user.id})`);
+    if (role !== undefined) {
+      if (!(await setUserRole(auth, email, role))) {
+        throw new Error('the new account could not be found to assign its role');
+      }
+      console.log(`Assigned role: ${role}`);
+    }
+  }
+} catch (error) {
+  // The password is never echoed. Better Auth error messages describe the
+  // failure (e.g. "password too short") without credentials.
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(`Failed for user "${email}": ${message}`);
+  process.exitCode = 1;
+} finally {
+  // Release the instance's connection pool so the process exits on its own.
+  await auth.dispose();
+}

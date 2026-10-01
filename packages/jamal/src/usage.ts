@@ -1,0 +1,246 @@
+/**
+ * Help and usage text for the jamal command.
+ *
+ * Kept separate from control flow so the text can be reviewed and edited
+ * without touching command logic. Every string is emitted verbatim and never
+ * influences behavior.
+ */
+
+export const JAMAL_USAGE = `jamal - local services and single-host production deploys
+
+Usage:
+    jamal <verb> [options]
+
+Jamal reads one config file, jamal.config.ts in the project root. The local
+verbs drive Docker Compose on this machine; the production verbs drive one
+server over ssh and run only on Linux and macOS.
+
+Local Docker (Sail-like) verbs — require Docker with the compose plugin and
+always act on the local project, even when the config has a production
+section:
+  up [--detach]           materialize .jamal/compose.yml from the config,
+                          then docker compose up -d --wait
+                          (detached and health-waited by default)
+  down                    docker compose down
+  ps                      docker compose ps
+  logs [--follow] [service]
+                          docker compose logs
+  exec <service> -- <cmd...>
+                          docker compose exec <service> <cmd...>
+
+down/ps/logs/exec use the managed .jamal/compose.yml and its project; run
+"jamal up" to generate it first.
+
+local.app in the config says where the app runs: "host" (the default; run
+it yourself with "npm run dev"), "dev" (a container with the project mounted
+and "jsails dev" reloading on save, like Laravel Sail), or "image" (built from
+the project's Dockerfile, like production).
+
+Dev-container shortcuts (local.app: "dev") — run one command in a fresh app
+container, starting the services it depends on; every argument passes through:
+  jsails <args...>        node_modules/.bin/jsails <args...>  (db:push, make:model, ...)
+  npm <args...>           npm <args...>                       (install, run build, ...)
+  npx <args...>           npx <args...>
+  node <args...>          node <args...>
+  test [args...]          npm test [-- args...]
+  shell                   an interactive bash shell in the app container
+
+Production verbs (require config.production; one server):
+  deploy [--tag <tag>] [--dry-run]
+                          Perform a real production deploy: build and push the
+                          image locally, then pull, run, health-check, switch,
+                          and stop the previous container on the server.
+                          The deployed tag is recorded in .jamal/deploys.json.
+                          Pass --dry-run to print the plan and run nothing.
+  rollback [--dry-run]    Deploy the previous successful tag (from
+                          .jamal/deploys.json) and stop the current container.
+                          Pass --dry-run to print the plan and run nothing.
+  status                  List containers on the server (docker ps)
+  prune --keep <n> [--images <ref>...]
+                          Plan which images to remove, keeping the <n> most
+                          recent per service. Images must be passed explicitly
+                          (e.g. from "docker image ls" output, newest first).
+  secrets <print|fetch|extract> [name] [--destination <name>] [--secrets-path <path>]
+                          Inspect the deploy secrets files (.jamal/secrets-common
+                          then .jamal/secrets[.<destination>]). "print" lists the
+                          resolved names only; "fetch <name>" prints one value;
+                          "extract <key>" prints one value from a JSON secret.
+  domain <add|list|remove>
+                          Manage the proxy's public domains. See
+                          "jamal domain --help".
+  accessory <boot|start|stop|reboot|logs|remove|details> [name] [--follow] [--dry-run]
+                          Manage backing service containers (mariadb, postgres,
+                          valkey) on the server. See "jamal accessory --help".
+  app <boot|start|stop|details|containers|logs|exec>
+                          Manage the app container on the server. Every verb
+                          targets the latest recorded deploy. See
+                          "jamal app --help".
+  lock <status|release> [--dry-run]
+                          Show who holds the deploy lock, or remove a lock a
+                          killed deploy left behind. See "jamal lock --help".
+  cache-proxy <plan|status> [--tag <tag>]
+                          Inspect the Varnish caching reverse-proxy (opt-in via
+                          "cacheProxy.enabled"). See "jamal cache-proxy --help".
+
+"jamal logs" and "jamal exec" always inspect the local Compose project; use
+"jamal app logs" and "jamal app exec" for the deployed container.
+
+Options:
+  --dry-run        Print the production plan (deploy/rollback) and run nothing
+  --detach         Accepted for \`up\`; already the default (up always detaches)
+  --follow         Follow logs instead of a one-shot dump (logs only)
+  --tag <tag>      Image tag to deploy (deploy only; defaults to
+                   "git rev-parse --short HEAD", falling back to a timestamp)
+  -h, --help       Show this help
+`;
+
+export const JAMAL_DEPLOY_USAGE = `jamal deploy - run a production release on the configured server
+
+Usage:
+  jamal deploy [options]
+
+deploy EXECUTES a real production release: it builds and pushes the image
+locally, then pulls, runs, health-checks, switches, and stops the previous
+container on config.production.server, recording the tag in
+.jamal/deploys.json. Pass --dry-run to print the plan and run nothing.
+
+Options:
+  --dry-run        Print the production plan and run nothing
+  --tag <tag>      Image tag to deploy (defaults to
+                   "git rev-parse --short HEAD", falling back to a timestamp)
+  -h, --help       Show this help
+`;
+
+export const DOMAIN_USAGE = `jamal domain - manage the proxy's public domains
+
+Usage:
+  jamal domain <add|list|remove> [options]
+
+Production only: "jamal domain" requires config.production (the remote server)
+and resolves the backend service from --service (or config.service). Every verb
+drives the running kamal-proxy container over ssh.
+
+Subcommands:
+  add <host>    Route <host> to the LATEST deployed container, terminating TLS
+                at the proxy by default. The backend target is reconstructed
+                from .jamal/deploys.json, so a production deploy must already
+                be recorded.
+  list          Dump the proxy's routing table on the remote server.
+  remove <host> Remove the service (and its routed host) from the proxy. The
+                proxy removes by service, so <host> names the domain but the
+                operation is service-scoped.
+
+Notes:
+  These verbs drive the proxy's runtime deploy/remove API over ssh, not a config
+  file: a host added here is NOT recorded in deploy.yml, so a later external
+  "kamal deploy" may overwrite or conflict with it. Use on-demand TLS for
+  unknown/customer hosts, and note that --tls static hosts and on-demand TLS are
+  mutually exclusive.
+
+Options:
+  --service <name>  Backend service name (defaults to config.service)
+  --no-tls          (add only) Do not terminate TLS at the proxy
+  --dry-run         Print the exact ssh command without running it
+  -h, --help        Show this help
+`;
+
+export const ACCESSORY_USAGE = `jamal accessory - manage backing service containers on the remote server
+
+Usage:
+  jamal accessory <boot|start|stop|reboot|logs|remove|details> [name] [options]
+
+Production only: "jamal accessory" requires config.production (the remote server).
+Every verb drives docker commands over ssh on the target server.
+
+Verbs:
+  boot [name]    Create the data volume (idempotent) and start the container
+                 if it is not already running. With no name, boot every backing
+                 service (mariadb, postgres, valkey).
+  start [name]   Start an existing stopped container. No name -> all.
+  stop [name]    Stop a running container. No name -> all.
+  reboot [name]  Restart a container. No name -> all.
+  logs <name> [--follow]
+                 Show (or follow) the logs of one accessory container. Requires
+                 a name (a single service; no "all" mode).
+  remove [name]  Stop and remove a container (the data volume is left intact).
+                 No name -> all.
+  details <name> Show the docker inspect JSON for one accessory container.
+                 Requires a name.
+
+Options:
+  --follow        Follow logs instead of a one-shot dump (logs only)
+  --dry-run       Print the exact ssh command(s) without running them
+  -h, --help      Show this help
+`;
+
+export const APP_USAGE = `jamal app - manage the app container on the remote server
+
+Usage:
+  jamal app <boot|start|stop|details|containers|logs|exec> [options]
+
+Production only: "jamal app" requires config.production (the remote server).
+Every verb targets the LATEST recorded deploy container, reconstructed from
+.jamal/deploys.json (a production deploy must already be recorded).
+
+Verbs:
+  boot            Start the app container if it is not already running.
+  start           Start the latest deployed container.
+  stop            Stop the latest deployed container.
+  details         Show docker inspect JSON for the latest deployed container.
+  containers      List the app's containers on the server (filtered by service name).
+  logs [--follow] Show (or follow) the logs of the latest deployed container.
+  exec -- <cmd...>
+                  Run <cmd...> inside the latest deployed container.
+                  Requires "--" before the command.
+
+Options:
+  --follow        Follow logs instead of a one-shot dump (logs only)
+  --dry-run       Print the exact ssh command without running it
+  -h, --help      Show this help
+`;
+
+export const LOCK_USAGE = `jamal lock - inspect or clear the remote deploy lock
+
+Usage:
+  jamal lock <status|release> [options]
+
+Production only: requires config.production (the remote server). A deploy or
+rollback holds a lock directory (~/.jamal/locks/<service>.deploy.lock on the
+server) for its whole run and releases it when it ends, fails, or is
+interrupted with Ctrl-C. A deploy whose process died outright cannot, and the
+next deploy then stops with "the deploy lock is already held".
+
+Verbs:
+  status          Show whether the lock is held and, when recorded, by whom
+                  (user@machine and the start time).
+  release         Remove the lock. Run it only when no deploy is running.
+
+Options:
+  --dry-run       Print the ssh command without running it
+  -h, --help      Show this help
+`;
+
+export const CACHE_PROXY_USAGE = `jamal cache-proxy - inspect the Varnish caching reverse-proxy
+
+Usage:
+  jamal cache-proxy <plan|status> [options]
+
+The cache proxy is opt-in (default OFF) and switchable by toggling
+"cacheProxy.enabled" in the jamal config; "jamal deploy" boots it when enabled.
+Both verbs are read-only: they load the config and print text, and never
+execute docker or ssh.
+
+Verbs:
+  status          Report the cache-proxy configuration: enabled state, image,
+                  size, and cookie allowlist, plus how to switch it.
+  plan [--tag]    Print the VCL (Varnish Configuration Language) that
+                  "jamal deploy" would write to /etc/varnish/default.vcl, with
+                  the cookie allowlist applied. The backend is the app container
+                  name for the given tag. Requires "cacheProxy.enabled": true.
+
+Options:
+  --tag <tag>     Image tag used to derive the plan's backend container name
+                  (plan only; defaults to "latest" — the real deploy uses its
+                  own resolved tag)
+  -h, --help      Show this help
+`;

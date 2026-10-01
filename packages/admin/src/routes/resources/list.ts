@@ -1,0 +1,60 @@
+/**
+ * Admin resource list route: the sortable, filterable, searchable, paginated
+ * list table (`GET <slug>`).
+ *
+ * The handler runs the shared default-deny auth gate first, then the resource's
+ * own `authorize` (deny when absent; exact `true` when present), parses
+ * the allowlisted list-table state, invokes the trusted `list` callback, and
+ * renders the list page. Markup is server-rendered through Preact, which owns
+ * all escaping.
+ */
+
+import type { Context } from 'hono';
+
+import { adminHtmlResponse } from '../../document.js';
+import { reportAdminError } from '../../error-report.js';
+import { assertAdminSession } from '../../guards.js';
+import { parseListState } from '../../list-query.js';
+import type { AdminPanel } from '../../panel.js';
+import { renderListPage, visibleColumns } from '../../resource/render-list.js';
+import { readNotice } from '../../notices.js';
+import { resourceAllowed } from '../../resource/access.js';
+import type { Resource, ResourceListContext } from '../../resource/index.js';
+import { adminForbiddenResponse, adminServerErrorResponse } from '../../responses.js';
+
+/** GET <slug>: the sortable, filterable, searchable, paginated list table. */
+export async function handleList(
+  panel: AdminPanel,
+  resource: Resource,
+  c: Context,
+): Promise<Response> {
+  const session = await assertAdminSession(panel, c.req.raw);
+  if (session === null) {
+    return adminForbiddenResponse();
+  }
+  if (!(await resourceAllowed(resource, session, 'list', undefined, { report: panel }))) {
+    return adminForbiddenResponse();
+  }
+  const state = parseListState(new URL(c.req.raw.url), resource);
+  const context: ResourceListContext = {
+    session,
+    page: state.page,
+    pageSize: state.pageSize,
+    ...(state.sort !== undefined ? { sort: state.sort, direction: state.direction } : {}),
+    ...(state.search !== undefined ? { search: state.search } : {}),
+    ...(Object.keys(state.filters).length > 0 ? { filters: state.filters } : {}),
+  };
+  let result;
+  try {
+    result = await resource.list(context);
+  } catch (error) {
+    reportAdminError(panel, error, { surface: 'resource', slug: resource.slug, operation: 'list' });
+    return adminServerErrorResponse();
+  }
+  const notice = readNotice(new URL(c.req.raw.url), panel);
+  const columns = await visibleColumns(panel, resource, session);
+  return adminHtmlResponse(
+    await renderListPage(panel, resource, columns, result, state, notice),
+    200,
+  );
+}

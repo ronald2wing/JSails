@@ -1,0 +1,18 @@
+# Every checkout gets LF text files, whatever the client's core.autocrlf, so a
+# default Git for Windows clone passes Prettier and copies LF starter templates.
+* text=auto eol=lf
+
+*.gz binary
+*.tgz binary
+*.tar binary
+*.zip binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.pdf binary
