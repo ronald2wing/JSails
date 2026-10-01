@@ -1,0 +1,4 @@
+{
+  "id": "jsails-admin-plugin-manager",
+  "provides": ["@jsails/admin-plugin-manager"]
+}

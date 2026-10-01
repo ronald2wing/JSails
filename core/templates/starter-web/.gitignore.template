@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.jamal/
+.jsails/
+public/assets/
+out/
+test-results/
+playwright-report/
+.env
+.env.*
+storage/
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.db

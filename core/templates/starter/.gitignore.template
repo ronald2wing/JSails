@@ -1,0 +1,11 @@
+node_modules/
+dist/
+public/assets/
+out/
+.jsails/
+storage/
+.content-cache/
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.db

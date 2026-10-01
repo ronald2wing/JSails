@@ -1,0 +1,62 @@
+{
+  "name": "@jsails/media",
+  "version": "1.0.0",
+  "description": "Disk-backed media library for JSails (uploads, metadata, selection, media references).",
+  "license": "MIT",
+  "author": "Ronald Wong <ronald2wing@gmail.com>",
+  "homepage": "https://jsails.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronald2wing/JSails.git",
+    "directory": "plugins/media"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./admin": {
+      "types": "./dist/src/admin/index.d.ts",
+      "import": "./dist/src/admin/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/test",
+    "!dist/.tsbuildinfo",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "tsc -p tsconfig.json",
+    "build:clean": "npm run clean && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build:clean && node --test \"dist/test/**/*.test.js\"",
+    "test:watch": "node --test --watch \"dist/test/**/*.test.js\"",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "jsails": "1.0.0",
+    "typeorm": "^1.1.1"
+  },
+  "devDependencies": {
+    "@jsails/filesystem": "1.0.0",
+    "jsails": "1.0.0",
+    "typeorm": "^1.1.1"
+  },
+  "dependencies": {
+    "@jsails/admin": "1.0.0",
+    "preact": "^11.0.0"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ronald2wing/JSails/issues"
+  }
+}

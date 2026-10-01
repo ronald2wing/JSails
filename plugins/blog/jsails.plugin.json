@@ -1,0 +1,4 @@
+{
+  "id": "jsails-blog",
+  "provides": ["@jsails/blog"]
+}

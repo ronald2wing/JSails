@@ -1,0 +1,65 @@
+{
+  "name": "@jsails/mail",
+  "version": "1.0.0",
+  "description": "Transport-agnostic mail seam with SMTP, callback, and in-memory transports.",
+  "license": "MIT",
+  "author": "Ronald Wong <ronald2wing@gmail.com>",
+  "homepage": "https://jsails.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronald2wing/JSails.git",
+    "directory": "plugins/mail"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/test",
+    "!dist/.tsbuildinfo",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "tsc -p tsconfig.json",
+    "build:clean": "npm run clean && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build:clean && node --test \"dist/test/**/*.test.js\"",
+    "test:watch": "node --test --watch \"dist/test/**/*.test.js\"",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "nodemailer": "^10.2.0"
+  },
+  "peerDependencies": {
+    "jsails": "1.0.0"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^8.0.2",
+    "jsails": "1.0.0"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ronald2wing/JSails/issues"
+  },
+  "jsails": {
+    "id": "jsails-mail",
+    "version": "1.0.0",
+    "jsailsCompat": "^1.0.0",
+    "permissions": [
+      "mail.send",
+      "network.connect"
+    ],
+    "entry": "@jsails/mail"
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "id": "jsails-flags",
+  "provides": ["@jsails/flags"]
+}

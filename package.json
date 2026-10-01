@@ -1,0 +1,49 @@
+{
+  "name": "jsails-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "core",
+    "plugins/*"
+  ],
+  "scripts": {
+    "build": "node scripts/build-workspaces.mjs build",
+    "build:clean": "node scripts/build-workspaces.mjs build:clean",
+    "build:watch": "npm run build:watch -w jsails",
+    "test": "npm run build && node scripts/test-workspaces.mjs",
+    "test:watch": "npm run test:watch --workspace=jsails",
+    "test:coverage": "npm run test:coverage --workspace=jsails",
+    "typecheck": "node scripts/build-workspaces.mjs typecheck",
+    "lint": "eslint . --cache",
+    "lint:fix": "eslint . --fix --cache",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check-structure": "node scripts/check-src-structure.mjs",
+    "check": "node scripts/run-parallel.mjs lint format:check check-structure && npm run test",
+    "verify:starter": "node scripts/verify-starter.mjs",
+    "verify:integrations": "node scripts/verify-integrations.mjs",
+    "website": "npm run build && npm --prefix website run build",
+    "prepublishOnly": "npm run check",
+    "precheck": "npm run build",
+    "release": "npm run check && npm publish --workspaces --ignore-scripts"
+  },
+  "devDependencies": {
+    "@types/hotwired__turbo": "^8.0.16",
+    "@types/mime-types": "^3.0.1",
+    "@types/node": "^26.6.5",
+    "@types/nodemailer": "^8.0.2",
+    "@types/qs": "^6.15.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "eslint": "^10.13.0",
+    "eslint-config-prettier": "^10.1.8",
+    "playwright-core": "^1.64.1",
+    "prettier": "^3.9.10",
+    "schema-dts": "^2.1.0",
+    "socket.io-adapter": "^2.5.8",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript-eslint": "^8.72.0"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  }
+}

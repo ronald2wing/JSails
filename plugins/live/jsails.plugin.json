@@ -1,0 +1,4 @@
+{
+  "id": "jsails-live",
+  "provides": ["@jsails/live", "@jsails/live/client"]
+}

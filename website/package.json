@@ -1,0 +1,33 @@
+{
+  "name": "jsails-docs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && vite build && node node_modules/jsails/dist/src/cli/index.js build --config jsails.app.js && pagefind --site out",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.client.json --noEmit",
+    "check": "npm run typecheck && npm run build && npm run check:docs",
+    "check:docs": "node scripts/check-docs.mjs",
+    "freeze:version": "node scripts/freeze-version.mjs",
+    "serve": "node node_modules/jsails/dist/src/cli/index.js serve --config jsails.app.js",
+    "dev": "node node_modules/jsails/dist/src/cli/index.js dev"
+  },
+  "dependencies": {
+    "@jsails/content": "file:../plugins/content",
+    "jsails": "file:../core",
+    "preact": "^11.0.1"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.6",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "daisyui": "^5.7.50",
+    "pagefind": "^1.5.2",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  }
+}

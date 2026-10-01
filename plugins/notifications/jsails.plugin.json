@@ -1,0 +1,4 @@
+{
+  "id": "jsails-notifications",
+  "provides": ["@jsails/notifications"]
+}

@@ -1,0 +1,223 @@
+import { JsailsDataSource, pluginStateEntities, readDatabaseEnvironment } from 'jsails';
+import { createDatabasePluginStateStore, createPluginInstaller } from 'jsails/plugins';
+import { defineAdminPanel } from '@jsails/admin';
+import {
+  blogAdmin,
+  blogThemeAdmin,
+  contentEntities,
+  createBlogSearchEngine,
+  createDatabaseContentRepository,
+} from '@jsails/blog';
+import { firstPartyPluginDirectory, pluginManagerPlugin } from '@jsails/admin-plugin-manager';
+import { editorJsAdapter } from '@jsails/editor';
+import { createDatabaseMediaIndex, createMediaLibrary, mediaEntities } from '@jsails/media';
+import { mediaAdmin } from '@jsails/media/admin';
+import { builtinThemePackages, createThemeRegistry } from '@jsails/theme';
+import {
+  authSessionToken,
+  createAuth,
+  disposeCachedAuth,
+  resolveSessionFromRequest,
+} from '@jsails/auth';
+import { createDiskFromEnv } from '@jsails/filesystem';
+import { createPublicationRegistry } from '@jsails/live';
+
+// Auth is the first-party `auth` plugin (`@jsails/auth`): it lazily builds a
+// Better Auth instance (email/password + RFC 8628 device authorization) over
+// MariaDB and mounts the `/api/auth/*`, `/api/login`, `/api/logout`, and
+// `/api/device/approve|deny` routes as trusted hook routes. Importing this
+// config reads no environment variable and opens no database connection — the
+// first live request (or an auth script) builds the instance. The secret comes
+// from BETTER_AUTH_SECRET (or AUTH_SECRET); Better Auth fails in production
+// without one, and JSails does not invent a fallback. See `.env.auth.example`
+// for the variables (JSails never auto-loads `.env`).
+
+// Optional public origin for the login/logout same-origin checks. Behind a
+// TLS-terminating proxy the request URL is plain HTTP, so set PUBLIC_ORIGIN to
+// the public HTTPS origin; when unset the handlers fall back to each request's
+// own origin.
+const publicOrigin = process.env.PUBLIC_ORIGIN;
+
+// One lazy shared data source backs the blog content repository, the media
+// metadata index, and managed plugin state, so the app opens a single
+// connection pool. Constructing it reads DATABASE_* but does not connect until
+// the first query, so importing this config, running `jsails build` (static
+// export), and rendering the SSG blog pages never open a database connection.
+// The `jsails_blog_content_*`, `jsails_media_asset`, and `jsails_plugin_state`
+// tables are declared by the plugin schemas and the entity list below; run
+// `npm run db:migrate` first. The app closes the source on shutdown.
+let dataSource;
+const getDataSource = () => {
+  dataSource ??= new JsailsDataSource({
+    ...readDatabaseEnvironment(),
+    entities: [...contentEntities, ...mediaEntities, ...pluginStateEntities],
+  });
+  return dataSource;
+};
+
+// One shared, database-backed CMS repository backs both the `blog` plugin's
+// HTTP routes (`GET /blog`, `POST /blog/posts`) and the `blog` admin resource.
+const blogRepository = createDatabaseContentRepository({ getDataSource });
+
+// One shared search engine backs both the public `GET /blog/search` route and
+// the admin save-time indexer, so a post saved in the admin is immediately
+// findable. `SEARCH_DRIVER` selects the engine (default `orama`, the embedded
+// index); `database` needs no service, while `meilisearch`/`typesense`/
+// `opensearch` read `SEARCH_URL`, `SEARCH_API_KEY`, and `SEARCH_INDEX`.
+const search = createBlogSearchEngine({
+  driver: process.env.SEARCH_DRIVER ?? 'orama',
+  repository: blogRepository,
+  url: process.env.SEARCH_URL,
+  apiKey: process.env.SEARCH_API_KEY,
+  index: process.env.SEARCH_INDEX,
+});
+
+// One shared disk backs both the `filesystem` plugin and the media library.
+// `FILESYSTEM_DISK` selects `local` (the default, rooted at
+// `storage/files`) or `s3`; the `S3_*` variables supply the bucket and
+// credentials. Both surfaces therefore read and write the same bytes. Media
+// metadata (alt/caption/MIME/dimensions) is persisted in the
+// `jsails_media_asset` table through the shared data source, keyed under the
+// `media/` prefix.
+const files = createDiskFromEnv();
+const mediaIndex = createDatabaseMediaIndex({ getDataSource });
+const mediaLibrary = createMediaLibrary({
+  disk: files.disk,
+  diskName: files.name,
+  metadata: mediaIndex,
+});
+
+// One theme registry over the first-party built-in theme packages. The active
+// theme is the first package (sorted by name) until the admin surface persists
+// a `theme.active` setting through `blogThemeAdmin`; the name is stored as a
+// setting (no new database table), and each activation below returns a new
+// immutable registry rather than mutating this one.
+const themeRegistry = createThemeRegistry({ packages: builtinThemePackages });
+
+// Managed plugin state and installer share the same lazy data source. The state
+// table is `jsails_plugin_state` (pluginStateEntities, included in
+// jsails.config.blog.js); constructing the source reads DATABASE_* but does not
+// connect until the first managed state read/write. The app closes it on
+// shutdown. Install/uninstall write both the bundle files and this state row.
+const pluginState = createDatabasePluginStateStore({ getDataSource });
+const pluginInstaller = createPluginInstaller({
+  pluginsDir: 'storage/plugins',
+  stateStore: pluginState,
+});
+
+// The admin panel: a dashboard mounted at `/admin`. It consumes the auth
+// plugin's session service (so the `auth` plugin must be declared first),
+// and its `authorize` is default-deny — here it allows any signed-in session,
+// but production should restrict this to an admin role/claim. The
+// `admin-plugin-manager` admin plugin adds the plugin install/enable surface, and the
+// `blog` admin plugin adds the post CRUD resource over the shared repository.
+const admin = defineAdminPanel({
+  auth: authSessionToken,
+  authorize: (session) => session !== null,
+  // Admin pages load the client bundle so the rich-text editor island (and any
+  // other app islands) hydrate over the server-rendered admin form markup.
+  clientScripts: ['/assets/app.js'],
+  adminPlugins: [
+    pluginManagerPlugin({
+      directory: firstPartyPluginDirectory,
+      frameworkVersion: '1.0.0',
+      managed: true,
+      stateSource: pluginState,
+      installer: pluginInstaller,
+      enabled: ['flags'],
+    }),
+    blogAdmin({
+      repository: blogRepository,
+      editor: editorJsAdapter,
+      mediaPickerUrl: '/admin/media?format=json',
+      search,
+    }),
+    mediaAdmin({ library: mediaLibrary }),
+    blogThemeAdmin({ registry: themeRegistry, repository: blogRepository }),
+  ],
+});
+
+export default {
+  rootDir: '.',
+  pages: 'dist/pages',
+  api: 'dist/api',
+  public: 'public',
+  out: 'out',
+  host: '127.0.0.1',
+  port: Number(process.env.PORT ?? 3000),
+  // Consulted only for the login/logout same-origin checks (and any future
+  // authenticated mutations). `undefined` keeps the request-origin fallback.
+  publicOrigin,
+  // Global API authorization: default-deny. Only a request with a session is
+  // allowed; `/api/me` is the protected filesystem API, while login/logout are
+  // trusted hook routes that never pass through this check.
+  authorize: (context) => context.session !== null,
+  // Trusted session seam: derive the JSails session from the Better Auth cookie.
+  // This resolves a memoized instance via `createAuth()`, distinct from the one
+  // the `auth` plugin builds in its own `setup`; both read the same environment
+  // and database, so sessions resolve identically. Both pools must be released
+  // on shutdown, or the open MariaDB sockets keep the process alive: the plugin
+  // disposes its own instance, and the `setup` below disposes this one.
+  resolveSession: (request) => resolveSessionFromRequest(createAuth(), request),
+  // Release the memoized auth connection pool when the application closes. A
+  // no-op when no session was ever resolved (the instance is built lazily).
+  setup: () => async () => {
+    await disposeCachedAuth();
+    if (dataSource?.isInitialized) {
+      await dataSource.destroy();
+    }
+  },
+  plugins: {
+    // Developer plugins declared via `plugins.use`: the loader resolves each
+    // specifier, imports it, and calls its default-export factory with the
+    // given options, producing the extension. Every plugin a specifier names
+    // automatically runs — developer plugins are never gated by `enabled`.
+    //
+    // `enabled` lists the marketplace/managed plugin ids shipped out of the
+    // box; `managed: true` persists installed-plugin state in the database
+    // (`jsails_plugin_state` table): add `pluginStateEntities` to your
+    // `JsailsDataSource` `entities` and run `jsails db:push` to create the
+    // table. `enabled` controls admin-installed plugins
+    // only — the `use` entries above always run regardless of `enabled`.
+    use: [
+      // The `plugin-tools` plugin exposes the canonical shared tool modules
+      // (cleanup, zod, trusted-mutation, responses) under a typed service token
+      // for plugin authors. It runs before every default plugin.
+      '@jsails/plugin-tools',
+      ['@jsails/auth', { publicOrigin }],
+      '@jsails/cache',
+      ['@jsails/filesystem', { disks: { [files.name]: files.disk }, default: files.name }],
+      [
+        '@jsails/mail',
+        { allowMemory: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test' },
+      ],
+      // The live layer serves the blog's `blog.posts` publication over Socket.IO.
+      // The registry is created here and handed to the plugin, which provides it
+      // under a service token so the blog plugin can register its publication.
+      // Without this entry the blog still works; it just has no live surface.
+      ['@jsails/live', { registry: createPublicationRegistry() }],
+      // The blog plugin provides the CMS repository service and the live list/create
+      // HTTP surface; the database connection is owned by the repository above.
+      [
+        '@jsails/blog',
+        {
+          repository: blogRepository,
+          editor: editorJsAdapter,
+          themes: builtinThemePackages,
+          search,
+        },
+      ],
+      ['@jsails/admin', admin],
+      // No signing key is hardcoded. In development/test the extension mints an
+      // ephemeral key; a plain `jsails serve` outside those environments requires
+      // JSAILS_COMPONENT_SECRET (>= 32 bytes) or the live render fails closed.
+      // Components are discovered automatically from the compiler-generated
+      // registry (`jsails build:meta`); no hand-written registry to import.
+      'jsails/server-components',
+    ],
+    enabled: __JSAILS_MANAGED_PLUGINS__,
+    managed: true,
+    stateSource: pluginState,
+    pluginsDir: 'storage/plugins',
+  },
+};

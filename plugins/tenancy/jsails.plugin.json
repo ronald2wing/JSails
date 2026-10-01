@@ -1,0 +1,4 @@
+{
+  "id": "jsails-tenancy",
+  "provides": ["@jsails/tenancy"]
+}
