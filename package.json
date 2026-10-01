@@ -1,0 +1,44 @@
+{
+  "name": "jsails-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "core",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "node scripts/run-workspaces.mjs build",
+    "build:clean": "node scripts/run-workspaces.mjs build:clean",
+    "typecheck": "node scripts/run-workspaces.mjs typecheck",
+    "test": "npm run build:clean && node scripts/run-workspaces.mjs test",
+    "lint": "eslint . --cache",
+    "lint:fix": "eslint . --fix --cache",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:structure": "node scripts/check-src-structure.mjs && node scripts/check-licenses.mjs && node scripts/build-codemap.mjs --check",
+    "check:declared-types": "node scripts/check-declared-types.mjs",
+    "check": "npm run build:clean && node scripts/run-parallel.mjs lint format:check check:structure check:declared-types && node scripts/run-workspaces.mjs test",
+    "verify:starter": "node scripts/verify-starter/index.mjs",
+    "verify:integrations": "node scripts/verify-integrations.mjs",
+    "website": "npm run build -w jsails -w @jsails/content && npm --prefix website ci && npm --prefix website run build",
+    "release": "npm run check && npm publish --workspaces --ignore-scripts",
+    "codemap": "node scripts/build-codemap.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/hotwired__turbo": "^8.0.16",
+    "@types/mime-types": "^3.0.1",
+    "@types/node": "^26.6.5",
+    "@types/qs": "^6.15.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "eslint": "^10.13.0",
+    "eslint-config-prettier": "^10.1.8",
+    "playwright-core": "^1.64.1",
+    "prettier": "^3.9.10",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript-eslint": "^8.72.0"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  }
+}
