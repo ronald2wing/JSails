@@ -1,0 +1,69 @@
+{
+  "name": "@jsails/admin",
+  "version": "1.0.0",
+  "description": "The admin panel for JSails apps: resources, pages, widgets, charts, actions, and relation managers.",
+  "license": "MIT",
+  "author": "Ronald Wong <ronald2wing@gmail.com>",
+  "homepage": "https://jsails.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronald2wing/JSails.git",
+    "directory": "packages/admin"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/test",
+    "!dist/.tsbuildinfo",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "tsc -p tsconfig.json",
+    "build:clean": "npm run clean && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node ../../scripts/run-tests.mjs",
+    "test:watch": "node ../../scripts/run-tests.mjs --watch"
+  },
+  "dependencies": {
+    "@jsails/theme": "^1.0.0"
+  },
+  "peerDependencies": {
+    "hono": "^4.13.13",
+    "jsails": "^1.0.0",
+    "preact": "^11.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "hono": "^4.13.13",
+    "jsails": "^1.0.0",
+    "preact": "^11.0.1",
+    "zod": "^4.6.7"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ronald2wing/JSails/issues"
+  },
+  "jsails": {
+    "id": "jsails-admin",
+    "version": "1.0.0",
+    "jsailsCompat": "^1.0.0",
+    "permissions": [
+      "http.routes",
+      "admin.pages"
+    ],
+    "entry": "@jsails/admin"
+  }
+}

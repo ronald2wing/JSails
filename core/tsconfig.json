@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // The framework compiles its own JSX before `jsails/jsx-runtime` exists in
+    // `dist/`, so the self-reference resolves to source.
+    "paths": {
+      "jsails/jsx-runtime": ["./src/jsx/jsx-runtime.ts"]
+    }
+  }
+}

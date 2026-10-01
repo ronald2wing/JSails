@@ -1,0 +1,131 @@
+import { defineAdminPanel } from '@jsails/admin';
+import {
+  authSessionToken,
+  createAuth,
+  disposeCachedAuth,
+  resolveSessionFromRequest,
+} from '@jsails/auth';
+import { createDiskFromEnv } from '@jsails/filesystem';
+
+// Auth is the `auth` plugin (`@jsails/auth`): it lazily builds a
+// Better Auth instance (email/password + RFC 8628 device authorization) over
+// MariaDB and mounts the `/api/auth/*`, `/api/login`, `/api/logout`, and
+// `/api/device/approve|deny` routes as trusted hook routes. Importing this
+// config reads no environment variable and opens no database connection — the
+// first live request (or an auth script) builds the instance. The secret comes
+// from BETTER_AUTH_SECRET (or AUTH_SECRET); Better Auth fails in production
+// without one, and JSails does not invent a fallback. `.env.auth.example` lists
+// the variables: copy it to `.env`, which every `jsails` command (`dev`,
+// `serve`, `build`, `db:push`) loads before this module is imported, with a real
+// environment variable always winning over the file.
+
+// Public origin for the login/logout same-origin checks. Behind a
+// TLS-terminating proxy the request URL is plain HTTP, so set PUBLIC_ORIGIN to
+// the public HTTPS origin; when unset (or empty) the handlers fall back to each
+// request's own origin. `jamal.config.js` forwards it in production.
+const publicOrigin = process.env.PUBLIC_ORIGIN || undefined;
+
+// The admin panel fails closed: only a signed-in account whose email is listed
+// in the comma-separated ADMIN_EMAILS variable may open it, and with ADMIN_EMAILS
+// unset no account is an admin. The check matches the session's email alone, so
+// it holds only while nobody but you can create accounts: registration does not
+// verify the address before sign-in, and whoever registers a listed address
+// first becomes an admin. Before you turn on `registration.enabled`, create
+// every ADMIN_EMAILS account with `npm run user:create` (or require email
+// verification), and prefer switching to `adminOnly` from `@jsails/auth`:
+// sessions already carry `data.role`, roles are granted only by `setUserRole`,
+// and no sign-up can set one. The list is read on each check, from the
+// environment the CLI assembled.
+function isAdminSession(session) {
+  const email = session?.data?.user?.email;
+  if (typeof email !== 'string') return false;
+  const allowed = (process.env.ADMIN_EMAILS ?? '')
+    .split(',')
+    .map((entry) => entry.trim().toLowerCase())
+    .filter((entry) => entry !== '');
+  return allowed.includes(email.toLowerCase());
+}
+
+// FILESYSTEM_DISK selects local (default) or S3 for this disk.
+const files = createDiskFromEnv();
+
+// The admin panel: a dashboard mounted at `/admin`. It consumes the auth
+// plugin's session service (so the `auth` plugin must be declared first),
+// and its `authorize` is default-deny: only the ADMIN_EMAILS allowlist above
+// is admitted.
+const admin = defineAdminPanel({
+  auth: authSessionToken,
+  authorize: isAdminSession,
+  // Admin pages load the client bundle so the rich-text editor island (and any
+  // other app islands) hydrate over the server-rendered admin form markup.
+  clientScripts: ['/assets/app.js'],
+});
+
+export default {
+  rootDir: '.',
+  pages: 'dist/pages',
+  api: 'dist/api',
+  public: 'public',
+  out: 'out',
+  host: '127.0.0.1',
+  port: Number(process.env.PORT ?? 3000),
+  // Consulted only for the login/logout same-origin checks (and any future
+  // authenticated mutations). `undefined` keeps the request-origin fallback.
+  publicOrigin,
+  // Global API authorization: default-deny. Only a request with a session is
+  // allowed; `/api/me` is the protected filesystem API, while login/logout are
+  // trusted hook routes that never pass through this check.
+  authorize: (context) => context.session !== null,
+  // Trusted session seam: derive the JSails session from the Better Auth cookie.
+  // This resolves a memoized instance via `createAuth()`, distinct from the one
+  // the `auth` plugin builds in its own `setup`; both read the same environment
+  // and database, so sessions resolve identically. Both pools must be released
+  // on shutdown, or the open MariaDB sockets keep the process alive: the plugin
+  // disposes its own instance, and the `setup` below disposes this one.
+  resolveSession: (request) => resolveSessionFromRequest(createAuth(), request),
+  // Release the memoized auth connection pool when the application closes. A
+  // no-op when no session was ever resolved (the instance is built lazily).
+  setup: () => disposeCachedAuth(),
+  plugins: {
+    // Developer plugins declared via `plugins.use`: the loader resolves each
+    // specifier, imports it, and calls its default-export factory with the
+    // given options, producing the extension. Every plugin a specifier names
+    // automatically runs — developer plugins are never gated by `enabled`.
+    //
+    // `enabled` lists the marketplace/managed plugin ids shipped out of the
+    // box; `managed: true` persists installed-plugin state in the database
+    // (`jsails_plugin_state` table): add `pluginStateEntities` to your
+    // `JsailsDataSource` `entities` and run `jsails db:push` to create the
+    // table. `enabled` controls admin-installed plugins
+    // only — the `use` entries above always run regardless of `enabled`.
+    use: [
+      // Credential routes (`/api/login`, and registration and password reset
+      // once enabled) are throttled by the plugin's default limiter
+      // (`createMemoryRateLimiter`): 10 attempts per route, email, and client
+      // address and 100 per client address in a 15-minute window, so a stranger
+      // cannot lock an account out and one client cannot spray a password over
+      // many accounts. Its state is per process: with more than one app process,
+      // pass a shared (Valkey-backed) hook as `login.rateLimit`,
+      // `registration.rateLimit`, and `passwordReset.rateLimit`. Behind a reverse
+      // proxy the socket address is the proxy's, so also pass `clientAddress`
+      // reading the proxy's trusted forwarding header.
+      ['@jsails/auth', { publicOrigin }],
+      '@jsails/cache',
+      'jsails/dev',
+      ['@jsails/filesystem', { disks: { [files.name]: files.disk }, default: files.name }],
+      [
+        '@jsails/mail',
+        { allowMemory: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test' },
+      ],
+      ['@jsails/admin', admin],
+      // No signing key is hardcoded. In development/test the extension mints an
+      // ephemeral key; a plain `jsails serve` outside those environments requires
+      // JSAILS_COMPONENT_SECRET (>= 32 bytes) or the live render fails closed.
+      // Components are discovered automatically from the compiler-generated
+      // registry (`jsails build:meta`); no hand-written registry to import.
+      'jsails/server-components',
+    ],
+    enabled: __JSAILS_MANAGED_PLUGINS__,
+    managed: true,
+  },
+};

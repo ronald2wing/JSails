@@ -1,0 +1,255 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Least privilege: every job only reads the repository. No job needs a token
+# that can write, and no job reads a repository secret.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  # Cancel the in-flight run whenever a newer commit lands on the same ref.
+  # Rapid pushes to main otherwise queue runs that GitHub cancels mid-flight,
+  # which reports as a `failure` conclusion and masks the real result.
+  cancel-in-progress: true
+
+# Every job reads the Node line from `.nvmrc`, the one place it is declared.
+# Actions are pinned to full commit SHAs (the tag is in the trailing comment)
+# so a moved tag cannot change what runs; Dependabot proposes the updates.
+#
+# The downstream jobs (`starter`, `website`, `integrations`) declare
+# `needs: check` without an `if:` override, so they run only after `check`
+# succeeds. An `if:` built on a status function such as `!cancelled()` would
+# replace the implicit `success()` and let them run after a failed check.
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # Lifecycle scripts of third-party packages never run in CI; nothing in
+      # the build needs one.
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Check (build, lint, format, structure, declared types, tests)
+        run: npm run check
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      # Runtime dependencies only: a high or critical advisory in anything the
+      # published packages install fails the run.
+      - name: Audit runtime dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      # Every installed tarball must carry a valid registry signature.
+      - name: Verify registry signatures
+        run: npm audit signatures
+
+  starter:
+    name: Starter verification (all presets)
+    runs-on: ubuntu-latest
+    needs: check
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      # Packs the framework, generates and installs all five presets (admin,
+      # blog, saas, the default static site, cli), and runs each one's checks.
+      # No browser is downloaded or launched; each browser stage is recorded
+      # as an explicit skip.
+      - name: Verify starter (no browser)
+        run: npm run verify:starter -- --skip-browser
+
+  # The full starter pipeline: browser journeys (Playwright on the Chrome the
+  # runner image ships), the database-backed auth stages against a MariaDB
+  # service, and the negative proofs. No browser is downloaded.
+  starter-browser:
+    name: Starter verification (browser + database)
+    runs-on: ubuntu-latest
+    needs: check
+    timeout-minutes: 60
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: jsails-ci-root
+          MARIADB_DATABASE: jsails_starter
+          MARIADB_USER: jsails
+          MARIADB_PASSWORD: jsails-ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Verify starter (browser and database stages included)
+        env:
+          JSAILS_BROWSER_PATH: /usr/bin/google-chrome
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_PORT: '3306'
+          DATABASE_USER: jsails
+          DATABASE_PASSWORD: jsails-ci
+          DATABASE_NAME: jsails_starter
+        run: npm run verify:starter
+
+  website:
+    name: Docs site
+    runs-on: ubuntu-latest
+    needs: check
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      # The site installs `jsails` and `@jsails/content` through `file:` links,
+      # so those two are built first.
+      - name: Build the linked workspaces
+        run: npm run build -w jsails -w @jsails/content
+
+      # Installed exactly as the Netlify build (`npm run website`) installs it.
+      - name: Install the docs site
+        run: npm --prefix website ci
+
+      # Builds the site, typechecks its browser bundle, and validates every
+      # documented import against the package exports.
+      - name: Check the docs site
+        run: npm --prefix website run check
+
+  integrations:
+    name: Integrations (live services)
+    runs-on: ubuntu-latest
+    needs: check
+    timeout-minutes: 20
+    # Throwaway service containers; the credentials below exist only inside
+    # this job's network and are not secrets.
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: jsails-ci-root
+          MARIADB_DATABASE: jsails_test
+          MARIADB_USER: jsails
+          MARIADB_PASSWORD: jsails-ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+      valkey:
+        image: valkey/valkey:8
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "valkey-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build workspaces
+        run: npm run build
+
+      # The variable names are the ones scripts/verify-integrations.mjs reads.
+      # `--require` turns a skip of any provisioned stage into a failure, so a
+      # run whose variables did not arrive cannot pass.
+      - name: Run live-service integrations
+        env:
+          DATABASE_TYPE: mariadb
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_PORT: '3306'
+          DATABASE_USER: jsails
+          DATABASE_PASSWORD: jsails-ci
+          DATABASE_NAME: jsails_test
+          VALKEY_URL: redis://127.0.0.1:6379
+          JSAILS_TEST_VALKEY: '1'
+        run: npm run verify:integrations -- --require database,jobs,broadcast,live
