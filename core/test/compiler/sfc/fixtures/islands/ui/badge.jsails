@@ -1,0 +1,8 @@
+<!-- A view both an island and a page render. -->
+<script setup lang="ts">
+defineProps<{ text: string }>();
+</script>
+
+<template>
+  <span class="badge">{{ text }}</span>
+</template>

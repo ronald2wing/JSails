@@ -1,0 +1,71 @@
+{
+  "description": "Request conformance (REQ-01): rows of the scope matrix, response model and request-cost suites under core/test/server/conformance that fail against today's pipeline. Each entry names the REQ package whose change makes it pass; that package deletes it.",
+  "kind": "tests",
+  "entries": [
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": [
+        "request cost",
+        "app.fetch",
+        "cached page hit",
+        "makes exactly one store round trip"
+      ],
+      "failure": {
+        "message": "^2 store round trips: getMany, get(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A page cache hit reads the generation token and the entry in two store round trips.",
+      "fixedBy": "REQ-09"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "app.fetch", "cached page hit", "renders nothing"],
+      "failure": {
+        "message": "^1 renders(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The page cache stores load() props, not the response, so a hit renders the page again.",
+      "fixedBy": "REQ-09"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "app.fetch", "cached page hit", "creates no zlib engine"],
+      "failure": {
+        "message": "^1 zlib engines(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The page cache stores load() props only; a hit still renders and compresses the document.",
+      "fixedBy": "REQ-09"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "listener", "cached page hit", "makes exactly one store round trip"],
+      "failure": {
+        "message": "^2 store round trips: getMany, get(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "A page cache hit reads the generation token and the entry in two store round trips.",
+      "fixedBy": "REQ-09"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "listener", "cached page hit", "renders nothing"],
+      "failure": {
+        "message": "^1 renders(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The page cache stores load() props, not the response, so a hit renders the page again.",
+      "fixedBy": "REQ-09"
+    },
+    {
+      "file": "core/test/server/conformance/request-cost.test.ts",
+      "test": ["request cost", "listener", "cached page hit", "creates no zlib engine"],
+      "failure": {
+        "message": "^1 zlib engines(?:\\n|$)",
+        "name": "AssertionError"
+      },
+      "reason": "The page cache stores load() props only; a hit still renders and compresses the document.",
+      "fixedBy": "REQ-09"
+    }
+  ]
+}

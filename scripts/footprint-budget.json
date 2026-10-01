@@ -1,0 +1,118 @@
+{
+  "platform": "linux-x64-glibc",
+  "workspaces": {
+    "@jsails/admin": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/ai": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/auth": {
+      "packages": 191,
+      "bytes": 188754361
+    },
+    "@jsails/blog": {
+      "packages": 223,
+      "bytes": 199121594
+    },
+    "@jsails/cache": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/config": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/content": {
+      "packages": 222,
+      "bytes": 196929238
+    },
+    "@jsails/database": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/diagnostics": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/editor": {
+      "packages": 182,
+      "bytes": 181515488
+    },
+    "@jsails/filesystem": {
+      "packages": 196,
+      "bytes": 187583062
+    },
+    "@jsails/flags": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/inertia": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/jamal": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/jobs": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/live": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/logging": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/mail": {
+      "packages": 171,
+      "bytes": 180915463
+    },
+    "@jsails/marketplace": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/mcp": {
+      "packages": 181,
+      "bytes": 187034172
+    },
+    "@jsails/media": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/notifications": {
+      "packages": 171,
+      "bytes": 180915463
+    },
+    "@jsails/resources": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/sessions": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/tenancy": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/theme": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "@jsails/webhook": {
+      "packages": 170,
+      "bytes": 179167834
+    },
+    "jsails": {
+      "packages": 170,
+      "bytes": 179167834
+    }
+  },
+  "presets": {}
+}

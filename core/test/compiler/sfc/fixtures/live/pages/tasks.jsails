@@ -1,0 +1,11 @@
+<!-- The task page: a heading and the live task list. -->
+<script setup lang="ts">
+const heading = 'Tasks';
+</script>
+
+<template>
+  <main>
+    <h1>{{ heading }}</h1>
+    <TaskList />
+  </main>
+</template>

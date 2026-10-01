@@ -1,0 +1,210 @@
+# Authentication (Better Auth)
+
+The starter ships local email/password sign-in and self-registration. It is
+not a complete authentication system: password reset, email verification, and
+OAuth are deliberately deferred (see below). Two defaults are already safe:
+`/admin` admits only accounts holding the `admin` role, which no sign-up can
+grant, and `POST /api/login` and `POST /api/register` are throttled per email
+and client address by the `auth` plugin's default limiter.
+
+## One-time setup
+
+These are the steps of "Getting started" in `AGENTS.md`, in the same order;
+`jsails create` printed the same list.
+
+1. Start the git-ignored `.env` from the committed example. Every `jsails`
+   command resolves `.env`, `.env.<JSAILS_ENV>`, the sealed credentials and
+   `.env.local` (development only), and the
+   `auth:migrate` / `user:create` npm scripts load `.env` and `.env.local`
+   through Node's `--env-file-if-exists`. A real environment variable always
+   wins over the files, so exporting them in your shell or process manager
+   works too.
+
+   ```sh
+   cp .env.auth.example .env
+   ```
+
+2. Fill in every value the example leaves blank. Better Auth requires a secret
+   of at least 32 bytes, and a live server-component render outside
+   development and test needs `JSAILS_COMPONENT_SECRET` (also at least 32
+   bytes). `jamal up` creates the MariaDB user and database from the
+   `DATABASE_*` values:
+
+   ```sh
+   BETTER_AUTH_SECRET=...        # openssl rand -base64 32
+   JSAILS_COMPONENT_SECRET=...   # openssl rand -base64 32
+   DATABASE_HOST=127.0.0.1
+   DATABASE_PORT=3306            # default, optional
+   DATABASE_USER=...
+   DATABASE_PASSWORD=...
+   DATABASE_NAME=...
+   DATABASE_ROOT_PASSWORD=...
+   ```
+
+3. Start MariaDB and Valkey locally (Docker). Auth requires a running
+   database connection:
+
+   ```sh
+   npx jsails jamal up
+   ```
+
+4. Build the app; `db:push` reads the compiled model registry:
+
+   ```sh
+   npm run build
+   ```
+
+5. Create the framework, plugin, and model tables, then Better Auth's own
+   tables (`auth:migrate` owns those; `db:push` leaves them alone):
+
+   ```sh
+   npm run db:push
+   npm run auth:migrate
+   ```
+
+6. Create the first admin. `name` is optional; email and password are
+   required, and `--role admin` grants the role the admin panel checks:
+
+   ```sh
+   npm run user:create -- you@example.com 'a long password' "Your Name" --role admin
+   ```
+
+   Without `--role` the script creates an ordinary account, the same as one
+   registered at `/register`. If the email already has an account (you
+   registered at `/register` first, or an earlier run failed after creating
+   it), rerun with only the email and `--role admin`; the script assigns the
+   role to that account and leaves its password unchanged:
+
+   ```sh
+   npm run user:create -- you@example.com --role admin
+   ```
+
+7. Run the app at http://localhost:3000:
+
+   ```sh
+   npm run dev
+   ```
+
+Visit `/login` to sign in and `/dashboard` to see the signed-in state.
+
+## How it fits together
+
+- Better Auth owns its tables in a MariaDB database you point it at through the
+  `DATABASE_*` variables (`DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_USER`,
+  `DATABASE_PASSWORD`, `DATABASE_NAME`), a separate schema from any application
+  data you add later. `BETTER_AUTH_SECRET` signs its sessions. Keep the
+  credentials out of version control.
+- `/api/login` and `/api/logout` are plain form targets: the pages post to them
+  and the handlers call Better Auth server-side. There is no browser SDK and no
+  secret in the client bundle. The `auth` plugin registers them (see
+  `jsails.app.js`), not filesystem API routes; there is no CSRF token, so a
+  plain form POST works even while a session cookie is present.
+- The framework's cross-site check guards every one of those routes: the
+  request's `Origin` must match the origin the request was addressed to
+  (`server.origin`, or a tenant subdomain in `server.hosts`), and a mismatch is
+  rejected with `403` before the handler runs or any credentials are read.
+- `POST /api/login` is throttled by the `auth` plugin's default limiter
+  (`createMemoryRateLimiter`): 10 attempts per route, email, and client address
+  and 100 per client address across all emails in a 15-minute window, answered
+  with a generic `429`. Keying on the address too means a stranger cannot lock
+  your account out, and the per-address bucket stops one client spraying a
+  password over many accounts. Registration gets the same limiter with its own
+  counters, and so would password reset once enabled. Its counters live in process
+  memory: with more than one app process, pass a shared (Valkey-backed) hook as
+  `login.rateLimit`, `registration.rateLimit`, and `passwordReset.rateLimit`.
+  Behind a reverse proxy, `JSAILS_TRUSTED_PROXIES` must name the proxies in
+  front of the app (`hops=<n>` or their CIDR ranges) so the limiter keys on the
+  client rather than the proxy. `jamal deploy` sets it from the proxies it puts
+  in front of the app (kamal-proxy, and the cache proxy when enabled); behind a
+  CDN or a load balancer, describe those with `proxy` in `jamal.config.ts`,
+  listing the address ranges they publish. The
+  client address is the X-Forwarded-For entry the outermost trusted proxy
+  appended, never the client-controlled left-most one, and an IPv6 client is
+  keyed on its /64.
+- `/register` posts to `POST /api/register` (the plugin's
+  `registration: { enabled: true }`). The account is created without a session,
+  so the new user then signs in at `/login`. The address is not verified.
+- The admin panel at `/admin` uses `adminOnly` from `@jsails/auth`: it admits
+  only a session whose user holds the `admin` role. The role is a column on
+  Better Auth's user table that no sign-up or profile endpoint can write;
+  `setUserRole(auth, email, role)` assigns or clears it, and
+  `npm run user:create -- <email> [password] --role admin` calls it, for a new
+  account or for one that already exists.
+- Sessions resolve through the `auth` plugin's own Better Auth instance (the
+  `resolveSession` seam in `jsails.app.js` reads the plugin's session
+  service), so the app holds one auth connection pool.
+- In production set `PUBLIC_ORIGIN` to the public HTTPS origin.
+  `jamal.config.ts` forwards it as both `PUBLIC_ORIGIN` and `BETTER_AUTH_URL`;
+  Better Auth only marks its session cookie `Secure` when that URL is https.
+- `/api/me` returns the current user and is the one protected filesystem API:
+  its module exports an `authorize` check that admits only a session, so an
+  anonymous request is answered `401`. Every API module states its access (an
+  `authorize` check, or `access = publicAccess(reason)`); one that states none
+  fails at startup. `/dashboard` states no check, so it renders a signed-out
+  prompt when the session is absent.
+- Any filesystem mutation you add (`POST`/`PUT`/`PATCH`/`DELETE` under `api/`)
+  accepts the session cookie, so the framework refuses it unless the request's
+  `Origin` is the app's own origin (or, without one, `Sec-Fetch-Site:
+  same-origin`) before your access check runs. A browser form or `fetch` from
+  your own pages sends that header by itself; there is no CSRF token to supply.
+
+## CLI sign-in with `jsails login` (browser-approved)
+
+The same repository builds the web app **and** a small CLI: `commands/*` modules
+compile into `dist/commands/` and are run with `jsails <name>`. Three commands
+ship:
+
+```sh
+jsails login      # request a device code and approve it in the browser
+jsails whoami     # print the signed-in account (name and email)
+jsails logout     # delete the stored CLI session credentials
+```
+
+`jsails login` runs the OAuth 2.0 Device Authorization Grant (RFC 8628) against
+the app's Better Auth device endpoints. It requests a code, prints a short user
+code and a verification URL, opens the browser for you (pass `--no-open` to
+skip), and polls until you approve. Approve it on the `/device` page — the same
+page a browser user reaches after choosing "Sign in from a device" on `/login` —
+by confirming the user code while signed in. The CLI's base URL comes from
+`APP_URL`, then `BETTER_AUTH_URL`, then `http://localhost:3000`.
+
+The resulting access token is a Better Auth **session token** (not a separate
+credential), stored on disk so later `jsails whoami` / `jsails logout` runs can
+use it:
+
+- **Location:** `${XDG_CONFIG_HOME:-~/.config}/jsails/<appName>/credentials.json`,
+  where `<appName>` is the package name (or the directory basename when no
+  `package.json` is present). The directory is created `0700` and the file is
+  written atomically (temp file + rename) with mode `0600`, so other local
+  users cannot read the token.
+- **Shape:** `{ baseUrl, token, tokenType, expiresAt, scope }`. The token is
+  never printed by the CLI.
+
+### Security notes
+
+- The device flow is Better Auth's official RFC 8628 implementation. The
+  `client_id` (`jsails-cli`) must match the server's `validateClient` allowlist,
+  and approval requires an authenticated session on `/device` — the CLI never
+  sees the user's password.
+- Tokens are session tokens: revoke one by clearing/rotating its session
+  server-side (Better Auth session revocation), and remove the CLI-side copy
+  with `jsails logout`. Re-running `jsails login` simply overwrites the
+  credentials file.
+- The token is stored in plain text on disk (mode `0600`). Treat the account the
+  same as a saved browser session, and run `jsails logout` on shared machines.
+
+## Deliberately deferred
+
+- Password reset and email verification. The plugin mounts them with
+  `passwordReset: { enabled: true }` / `verification: { enabled: true }` and a
+  `sendMail` callback (`sendMail` from `@jsails/auth` sends through the
+  `@jsails/mail` plugin, which needs a real transport outside development and
+  test). The starter ships no reset page, because the plugin requests the
+  reset without a redirect target: the emailed link cannot yet land on an app
+  page that reads its `token` and posts it with the new password to
+  `POST /api/password-reset/confirm`.
+- OAuth / social sign-in.
+- Finer-grained roles — the starter checks only `admin`; `requireRole(...)`
+  from `@jsails/auth` gates on any set of role names.
+- Production hardening — a shared multi-process rate limiter, account lockout,
+  and audit logging are not wired.

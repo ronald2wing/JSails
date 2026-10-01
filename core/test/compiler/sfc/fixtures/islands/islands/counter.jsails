@@ -1,0 +1,30 @@
+<!-- A counter island: a click and a numeric input change one signal, and each click emits change. -->
+<script setup lang="ts">
+const { start, label } = defineProps<{ start: number; label: string }>();
+const emit = defineEmits<{ change: [count: number] }>();
+const count = useSignal(start);
+const edits = useSignal(0);
+
+// A method reads its object through `this`, so the click calls it through `clicks`.
+const clicks = {
+  count,
+  add(): void {
+    this.count.value += 1;
+    emit('change', this.count.value);
+  },
+};
+
+function reset(): void {
+  count.value = start;
+}
+</script>
+
+<template>
+  <div class="counter">
+    <button type="button" class="add" @click="clicks.add">{{ label }}</button>
+    <output>{{ count.value }}</output>
+    <input type="number" js-model="count" @input="edits.value = count.value" />
+    <button type="button" class="reset" @click.prevent="reset">Reset</button>
+    <small class="edits">{{ edits.value }}</small>
+  </div>
+</template>

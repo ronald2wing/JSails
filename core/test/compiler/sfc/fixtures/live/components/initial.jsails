@@ -1,0 +1,26 @@
+<script lang="ts">
+/** A live component whose static export renders its own template from its initial state. */
+import { z } from 'zod';
+
+defineLive({
+  stateSchema: z.object({ greeting: z.string(), shown: z.boolean() }).strict(),
+  initialState: () => ({ greeting: 'Hello', shown: true }),
+  authorize: () => true,
+  staticRender: 'initial',
+  actions: {
+    wave: serverAction({
+      input: z.object({}),
+      run(state) {
+        state.greeting = 'Hi';
+      },
+    }),
+  },
+});
+</script>
+
+<template>
+  <form @submit="wave">
+    <p js-show="shown" js-text="greeting"></p>
+    <button>Wave</button>
+  </form>
+</template>

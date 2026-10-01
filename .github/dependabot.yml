@@ -1,0 +1,42 @@
+version: 2
+
+# Weekly, grouped update proposals. Every one is a pull request that must pass
+# the CI gate; nothing merges on its own.
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      production:
+        dependency-type: production
+        update-types: [minor, patch]
+      development:
+        dependency-type: development
+        update-types: [minor, patch]
+    # First-party workspaces move together through `npm run release`.
+    ignore:
+      - dependency-name: jsails
+      - dependency-name: '@jsails/*'
+
+  - package-ecosystem: npm
+    directory: /website
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      website:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: jsails
+      - dependency-name: '@jsails/*'
+
+  # Keeps the SHA-pinned actions current.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']

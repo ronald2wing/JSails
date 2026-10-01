@@ -1,0 +1,47 @@
+/**
+ * App subpath tests: the `jsails/app` barrel shares one canonical export with
+ * the root entry. No connection, database, or external service is opened.
+ */
+
+import assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
+
+import { createApp, createAssetIndex, createHttpServer } from '../../src/app/index.js';
+import type { AppOptions } from '../../src/app/index.js';
+
+// Root-entry imports for the same-function-reference verification.
+import { createApp as rootCreateApp } from '../../src/server/app.js';
+import { createHttpServer as rootCreateHttpServer } from '../../src/server/http-server.js';
+import { createAssetIndex as rootCreateAssetIndex } from '../../src/assets/asset-index.js';
+
+describe('jsails/app barrel', () => {
+  it('re-exports createApp from the same source as the root entry', () => {
+    // Same function reference means the barrel and the root share one canonical export.
+    assert.strictEqual(createApp, rootCreateApp);
+  });
+
+  it('re-exports createHttpServer from the same source as the root entry', () => {
+    assert.strictEqual(createHttpServer, rootCreateHttpServer);
+  });
+
+  it('re-exports createAssetIndex from the asset index module', () => {
+    assert.strictEqual(createAssetIndex, rootCreateAssetIndex);
+  });
+
+  it('exposes the core HTTP types (compile-time)', () => {
+    // The import-block above already proves all types resolve. This test
+    // exercises the value-level shape using `typeof` in a value position.
+    const options: AppOptions = { manifest: { entries: [], byRoute: new Map() } };
+    assert.equal(typeof options.manifest, 'object');
+  });
+});
+
+describe('jsails/app request-error and readiness surface', () => {
+  it('exports the readiness probes, keeping the ambient context off jsails/http', async () => {
+    const app = await import('../../src/app/index.js');
+    const http: Record<string, unknown> = await import('../../src/http/index.js');
+    assert.equal(http['currentContext'], undefined);
+    assert.equal(typeof app.createDataSourceReadinessProbe, 'function');
+    assert.equal(typeof app.createValkeyReadinessProbe, 'function');
+  });
+});

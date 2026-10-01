@@ -1,0 +1,19 @@
+<script lang="ts">
+/** The page for unmatched URLs, with a list of places to try instead. */
+export function load(): { suggestions: readonly string[] } {
+  return { suggestions: ['/', '/blog'] };
+}
+</script>
+
+<template>
+  <main>
+    <h1>Page not found</h1>
+    <p js-show="suggestions.length > 0">
+      Try
+      <template js-for="(href, index) in suggestions" :key="href"
+        ><a :href="href">{{ href }}</a
+        ><span js-if="index < suggestions.length - 1">, </span></template
+      >
+    </p>
+  </main>
+</template>

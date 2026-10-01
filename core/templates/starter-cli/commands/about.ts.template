@@ -1,0 +1,14 @@
+/**
+ * `jsails about`: what this project is. A command that needs nothing beyond
+ * the resolved environment, so it loads no app config.
+ */
+
+import { defineCommand } from '../app/application-command.js';
+
+export default defineCommand({
+  summary: 'Show framework and project information',
+  run(context) {
+    context.stdout('JSails CLI project — same framework, no web surface.');
+    context.stdout(`Environment: ${context.environment ?? 'development'}`);
+  },
+});

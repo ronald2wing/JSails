@@ -1,0 +1,87 @@
+{
+  "description": "Canonical serialisation and Ed25519 signature vectors for marketplace records. Each key is the Ed25519 key whose 32-byte seed is seedByte repeated; the signed message is \"jsails.marketplace.<kind>.v1\\n\" followed by the canonical JSON, encoded as UTF-8.",
+  "vectors": [
+    {
+      "name": "release statement",
+      "kind": "release",
+      "key": {
+        "id": "acme-release-1",
+        "seedByte": 3,
+        "publicKey": "7UkoxijRwsbq6QM4kFmVYSlZJzpcY/k2NsFGFKyHN9E="
+      },
+      "record": {
+        "v": 1,
+        "id": "acme-notes",
+        "version": "1.2.0",
+        "digest": "6f1ed002ab5595859014ebf0951522d9f6e2a7b7a1b6a9d9d1f8d5a2e1c0b3a4",
+        "size": 4096,
+        "manifestDigest": "0c0e3a0b8d3e5e4b5b1d2f7a8c9e0f1a2b3c4d5e6f708192a3b4c5d6e7f80910",
+        "permissions": ["http.routes", "net.fetch:api.example.com"],
+        "jsailsCompat": "^1.0.0",
+        "publisher": "acme",
+        "issuedAt": "2026-11-01T00:00:00.000Z",
+        "provenance": {
+          "repo": "https://github.com/acme/notes",
+          "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "run": "ci/123"
+        }
+      },
+      "canonical": "{\"digest\":\"6f1ed002ab5595859014ebf0951522d9f6e2a7b7a1b6a9d9d1f8d5a2e1c0b3a4\",\"id\":\"acme-notes\",\"issuedAt\":\"2026-11-01T00:00:00.000Z\",\"jsailsCompat\":\"^1.0.0\",\"manifestDigest\":\"0c0e3a0b8d3e5e4b5b1d2f7a8c9e0f1a2b3c4d5e6f708192a3b4c5d6e7f80910\",\"permissions\":[\"http.routes\",\"net.fetch:api.example.com\"],\"provenance\":{\"commit\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"repo\":\"https://github.com/acme/notes\",\"run\":\"ci/123\"},\"publisher\":\"acme\",\"size\":4096,\"v\":1,\"version\":\"1.2.0\"}",
+      "messageSha256": "28e4306b0d4eef111d4b0cdd366a28070e8ff781d45b1e0b5cd8f1b8e7adb193",
+      "signature": "fFxWWUcXfDnPwamG7qdgjxJiuOU39fCAA3qJLGM+dj3HDqKfOb0AZS5kVX9yOt/0KTzDaafy3/idYDmMBMdABg=="
+    },
+    {
+      "name": "key delegation",
+      "kind": "delegation",
+      "key": {
+        "id": "acme-root-1",
+        "seedByte": 1,
+        "publicKey": "iojj3XQJ8ZX9UtstPLpdcspnCb8dlBIb83SIAbQPb1w="
+      },
+      "record": {
+        "v": 1,
+        "publisher": "acme",
+        "keyId": "acme-release-2026",
+        "publicKey": "bnoc3Smwt4/ROvTFWY/v9O8qlxZuPKby5Pv8zYBQW/E=",
+        "use": ["release"],
+        "notAfter": "2027-01-01T00:00:00.000Z"
+      },
+      "canonical": "{\"keyId\":\"acme-release-2026\",\"notAfter\":\"2027-01-01T00:00:00.000Z\",\"publicKey\":\"bnoc3Smwt4/ROvTFWY/v9O8qlxZuPKby5Pv8zYBQW/E=\",\"publisher\":\"acme\",\"use\":[\"release\"],\"v\":1}",
+      "messageSha256": "0c20c25f60b8cd2b16be7fe67347376c7b6fdf50a8be18b70bade862a1e0a4de",
+      "signature": "uhNKD3praeRrh6ZLqqo09DGChn6ECr+YUvpcnWW8kQfN/N70yqkQAlttBH5bOVOmV4s9Esz9E1Q2D5SR/pO3Bg=="
+    },
+    {
+      "name": "catalog",
+      "kind": "catalog",
+      "key": {
+        "id": "acme-catalog-1",
+        "seedByte": 4,
+        "publicKey": "ypOsFwUYcHHWe4PH/w7+gQjo7EUwV113JoeTM9vavnw="
+      },
+      "record": {
+        "v": 1,
+        "publisher": "acme",
+        "sequence": 7,
+        "issuedAt": "2026-11-10T00:00:00.000Z",
+        "expiresAt": "2026-11-20T00:00:00.000Z",
+        "delegations": [],
+        "revoked": {
+          "keys": ["acme-release-0"],
+          "releases": []
+        },
+        "plugins": [
+          {
+            "id": "acme-notes",
+            "name": "Notes é — 📝",
+            "summary": "Notes for the admin.",
+            "category": "content",
+            "releases": []
+          }
+        ]
+      },
+      "canonical": "{\"delegations\":[],\"expiresAt\":\"2026-11-20T00:00:00.000Z\",\"issuedAt\":\"2026-11-10T00:00:00.000Z\",\"plugins\":[{\"category\":\"content\",\"id\":\"acme-notes\",\"name\":\"Notes é — 📝\",\"releases\":[],\"summary\":\"Notes for the admin.\"}],\"publisher\":\"acme\",\"revoked\":{\"keys\":[\"acme-release-0\"],\"releases\":[]},\"sequence\":7,\"v\":1}",
+      "messageSha256": "c9b73b39c16b119c7756beb9ebfbc809e067d6fd456e67e79c8cc666def5dff4",
+      "signature": "gj+v1OF8zumvqdYSvYbz+ZEkXxN+7Dw8tMgKOxdw1Ye3LTvPzDukc9OVcXndOXk/XnsFL68YBFtb4vIAV/tWAA=="
+    }
+  ]
+}

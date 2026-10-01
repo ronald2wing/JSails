@@ -1,0 +1,10 @@
+data: {"id":"","object":"chat.completion.chunk","created":1763500000,"model":"qwen3","choices":[{"index":0,"delta":{"role":"assistant","reasoning_content":"Need the weather."},"finish_reason":null}]}
+
+data: {"id":"","object":"chat.completion.chunk","created":1763500000,"model":"qwen3","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"name":"weather","arguments":"{\"city\": \"Oslo\"}"}}]},"finish_reason":null}]}
+
+data: {"id":"","object":"chat.completion.chunk","created":1763500000,"model":"qwen3","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_0","function":{"name":"weather","arguments":"{\"city\": \"Bergen\"}"}}]},"finish_reason":null}]}
+
+data: {"id":"","object":"chat.completion.chunk","created":1763500000,"model":"qwen3","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_1","function":{"name":"weather","arguments":"{\"city\": \"Rome\"}"}}]},"finish_reason":"stop"}]}
+
+data: [DONE]
+

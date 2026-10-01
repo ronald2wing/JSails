@@ -1,0 +1,885 @@
+/**
+ * `guardedFetch`, the one outbound HTTP primitive: a request to a URL that may
+ * come from someone else (an admin form, a catalog, a webhook endpoint) without
+ * the server becoming a way into its own network.
+ *
+ * Every hop, the first URL and each redirect alike, is checked the same way:
+ * it must be credential-free `https:` (plain `http:` only to a loopback
+ * address and only with `allowPrivate`), its host must be in `allowHosts` when
+ * that is given, and the name is resolved once, with every address it returns
+ * refused when any is loopback, link-local, private, carrier-grade NAT, unique
+ * local, or otherwise reserved (unless `allowPrivate`). The connection is then
+ * opened to one of exactly those vetted addresses, with the TLS server name
+ * and the `Host` header taken from the URL, so a second DNS answer (rebinding)
+ * can never redirect it. The whole chain runs under one deadline, the body is
+ * read only up to `maxBytes`, and every exit destroys the sockets it opened, so
+ * a refused, oversize, or timed-out request never keeps a connection open.
+ *
+ * Errors are {@link GuardedFetchErrors} codes whose message never carries the
+ * URL, a header, or an address: a URL may embed a token, and an address tells
+ * a caller what the server's network looks like.
+ */
+
+import { lookup } from 'node:dns/promises';
+import { request as httpRequest, type IncomingMessage, type OutgoingHttpHeaders } from 'node:http';
+import { connect as netConnect, isIP, type Socket } from 'node:net';
+import { connect as tlsConnect, type ConnectionOptions } from 'node:tls';
+
+import type { JsailsError } from '../errors/jsails-error.js';
+import { defineErrors, type ErrorRegistry } from '../errors/registry.js';
+import { timeout as startTimeout } from './async.js';
+import { concatBytes } from './bytes.js';
+import { isLoopbackAddress, isPrivateAddress } from './private-address.server.js';
+
+const GUARDED_FETCH_ERRORS = {
+  invalid_options: {
+    kind: 'internal',
+    message: 'guardedFetch: the {option} option is invalid',
+    context: {
+      option: [
+        'transport',
+        'resolve',
+        'connect',
+        'ca',
+        'options',
+        'maxBytes',
+        'timeoutMs',
+        'maxRedirects',
+        'allowHosts',
+        'allowPrivate',
+        'signal',
+        'method',
+        'body',
+        'headers',
+      ],
+    },
+  },
+  invalid_url: {
+    kind: 'invalid',
+    message: 'the url is refused: {reason}',
+    context: {
+      reason: [
+        'malformed',
+        'not_https',
+        'has_credentials',
+        'plain_http_not_loopback',
+        'malformed_redirect',
+      ],
+    },
+  },
+  host_not_allowed: {
+    kind: 'forbidden',
+    message: 'the url host is not allowed',
+  },
+  blocked_address: {
+    kind: 'forbidden',
+    message: 'the url host resolves to a blocked address',
+  },
+  resolve_failed: {
+    kind: 'unavailable',
+    message: 'the url host could not be resolved',
+  },
+  connect_failed: {
+    kind: 'unavailable',
+    message: 'the url host could not be reached',
+  },
+  tls: {
+    kind: 'unavailable',
+    message: 'the TLS handshake failed',
+  },
+  response_failed: {
+    kind: 'unavailable',
+    message: 'the request failed while reading the {stage}',
+    context: { stage: ['response', 'headers', 'body'] },
+  },
+  too_many_redirects: {
+    kind: 'internal',
+    message: 'the request redirected too many times',
+  },
+  too_large: {
+    kind: 'too_large',
+    message: 'the response exceeds the size limit',
+  },
+  timeout: {
+    kind: 'timeout',
+    message: 'the request did not finish in time',
+  },
+  aborted: {
+    kind: 'aborted',
+    message: 'the request was aborted',
+  },
+} as const;
+
+/**
+ * The codes of a refused or failed outbound request, `guarded_fetch.*`. The
+ * code and the message are value-free: neither names the URL, a header, nor a
+ * resolved address.
+ *
+ * @public
+ */
+export const GuardedFetchErrors: ErrorRegistry<'guarded_fetch', typeof GUARDED_FETCH_ERRORS> =
+  defineErrors('guarded_fetch', GUARDED_FETCH_ERRORS);
+
+type GuardedFetchOption = (typeof GUARDED_FETCH_ERRORS.invalid_options.context.option)[number];
+type UrlRefusal = (typeof GUARDED_FETCH_ERRORS.invalid_url.context.reason)[number];
+
+function refusedUrl(reason: UrlRefusal): JsailsError {
+  return new GuardedFetchErrors.Error('invalid_url', { reason });
+}
+
+function responseFailed(stage: 'response' | 'headers' | 'body'): JsailsError {
+  return new GuardedFetchErrors.Error('response_failed', { stage });
+}
+
+/**
+ * Resolves a host name to every address it currently has, as IP literals.
+ *
+ * @public
+ */
+export type GuardedResolver = (hostname: string) => Promise<readonly string[]>;
+
+/**
+ * The vetted address and port a {@link GuardedConnector} must connect to.
+ *
+ * @public
+ */
+export interface GuardedConnectTarget {
+  /** An IP literal (no URL brackets) that passed the address checks. */
+  readonly address: string;
+  readonly port: number;
+}
+
+/**
+ * Opens a TCP connection to exactly `target`. The signal aborts when the
+ * request's deadline passes or its caller gives up; the connector then
+ * destroys whatever it was opening.
+ *
+ * @public
+ */
+export type GuardedConnector = (
+  target: GuardedConnectTarget,
+  signal: AbortSignal,
+) => Promise<Socket>;
+
+/**
+ * How a {@link createGuardedFetch} instance reaches the network. Each member
+ * defaults to the system: the OS resolver, a TCP connection, and Node's root
+ * certificates.
+ *
+ * @public
+ */
+export interface GuardedFetchTransport {
+  /** Resolves each hop's host name; called once per hop. */
+  readonly resolve?: GuardedResolver;
+  /** Opens the connection to a vetted address. */
+  readonly connect?: GuardedConnector;
+  /** PEM certificates to trust instead of Node's root certificates. */
+  readonly ca?: string | readonly string[];
+}
+
+/**
+ * The methods a guarded request may use.
+ *
+ * @public
+ */
+export type GuardedFetchMethod = 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
+/**
+ * Options for one guarded request. The limits are required: every caller
+ * states how much it will read and how long it will wait.
+ *
+ * @public
+ */
+export interface GuardedFetchOptions {
+  /** Defaults to `GET`. `GET` and `HEAD` carry no body. */
+  readonly method?: GuardedFetchMethod;
+  /**
+   * Request headers. `Host`, `Connection`, `Content-Length`,
+   * `Transfer-Encoding` and the other connection-level headers are set by the
+   * fetch and refused here. `Authorization`, `Cookie` and
+   * `Proxy-Authorization` are dropped when a redirect leaves the origin.
+   */
+  readonly headers?: Readonly<Record<string, string>>;
+  readonly body?: Uint8Array | string;
+  /**
+   * Host names every hop must use, compared with `URL#hostname` after the
+   * same normalization (case, punycode, IP literal form). An IPv6 host is
+   * written in brackets.
+   */
+  readonly allowHosts?: readonly string[];
+  /**
+   * Let a hop reach loopback, private, and other reserved addresses, and use
+   * plain `http:` to a loopback address. Defaults to `false`. Only for a URL
+   * the operator typed (a terminal, a local registry); never for one that
+   * arrives over a request.
+   */
+  readonly allowPrivate?: boolean;
+  /** The most response body bytes read; a longer body fails with `too_large`. */
+  readonly maxBytes: number;
+  /** The deadline for the whole chain (every hop, connect, and body), in milliseconds. */
+  readonly timeoutMs: number;
+  /** Redirects followed before failing with `too_many_redirects`. Defaults to 5; 0 follows none. */
+  readonly maxRedirects?: number;
+  /** Aborts the request; it then fails with `aborted`. */
+  readonly signal?: AbortSignal;
+}
+
+/**
+ * The final response of a guarded request, its body read in full.
+ *
+ * @public
+ */
+export interface GuardedResponse {
+  readonly status: number;
+  readonly headers: Headers;
+  readonly bytes: Uint8Array;
+  /** The URL that answered, after redirects. */
+  readonly url: string;
+}
+
+/**
+ * A guarded request function; see {@link guardedFetch}.
+ *
+ * @public
+ */
+export type GuardedFetch = (url: string, options: GuardedFetchOptions) => Promise<GuardedResponse>;
+
+/** Redirects followed when the caller does not say. */
+const DEFAULT_MAX_REDIRECTS = 5;
+
+/** A ceiling on `maxRedirects`, so a typo cannot make a chain unbounded. */
+const MAX_REDIRECTS_CEILING = 20;
+
+/** The largest delay a timer accepts. */
+const MAX_TIMEOUT_MS = 2_147_483_647;
+
+const METHODS: ReadonlySet<string> = new Set(['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE']);
+
+const REDIRECT_STATUSES: ReadonlySet<number> = new Set([301, 302, 303, 307, 308]);
+
+/** Connection-level headers the fetch owns; a caller value would contradict the exchange. */
+const OWNED_HEADERS: ReadonlySet<string> = new Set([
+  'host',
+  'connection',
+  'content-length',
+  'transfer-encoding',
+  'te',
+  'trailer',
+  'upgrade',
+  'expect',
+  'keep-alive',
+  'proxy-connection',
+]);
+
+/** Credentials a redirect to another origin must not carry along. */
+const ORIGIN_BOUND_HEADERS: readonly string[] = ['authorization', 'cookie', 'proxy-authorization'];
+
+/** Body descriptors that go when a redirect turns the request into a `GET`. */
+const BODY_HEADERS: readonly string[] = [
+  'content-type',
+  'content-encoding',
+  'content-language',
+  'content-location',
+];
+
+const HEADER_NAME = /^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/;
+// Visible ASCII, space, tab, and obs-text; never CR, LF, or NUL.
+const HEADER_VALUE = /^[\t\x20-\x7e\x80-\xff]*$/;
+
+const EMPTY = new Uint8Array(0);
+
+/** One hop's request, after the options have been checked. */
+interface HopRequest {
+  readonly url: URL;
+  readonly method: GuardedFetchMethod;
+  readonly headers: Readonly<Record<string, string>>;
+  readonly body: Uint8Array | undefined;
+}
+
+/** The per-request policy, read once from the options. */
+interface Policy {
+  readonly allowHosts: readonly string[] | undefined;
+  readonly allowPrivate: boolean;
+  readonly maxBytes: number;
+  readonly timeoutMs: number;
+  readonly maxRedirects: number;
+  readonly signal: AbortSignal | undefined;
+}
+
+/** A transport with every default filled in. */
+interface Transport {
+  readonly resolve: GuardedResolver;
+  readonly connect: GuardedConnector;
+  readonly ca: string | readonly string[] | undefined;
+}
+
+/** A hop's response before its body is read. */
+interface HopResponse {
+  readonly status: number;
+  readonly headers: Headers;
+  read(): Promise<Uint8Array>;
+}
+
+/** The system resolver, returning every address in the order the OS gives them. */
+const systemResolve: GuardedResolver = async (hostname) =>
+  (await lookup(hostname, { all: true, order: 'verbatim' })).map((entry) => entry.address);
+
+/** A plain TCP connection to the vetted address; an IP literal host skips DNS. */
+const tcpConnect: GuardedConnector = (target, signal) =>
+  new Promise<Socket>((resolve, reject) => {
+    const socket = netConnect({ host: target.address, port: target.port, noDelay: true });
+    const onAbort = (): void => {
+      settle();
+      socket.destroy();
+      reject(new GuardedFetchErrors.Error('aborted'));
+    };
+    const onError = (): void => {
+      settle();
+      socket.destroy();
+      reject(new GuardedFetchErrors.Error('connect_failed'));
+    };
+    const onConnect = (): void => {
+      settle();
+      resolve(socket);
+    };
+    function settle(): void {
+      signal.removeEventListener('abort', onAbort);
+      socket.off('error', onError);
+      socket.off('connect', onConnect);
+    }
+    if (signal.aborted) {
+      onAbort();
+      return;
+    }
+    signal.addEventListener('abort', onAbort, { once: true });
+    socket.once('error', onError);
+    socket.once('connect', onConnect);
+  });
+
+/**
+ * Build a guarded fetch over `transport`. The transport is how the instance
+ * reaches the network (a test points it at a loopback server); the guard
+ * itself is not configurable here, only per request.
+ *
+ * @public
+ */
+export function createGuardedFetch(transport: GuardedFetchTransport = {}): GuardedFetch {
+  const resolved = readTransport(transport);
+  return (url, options) => fetchGuarded(resolved, url, options);
+}
+
+/**
+ * Request `url` under the guard described in the module documentation and
+ * resolve with the final response, its body read in full. A non-2xx status
+ * is a response, not an error; a refused or failed request rejects with a
+ * `guarded_fetch.*` error.
+ *
+ * @public
+ */
+export const guardedFetch: GuardedFetch = createGuardedFetch();
+
+async function fetchGuarded(
+  transport: Transport,
+  url: unknown,
+  options: GuardedFetchOptions,
+): Promise<GuardedResponse> {
+  const { policy, request: initial } = readRequest(url, options);
+  if (policy.signal?.aborted === true) {
+    throw new GuardedFetchErrors.Error('aborted');
+  }
+  const deadline = startTimeout(policy.timeoutMs);
+  const signal =
+    policy.signal === undefined
+      ? deadline.signal
+      : AbortSignal.any([deadline.signal, policy.signal]);
+  const open = new Set<Socket>();
+  const closeAll = (): void => {
+    for (const socket of open) socket.destroy();
+    open.clear();
+  };
+  signal.addEventListener('abort', closeAll, { once: true });
+  try {
+    let request = initial;
+    for (let redirects = 0; ; redirects += 1) {
+      const response = await hop(transport, request, policy, signal, open);
+      const location = REDIRECT_STATUSES.has(response.status)
+        ? response.headers.get('location')
+        : null;
+      if (location === null || location === '') {
+        const bytes = request.method === 'HEAD' ? EMPTY : await response.read();
+        return Object.freeze({
+          status: response.status,
+          headers: response.headers,
+          bytes,
+          url: request.url.href,
+        });
+      }
+      // The redirect body is never read: closing the connection is cheaper
+      // than draining a body of unknown size.
+      closeAll();
+      if (redirects >= policy.maxRedirects) {
+        throw new GuardedFetchErrors.Error('too_many_redirects');
+      }
+      request = redirectRequest(request, response.status, location);
+    }
+  } catch (error) {
+    if (deadline.signal.aborted) {
+      throw new GuardedFetchErrors.Error('timeout', {}, { cause: error });
+    }
+    if (signal.aborted) throw new GuardedFetchErrors.Error('aborted', {}, { cause: error });
+    if (GuardedFetchErrors.is(error)) throw error;
+    // Sanitized: a Node network error names the host and address it failed on.
+    throw responseFailed('response');
+  } finally {
+    signal.removeEventListener('abort', closeAll);
+    closeAll();
+    deadline.clear();
+  }
+}
+
+/** Check, resolve, connect, and send one hop, resolving once its headers arrive. */
+async function hop(
+  transport: Transport,
+  request: HopRequest,
+  policy: Policy,
+  signal: AbortSignal,
+  open: Set<Socket>,
+): Promise<HopResponse> {
+  const { url } = request;
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') {
+    throw refusedUrl('not_https');
+  }
+  if (url.username !== '' || url.password !== '') {
+    throw refusedUrl('has_credentials');
+  }
+  if (url.protocol === 'http:' && !policy.allowPrivate) {
+    throw refusedUrl('not_https');
+  }
+  if (policy.allowHosts !== undefined && !policy.allowHosts.includes(url.hostname)) {
+    throw new GuardedFetchErrors.Error('host_not_allowed');
+  }
+
+  const host = unbracket(url.hostname);
+  const addresses = isIP(host) === 0 ? await resolveHost(transport.resolve, host, signal) : [host];
+  if (!policy.allowPrivate && addresses.some(isPrivateAddress)) {
+    throw new GuardedFetchErrors.Error('blocked_address');
+  }
+  if (url.protocol === 'http:' && !addresses.every(isLoopbackAddress)) {
+    throw refusedUrl('plain_http_not_loopback');
+  }
+
+  const port = url.port === '' ? (url.protocol === 'https:' ? 443 : 80) : Number(url.port);
+  const socket = await connectFirst(transport.connect, addresses, port, signal, open);
+  const stream =
+    url.protocol === 'https:' ? await secure(socket, host, transport.ca, signal, open) : socket;
+  return await exchange(stream, request, policy.maxBytes, signal);
+}
+
+/** Resolve `hostname` once; an empty or malformed answer fails closed. */
+async function resolveHost(
+  resolve: GuardedResolver,
+  hostname: string,
+  signal: AbortSignal,
+): Promise<readonly string[]> {
+  let answer: unknown;
+  try {
+    answer = await raceAbort(
+      Promise.resolve().then(() => resolve(hostname)),
+      signal,
+    );
+  } catch {
+    throw new GuardedFetchErrors.Error('resolve_failed');
+  }
+  if (!Array.isArray(answer) || answer.length === 0) {
+    throw new GuardedFetchErrors.Error('resolve_failed');
+  }
+  const entries: readonly unknown[] = answer;
+  const addresses: string[] = [];
+  for (const address of entries) {
+    if (typeof address !== 'string' || isIP(address) === 0) {
+      throw new GuardedFetchErrors.Error('resolve_failed');
+    }
+    addresses.push(address);
+  }
+  return addresses;
+}
+
+/**
+ * Connect to the first vetted address that accepts, in resolver order. Every
+ * candidate passed the checks above, so falling back to the next one cannot
+ * reach anything the guard refused.
+ */
+async function connectFirst(
+  connect: GuardedConnector,
+  addresses: readonly string[],
+  port: number,
+  signal: AbortSignal,
+  open: Set<Socket>,
+): Promise<Socket> {
+  for (const address of addresses) {
+    try {
+      const socket = await raceAbort(
+        Promise.resolve().then(() => connect({ address, port }, signal)),
+        signal,
+        (late) => late.destroy(),
+      );
+      track(socket, open);
+      return socket;
+    } catch {
+      if (signal.aborted) throw new GuardedFetchErrors.Error('aborted');
+    }
+  }
+  throw new GuardedFetchErrors.Error('connect_failed');
+}
+
+/** Run TLS over `socket`, verifying the certificate against the URL host. */
+async function secure(
+  socket: Socket,
+  host: string,
+  ca: string | readonly string[] | undefined,
+  signal: AbortSignal,
+  open: Set<Socket>,
+): Promise<Socket> {
+  const options: ConnectionOptions = {
+    socket,
+    // `host` is what the certificate is checked against; without it Node
+    // would check the address the socket is connected to.
+    host,
+    ALPNProtocols: ['http/1.1'],
+    rejectUnauthorized: true,
+    ...(isIP(host) === 0 ? { servername: host } : {}),
+    ...(ca === undefined ? {} : { ca: typeof ca === 'string' ? ca : [...ca] }),
+  };
+  const tls = tlsConnect(options);
+  track(tls, open);
+  await raceAbort(
+    new Promise<void>((resolve, reject) => {
+      tls.once('secureConnect', () => resolve());
+      tls.once('error', () => reject(new GuardedFetchErrors.Error('tls')));
+    }),
+    signal,
+  );
+  return tls;
+}
+
+/** Send the request over `stream` and resolve with the response head. */
+function exchange(
+  stream: Socket,
+  request: HopRequest,
+  maxBytes: number,
+  signal: AbortSignal,
+): Promise<HopResponse> {
+  const headers: OutgoingHttpHeaders = {
+    'user-agent': 'jsails',
+    // The body is returned as it arrives and `maxBytes` counts those bytes,
+    // so nothing compressed is asked for unless the caller says otherwise.
+    'accept-encoding': 'identity',
+    ...request.headers,
+    host: request.url.host,
+    connection: 'close',
+  };
+  if (request.body !== undefined) headers['content-length'] = String(request.body.byteLength);
+  return raceAbort(
+    new Promise<HopResponse>((resolve, reject) => {
+      const outgoing = httpRequest({
+        createConnection: () => stream,
+        method: request.method,
+        path: `${request.url.pathname}${request.url.search}`,
+        headers,
+        setHost: false,
+      });
+      outgoing.on('error', () => reject(responseFailed('response')));
+      outgoing.once('response', (incoming: IncomingMessage) => {
+        let responseHeaders: Headers;
+        try {
+          responseHeaders = toHeaders(incoming.rawHeaders);
+        } catch {
+          reject(responseFailed('headers'));
+          return;
+        }
+        resolve({
+          status: incoming.statusCode ?? 0,
+          headers: responseHeaders,
+          read: () => raceAbort(readBody(incoming, maxBytes), signal),
+        });
+      });
+      outgoing.end(request.body);
+    }),
+    signal,
+  );
+}
+
+/** Read the body up to `maxBytes`; past it, the response is destroyed at once. */
+function readBody(incoming: IncomingMessage, maxBytes: number): Promise<Uint8Array> {
+  return new Promise<Uint8Array>((resolve, reject) => {
+    const declared = incoming.headers['content-length'];
+    if (declared !== undefined && Number(declared) > maxBytes) {
+      reject(tooLarge());
+      incoming.destroy();
+      return;
+    }
+    const chunks: Uint8Array[] = [];
+    let received = 0;
+    incoming.on('data', (chunk: Uint8Array) => {
+      received += chunk.byteLength;
+      if (received > maxBytes) {
+        reject(tooLarge());
+        incoming.destroy();
+        return;
+      }
+      chunks.push(chunk);
+    });
+    incoming.once('end', () => resolve(concatBytes(chunks)));
+    incoming.on('error', () => reject(responseFailed('body')));
+    incoming.once('close', () => {
+      if (!incoming.complete) {
+        reject(responseFailed('body'));
+      }
+    });
+  });
+}
+
+function tooLarge(): JsailsError {
+  return new GuardedFetchErrors.Error('too_large');
+}
+
+/** The next hop's request for a redirect to `location`, as `fetch` would build it. */
+function redirectRequest(previous: HopRequest, status: number, location: string): HopRequest {
+  let url: URL;
+  try {
+    url = new URL(location, previous.url);
+  } catch {
+    throw refusedUrl('malformed_redirect');
+  }
+  url.hash = '';
+  const toGet =
+    status === 303
+      ? previous.method !== 'HEAD'
+      : status !== 307 && status !== 308 && previous.method === 'POST';
+  const headers: Record<string, string> = { ...previous.headers };
+  if (toGet) for (const name of BODY_HEADERS) delete headers[name];
+  if (url.origin !== previous.url.origin) {
+    for (const name of ORIGIN_BOUND_HEADERS) delete headers[name];
+  }
+  return {
+    url,
+    method: toGet ? 'GET' : previous.method,
+    headers,
+    body: toGet ? undefined : previous.body,
+  };
+}
+
+/** Response headers in arrival order, repeated fields kept. */
+function toHeaders(raw: readonly string[]): Headers {
+  const headers = new Headers();
+  for (let index = 0; index + 1 < raw.length; index += 2) {
+    headers.append(raw[index] ?? '', raw[index + 1] ?? '');
+  }
+  return headers;
+}
+
+/**
+ * Keep `socket` for the request's cleanup. The listener stays for the
+ * socket's life: an error after the exchange settled has nobody left to
+ * report to, and without a listener Node would throw it as uncaught.
+ */
+function track(socket: Socket, open: Set<Socket>): void {
+  open.add(socket);
+  socket.on('error', () => socket.destroy());
+}
+
+/**
+ * Settle with `promise`, or reject as soon as `signal` aborts. A value that
+ * arrives after the abort is handed to `discard` (a socket nobody will use).
+ */
+function raceAbort<T>(
+  promise: Promise<T>,
+  signal: AbortSignal,
+  discard?: (late: T) => void,
+): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    let aborted = signal.aborted;
+    const onAbort = (): void => {
+      aborted = true;
+      reject(new GuardedFetchErrors.Error('aborted'));
+    };
+    if (aborted) onAbort();
+    else signal.addEventListener('abort', onAbort, { once: true });
+    promise.then(
+      (value) => {
+        signal.removeEventListener('abort', onAbort);
+        if (aborted) discard?.(value);
+        else resolve(value);
+      },
+      (error: unknown) => {
+        signal.removeEventListener('abort', onAbort);
+        reject(
+          error instanceof Error
+            ? error
+            : new GuardedFetchErrors.Error('connect_failed', {}, { cause: error }),
+        );
+      },
+    );
+  });
+}
+
+/** `URL#hostname` spells an IPv6 literal in brackets; the address checks want it bare. */
+function unbracket(hostname: string): string {
+  return hostname.startsWith('[') && hostname.endsWith(']') ? hostname.slice(1, -1) : hostname;
+}
+
+function invalidOptions(option: GuardedFetchOption): JsailsError {
+  return new GuardedFetchErrors.Error('invalid_options', { option });
+}
+
+function readTransport(transport: GuardedFetchTransport): Transport {
+  if (typeof transport !== 'object' || transport === null) {
+    throw invalidOptions('transport');
+  }
+  const { resolve, connect, ca } = transport;
+  if (resolve !== undefined && typeof resolve !== 'function') {
+    throw invalidOptions('resolve');
+  }
+  if (connect !== undefined && typeof connect !== 'function') {
+    throw invalidOptions('connect');
+  }
+  if (
+    ca !== undefined &&
+    typeof ca !== 'string' &&
+    !(Array.isArray(ca) && ca.every((entry) => typeof entry === 'string'))
+  ) {
+    throw invalidOptions('ca');
+  }
+  return {
+    resolve: resolve ?? systemResolve,
+    connect: connect ?? tcpConnect,
+    ca: ca === undefined ? undefined : typeof ca === 'string' ? ca : Object.freeze([...ca]),
+  };
+}
+
+/** Check the URL and options before anything touches the network. */
+function readRequest(
+  url: unknown,
+  options: GuardedFetchOptions,
+): { readonly policy: Policy; readonly request: HopRequest } {
+  if (typeof options !== 'object' || options === null) {
+    throw invalidOptions('options');
+  }
+  const { maxBytes, timeoutMs, allowHosts, allowPrivate, signal } = options;
+  if (typeof maxBytes !== 'number' || !Number.isSafeInteger(maxBytes) || maxBytes < 0) {
+    throw invalidOptions('maxBytes');
+  }
+  if (
+    typeof timeoutMs !== 'number' ||
+    !Number.isInteger(timeoutMs) ||
+    timeoutMs < 1 ||
+    timeoutMs > MAX_TIMEOUT_MS
+  ) {
+    throw invalidOptions('timeoutMs');
+  }
+  const maxRedirects = options.maxRedirects ?? DEFAULT_MAX_REDIRECTS;
+  if (
+    typeof maxRedirects !== 'number' ||
+    !Number.isInteger(maxRedirects) ||
+    maxRedirects < 0 ||
+    maxRedirects > MAX_REDIRECTS_CEILING
+  ) {
+    throw invalidOptions('maxRedirects');
+  }
+  if (allowHosts !== undefined && !Array.isArray(allowHosts)) {
+    throw invalidOptions('allowHosts');
+  }
+  if (allowPrivate !== undefined && typeof allowPrivate !== 'boolean') {
+    throw invalidOptions('allowPrivate');
+  }
+  if (signal !== undefined && !(signal instanceof AbortSignal)) {
+    throw invalidOptions('signal');
+  }
+
+  const method = options.method ?? 'GET';
+  if (typeof method !== 'string' || !METHODS.has(method)) {
+    throw invalidOptions('method');
+  }
+  const body = readBodyOption(options.body);
+  if (body !== undefined && (method === 'GET' || method === 'HEAD')) {
+    throw invalidOptions('body');
+  }
+
+  if (typeof url !== 'string' || url === '') {
+    throw refusedUrl('malformed');
+  }
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw refusedUrl('malformed');
+  }
+  parsed.hash = '';
+
+  return {
+    policy: {
+      allowHosts:
+        allowHosts === undefined ? undefined : Object.freeze(allowHosts.map(normalizeHost)),
+      allowPrivate: allowPrivate === true,
+      maxBytes,
+      timeoutMs,
+      maxRedirects,
+      signal,
+    },
+    request: { url: parsed, method, headers: readHeaders(options.headers), body },
+  };
+}
+
+/**
+ * An `allowHosts` entry spelled the way `URL#hostname` spells the host it
+ * names (lower case, punycode, canonical IP literal), so the comparison with
+ * each hop is exact. An entry that is not a bare host name is refused.
+ */
+function normalizeHost(host: unknown): string {
+  if (typeof host !== 'string' || host === '' || /[/?#@\\\s]/.test(host)) {
+    throw invalidOptions('allowHosts');
+  }
+  let parsed: URL;
+  try {
+    parsed = new URL(`https://${host}/`);
+  } catch {
+    throw invalidOptions('allowHosts');
+  }
+  // `URL` drops a default port, so a colon outside an IPv6 literal is refused
+  // here rather than read as `host:443`.
+  if (parsed.port !== '' || (host.includes(':') && !host.startsWith('['))) {
+    throw invalidOptions('allowHosts');
+  }
+  return parsed.hostname;
+}
+
+function readBodyOption(body: unknown): Uint8Array | undefined {
+  if (body === undefined) return undefined;
+  if (typeof body === 'string') return new TextEncoder().encode(body);
+  if (body instanceof Uint8Array) return body.slice();
+  throw invalidOptions('body');
+}
+
+/** Lower-cased, validated request headers; a connection-level header is refused. */
+function readHeaders(headers: unknown): Readonly<Record<string, string>> {
+  if (headers === undefined) return {};
+  if (typeof headers !== 'object' || headers === null || Array.isArray(headers)) {
+    throw invalidOptions('headers');
+  }
+  // No prototype, so a header named `__proto__` is kept like any other.
+  const read: Record<string, string> = Object.create(null) as Record<string, string>;
+  for (const [name, value] of Object.entries(headers)) {
+    if (!HEADER_NAME.test(name) || typeof value !== 'string' || !HEADER_VALUE.test(value)) {
+      throw invalidOptions('headers');
+    }
+    const lower = name.toLowerCase();
+    if (OWNED_HEADERS.has(lower)) {
+      throw invalidOptions('headers');
+    }
+    if (Object.hasOwn(read, lower)) {
+      throw invalidOptions('headers');
+    }
+    read[lower] = value;
+  }
+  return read;
+}

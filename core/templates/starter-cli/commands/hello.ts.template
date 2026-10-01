@@ -1,0 +1,26 @@
+/**
+ * `jsails hello [name]`.
+ *
+ * A readable sample of the command API: the module's path under `commands/`
+ * is the command's name, `defineCommand` declares its options and arguments,
+ * and `jsails hello --help` prints the help generated from them. When `name`
+ * is absent the command asks for it through the context's prompter, unless it
+ * runs with `--no-interaction`.
+ */
+
+import { defineCommand } from '../app/application-command.js';
+
+export default defineCommand({
+  summary: 'Greet someone by name',
+  positionals: [{ name: 'name', summary: 'Who to greet', required: false }],
+  async run(context) {
+    let name = context.positionals[0];
+    if (name === undefined) {
+      name = await context.prompter.text('What is your name?');
+    }
+    if (name === '') {
+      name = 'world';
+    }
+    context.stdout(`Hello, ${name}!`);
+  },
+});

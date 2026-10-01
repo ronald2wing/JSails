@@ -1,0 +1,387 @@
+{
+  "description": "Imports against the final package map (scripts/import-graph/package-map.mjs), judged by the import-direction gate (KRN-03). Each entry is one file importing one future package (or an npm package no allowed package owns). KRN-22 and the owning clusters empty it as the directories move.",
+  "kind": "gate",
+  "gate": "import-direction",
+  "entries": [
+    {
+      "id": "core/src/app/config/legacy.ts -> @jsails/database",
+      "reason": "Future jsails type-imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/app/config/legacy.ts -> @jsails/dev",
+      "reason": "Future jsails type-imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/app/config/legacy.ts -> @jsails/seo",
+      "reason": "Future jsails type-imports code that moves to @jsails/seo, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/app/http-pipeline.ts -> @jsails/dev",
+      "reason": "Future jsails imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/app/http-pipeline.ts -> @jsails/diagnostics",
+      "reason": "Future jsails imports code that moves to @jsails/diagnostics, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/app/http-pipeline.ts -> @jsails/seo",
+      "reason": "Future jsails type-imports code that moves to @jsails/seo, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/app/scaffold.ts -> jsails",
+      "reason": "Future create-jsails imports code that moves to jsails, which create-jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/app/starter/files.ts -> jsails",
+      "reason": "Future create-jsails imports code that moves to jsails, which create-jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/cli/command-lookup.ts -> @jsails/dev",
+      "reason": "Future jsails imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/cli/manifest.ts -> @jsails/database",
+      "reason": "Future jsails imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/cli/manifest.ts -> @jsails/dev",
+      "reason": "Future jsails imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/cli/manifest.ts -> @jsails/jobs",
+      "reason": "Future jsails imports code that moves to @jsails/jobs, which jsails may not depend on.",
+      "fixedBy": "JOB-08"
+    },
+    {
+      "id": "core/src/cli/manifest.ts -> @jsails/mcp",
+      "reason": "Future jsails imports code that moves to @jsails/mcp, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/cli/manifest.ts -> create-jsails",
+      "reason": "Future jsails imports code that moves to create-jsails, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/cli/commands/app.ts -> @jsails/dev",
+      "reason": "Future jsails imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/cli/commands/console.ts -> @jsails/database",
+      "reason": "Future @jsails/dev imports code that moves to @jsails/database, which @jsails/dev may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/cli/commands/console.ts -> @jsails/jobs",
+      "reason": "Future @jsails/dev imports code that moves to @jsails/jobs, which @jsails/dev may not depend on.",
+      "fixedBy": "JOB-08"
+    },
+    {
+      "id": "core/src/cli/commands/create.ts -> jsails",
+      "reason": "Future create-jsails imports code that moves to jsails, which create-jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/cli/commands/test.ts -> @jsails/database",
+      "reason": "Future @jsails/dev imports code that moves to @jsails/database, which @jsails/dev may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/cli/config-loader.ts -> @jsails/database",
+      "reason": "Future jsails imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/cli/create-jsails.ts -> jsails",
+      "reason": "Future create-jsails imports code that moves to jsails, which create-jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/compiler/model-extract.ts -> @jsails/database",
+      "reason": "Future @jsails/dev imports code that moves to @jsails/database, which @jsails/dev may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/contracts/http.ts -> @jsails/seo",
+      "reason": "Future jsails type-imports code that moves to @jsails/seo, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/contracts/render.ts -> @jsails/seo",
+      "reason": "Future jsails type-imports code that moves to @jsails/seo, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/database/data-source.ts -> @jsails/live",
+      "reason": "Future @jsails/database imports code that moves to @jsails/live, which @jsails/database may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/database/naming-strategy.ts -> @jsails/dev",
+      "reason": "Future @jsails/database imports code that moves to @jsails/dev, which @jsails/database may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/database/polymorphic.ts -> @jsails/dev",
+      "reason": "Future @jsails/database imports code that moves to @jsails/dev, which @jsails/database may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/entry/app-surface.ts -> create-jsails",
+      "reason": "Future jsails imports code that moves to create-jsails, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/entry/migrations-surface.ts -> @jsails/database",
+      "reason": "Future jsails imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/environment/read.ts -> @jsails/jobs",
+      "reason": "Future jsails imports code that moves to @jsails/jobs, which jsails may not depend on.",
+      "fixedBy": "JOB-08"
+    },
+    {
+      "id": "core/src/extensions/index.ts -> @jsails/broadcast",
+      "reason": "Future jsails type-imports code that moves to @jsails/broadcast, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/extensions/index.ts -> @jsails/jobs",
+      "reason": "Future jsails type-imports code that moves to @jsails/jobs, which jsails may not depend on.",
+      "fixedBy": "JOB-08"
+    },
+    {
+      "id": "core/src/index.ts -> @jsails/broadcast",
+      "reason": "Future jsails imports code that moves to @jsails/broadcast, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/index.ts -> @jsails/database",
+      "reason": "Future jsails imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/index.ts -> @jsails/dev",
+      "reason": "Future jsails imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/index.ts -> @jsails/diagnostics",
+      "reason": "Future jsails imports code that moves to @jsails/diagnostics, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/index.ts -> @jsails/jobs",
+      "reason": "Future jsails imports code that moves to @jsails/jobs, which jsails may not depend on.",
+      "fixedBy": "JOB-08"
+    },
+    {
+      "id": "core/src/introspect/builtin-providers.ts -> @jsails/diagnostics",
+      "reason": "Future @jsails/dev type-imports code that moves to @jsails/diagnostics, which @jsails/dev may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/introspect/builtin-providers.ts -> @jsails/jobs",
+      "reason": "Future @jsails/dev type-imports code that moves to @jsails/jobs, which @jsails/dev may not depend on.",
+      "fixedBy": "JOB-08"
+    },
+    {
+      "id": "core/src/introspect/describe.ts -> @jsails/database",
+      "reason": "Future @jsails/dev type-imports code that moves to @jsails/database, which @jsails/dev may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/introspect/describe.ts -> @jsails/mcp",
+      "reason": "Future @jsails/dev imports code that moves to @jsails/mcp, which @jsails/dev may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/jobs/discovery.ts -> @jsails/dev",
+      "reason": "Future @jsails/jobs imports code that moves to @jsails/dev, which @jsails/jobs may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/kernel/load-app.ts -> @jsails/database",
+      "reason": "Future jsails imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/models/bootstrap.ts -> @jsails/dev",
+      "reason": "Future @jsails/database imports code that moves to @jsails/dev, which @jsails/database may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/pages/page.ts -> @jsails/database",
+      "reason": "Future jsails imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/pages/page.ts -> @jsails/seo",
+      "reason": "Future jsails imports code that moves to @jsails/seo, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/pages/static-site/plan.ts -> @jsails/seo",
+      "reason": "Future jsails imports code that moves to @jsails/seo, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/plugin-sdk/index.ts -> @jsails/database",
+      "reason": "Future jsails imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/plugin-sdk/index.ts -> @jsails/dev",
+      "reason": "Future jsails imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/plugin-sdk/index.ts -> @jsails/valkey",
+      "reason": "Future jsails imports code that moves to @jsails/valkey, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/plugins/schema.ts -> @jsails/database",
+      "reason": "Future jsails imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/rich-text/document.ts -> @jsails/database",
+      "reason": "Future jsails imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/server-components/bootstrap.ts -> @jsails/dev",
+      "reason": "Future jsails imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/server/app.ts -> @jsails/database",
+      "reason": "Future jsails type-imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/server/app.ts -> @jsails/dev",
+      "reason": "Future jsails imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/server/app.ts -> @jsails/seo",
+      "reason": "Future jsails type-imports code that moves to @jsails/seo, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/server/readiness.ts -> @jsails/database",
+      "reason": "Future jsails type-imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/server/request-frame.ts -> @jsails/seo",
+      "reason": "Future jsails type-imports code that moves to @jsails/seo, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/server/request-pipeline.ts -> @jsails/database",
+      "reason": "Future jsails type-imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/server/request-pipeline.ts -> @jsails/dev",
+      "reason": "Future jsails type-imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/server/request-pipeline.ts -> @jsails/seo",
+      "reason": "Future jsails type-imports code that moves to @jsails/seo, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/support/files.server.ts -> npm:tinyglobby",
+      "reason": "Future jsails imports tinyglobby, which the final package map gives to no package it may depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/support/numbers.ts -> npm:dinero.js",
+      "reason": "Future jsails imports dinero.js, which the final package map gives to no package it may depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/support/server.ts -> @jsails/content",
+      "reason": "Future jsails imports code that moves to @jsails/content, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/support/server.ts -> @jsails/filesystem",
+      "reason": "Future jsails imports code that moves to @jsails/filesystem, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/support/time.ts -> npm:date-fns",
+      "reason": "Future jsails imports date-fns, which the final package map gives to no package it may depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/support/time.ts -> npm:pretty-ms",
+      "reason": "Future jsails imports pretty-ms, which the final package map gives to no package it may depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/symbols/framework-symbol-catalog-scan.ts -> @jsails/dev",
+      "reason": "Future jsails imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/symbols/install-browser.ts -> @jsails/broadcast",
+      "reason": "Future jsails imports code that moves to @jsails/broadcast, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/symbols/install-browser.ts -> @jsails/database",
+      "reason": "Future jsails imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/testing/fixtures.ts -> @jsails/dev",
+      "reason": "Future jsails type-imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/testing/index.ts -> @jsails/database",
+      "reason": "Future jsails imports code that moves to @jsails/database, which jsails may not depend on.",
+      "fixedBy": "DAT-15b"
+    },
+    {
+      "id": "core/src/testing/index.ts -> @jsails/dev",
+      "reason": "Future jsails imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/testing/index.ts -> @jsails/jobs",
+      "reason": "Future jsails imports code that moves to @jsails/jobs, which jsails may not depend on.",
+      "fixedBy": "JOB-08"
+    },
+    {
+      "id": "core/src/testing/server-components.ts -> @jsails/dev",
+      "reason": "Future jsails type-imports code that moves to @jsails/dev, which jsails may not depend on.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "core/src/testing/test-database.ts -> @jsails/dev",
+      "reason": "Future @jsails/database type-imports code that moves to @jsails/dev, which @jsails/database may not depend on.",
+      "fixedBy": "KRN-22"
+    }
+  ]
+}

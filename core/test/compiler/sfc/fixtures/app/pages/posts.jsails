@@ -1,0 +1,16 @@
+<script lang="ts">
+/** The post index: every post as a card row, with the number of posts per tag. */
+import type { Row } from '../ui/card.jsails';
+
+export function load(): { rows: readonly Row[]; totals: Record<string, number> } {
+  const totals: Record<string, number> = {};
+  for (const post of posts) {
+    for (const tag of post.tags) totals[tag] = (totals[tag] ?? 0) + 1;
+  }
+  return { rows: posts.map((post, index) => ({ id: index + 1, label: post.title })), totals };
+}
+</script>
+
+<template>
+  <PostList :rows="rows" :totals="totals" />
+</template>

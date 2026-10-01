@@ -1,0 +1,17 @@
+<!-- A panel island: a checkbox opens it, and the counter inside renders as part of it. -->
+<script setup lang="ts">
+const { title } = defineProps<{ title: string }>();
+const open = useSignal(false);
+const changes = useSignal(0);
+const opened = useSignal(0);
+</script>
+
+<template>
+  <section class="panel">
+    <label><input type="checkbox" js-model="open" @change="opened.value += $event.currentTarget.checked ? 1 : 0" /> {{ title }}</label>
+    <Badge :text="open.value ? 'open' : 'closed'" />
+    <Counter js-if="open.value" :start="10" label="Inner" @change="changes.value++" />
+    <p class="changes">{{ changes.value }}</p>
+    <p class="opened">{{ opened.value }}</p>
+  </section>
+</template>

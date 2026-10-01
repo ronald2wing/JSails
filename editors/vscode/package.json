@@ -1,0 +1,60 @@
+{
+  "name": "jsails-vscode",
+  "displayName": "JSails",
+  "description": "The jsails language for VS Code: highlighting for .jsails single-file components, with types from the TypeScript 7 extension.",
+  "version": "0.0.0",
+  "private": true,
+  "publisher": "jsails",
+  "license": "MIT",
+  "homepage": "https://jsails.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronald2wing/JSails.git",
+    "directory": "editors/vscode"
+  },
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "main": "./extension.cjs",
+  "activationEvents": [
+    "onLanguage:jsails"
+  ],
+  "extensionDependencies": [
+    "TypeScriptTeam.native-preview"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "jsails",
+        "aliases": [
+          "JSails",
+          "jsails"
+        ],
+        "extensions": [
+          ".jsails"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "jsails",
+        "scopeName": "source.jsails",
+        "path": "./syntaxes/jsails.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.tsx": "typescriptreact",
+          "source.css": "css",
+          "meta.embedded.expression.jsails": "typescriptreact",
+          "meta.embedded.parameters.jsails": "typescriptreact"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "package": "node build.mjs && cd dist && npx --yes @vscode/vsce@4.1.0 package --out ../jsails.vsix"
+  }
+}

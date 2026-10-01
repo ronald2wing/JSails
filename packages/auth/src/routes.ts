@@ -1,0 +1,283 @@
+/**
+ * Login/logout and device-approval handlers for the `auth` plugin, plus the
+ * request and response helpers every auth handler shares.
+ *
+ * {@link authPlugin} registers each through its registrar (`routes.add`) as a
+ * cookie-accepting route, so core's access chain has already refused an
+ * unsafe request from another origin (anonymous included: a hostile page
+ * cannot sign a visitor in to its own account) before a handler runs. A
+ * handler reads the form and talks to Better Auth; it checks no origin.
+ *
+ * The Better Auth instance is passed in by the caller (the plugin owns the
+ * memoized construction), so these handlers open no connection and create no
+ * state of their own.
+ */
+
+import { jsonError, Respond } from 'jsails/api';
+import { deviceApi, type Auth } from './better-auth.js';
+import { rateLimitAllows, type RateLimitHook, type RateLimitRoute } from './rate-limit.js';
+
+export type { RateLimitHook } from './rate-limit.js';
+
+/** What every auth route handler is given besides the request. */
+export interface AuthHandlerOptions {
+  /** The Better Auth instance; the plugin resolves it lazily per request. */
+  readonly auth: Auth;
+  /** Per-email rate-limit gate; a non-`true` (or throwing) result yields a generic 429. */
+  readonly rateLimit?: RateLimitHook;
+  /** The client address key handed to `rateLimit`, or `null` when unknown. */
+  readonly clientAddress?: string | null;
+}
+
+/**
+ * Whether the attempt passes the configured rate limit. No hook means no
+ * limit; the plugin installs a default one, so only a direct caller of a
+ * handler runs without it. `email` is `null` for a surface that takes none,
+ * which the hook counts against the client address.
+ */
+export async function attemptAllowed(
+  request: Request,
+  options: AuthHandlerOptions,
+  route: RateLimitRoute,
+  email: string | null,
+): Promise<boolean> {
+  if (options.rateLimit === undefined) {
+    return true;
+  }
+  return rateLimitAllows(options.rateLimit, email, {
+    ip: options.clientAddress ?? null,
+    route,
+    request,
+  });
+}
+
+/**
+ * A copy of `headers` without `Authorization`. Better Auth's bearer plugin
+ * turns that header into a session cookie for any endpoint it reaches, so the
+ * browser-only surfaces (the Better Auth router, logout, device approval) strip
+ * it: an API or CLI token is never a browser session there.
+ */
+export function withoutBearer(headers: Headers): Headers {
+  if (!headers.has('authorization')) {
+    return headers;
+  }
+  const copy = new Headers(headers);
+  copy.delete('authorization');
+  return copy;
+}
+
+/** 303 redirect with the given `Set-Cookie` values forwarded individually. */
+function redirectWithCookies(location: string, cookies: readonly string[] = []): Response {
+  const response = Respond.redirect(location, { status: 303 });
+  for (const cookie of cookies) {
+    response.headers.append('set-cookie', cookie);
+  }
+  return response;
+}
+
+/** Sentinel origin used only to resolve a candidate path; never navigated to. */
+const NEXT_PATH_ORIGIN = 'https://sentinel.invalid';
+
+/**
+ * Validate a post-login redirect target. Only a local, root-relative path is
+ * accepted; anything else — including an absent value — falls back to
+ * `/dashboard`, so a hostile `next` can never redirect off-origin.
+ *
+ * Backslashes are rejected outright because browsers normalize them to `/` in
+ * HTTP URLs, so `/\host` would otherwise resolve off-origin. Percent-encoded
+ * backslashes are rejected for the same reason. Resolving against a sentinel
+ * origin catches every remaining absolute/protocol-relative form.
+ */
+function safeNextPath(value: string): string {
+  if (
+    !value.startsWith('/') ||
+    value.startsWith('//') ||
+    /[\\\u0000-\u001f\u007f\s]/.test(value) ||
+    /%5c/i.test(value)
+  ) {
+    return '/dashboard';
+  }
+
+  let resolved: URL;
+  try {
+    resolved = new URL(value, NEXT_PATH_ORIGIN);
+  } catch {
+    return '/dashboard';
+  }
+
+  if (resolved.origin !== NEXT_PATH_ORIGIN || !resolved.pathname.startsWith('/')) {
+    return '/dashboard';
+  }
+  return `${resolved.pathname}${resolved.search}${resolved.hash}`;
+}
+
+/**
+ * Email/password login: parse the `application/x-www-form-urlencoded` form,
+ * delegate to Better Auth's `signInEmail`, forward the `Set-Cookie` header, and
+ * redirect. On any failure it redirects back to `/login?error=1` without
+ * echoing the credentials or the underlying error.
+ */
+export async function handleLogin(
+  request: Request,
+  options: AuthHandlerOptions,
+): Promise<Response> {
+  let email: unknown;
+  let password: unknown;
+  let next: string;
+  try {
+    const form = await request.formData();
+    email = form.get('email');
+    password = form.get('password');
+    const nextValue = form.get('next');
+    next = safeNextPath(typeof nextValue === 'string' ? nextValue : '');
+  } catch {
+    return redirectWithCookies('/login?error=1');
+  }
+
+  if (
+    typeof email !== 'string' ||
+    email === '' ||
+    typeof password !== 'string' ||
+    password === ''
+  ) {
+    return redirectWithCookies(errorRedirect(next));
+  }
+
+  // `auth.api.signInEmail` bypasses Better Auth's HTTP-level rate limiter, so
+  // the throttle for password guessing is this hook.
+  if (!(await attemptAllowed(request, options, 'login', email))) {
+    return rateLimitedResponse();
+  }
+
+  try {
+    const result = await options.auth.api.signInEmail({
+      body: { email, password },
+      returnHeaders: true,
+    });
+    return redirectWithCookies(next, result.headers.getSetCookie());
+  } catch {
+    // Never echo the credentials or the raw error back to the client.
+    return redirectWithCookies(errorRedirect(next));
+  }
+}
+
+/** Login failure redirect, preserving a non-default `next` for the retry. */
+function errorRedirect(next: string): string {
+  if (next === '/dashboard') {
+    return '/login?error=1';
+  }
+  return `/login?error=1&next=${encodeURIComponent(next)}`;
+}
+
+/**
+ * Logout: call Better Auth's `signOut` with the request headers (the session
+ * cookie identifies the session), forward the cleared-cookie headers, and
+ * redirect to `/login`. Signing out a stale or absent session is a no-op that
+ * still redirects.
+ */
+export async function handleLogout(
+  request: Request,
+  options: AuthHandlerOptions,
+): Promise<Response> {
+  try {
+    const result = await options.auth.api.signOut({
+      headers: withoutBearer(request.headers),
+      returnHeaders: true,
+    });
+    return redirectWithCookies('/login', result.headers.getSetCookie());
+  } catch {
+    // The session could not be cleared (no cookie, already expired, or a
+    // transport failure); redirecting is still the right outcome.
+    return redirectWithCookies('/login');
+  }
+}
+
+/**
+ * Approve or deny a pending device authorization (RFC 8628).
+ *
+ * Registered at `/api/device/approve` and `/api/device/deny`, which admit
+ * only a browser (cookie) session.
+ *
+ * The `action` form field (`approve` | `deny`) is authoritative; the two mount
+ * points are aliases. The handler delegates to Better Auth's `deviceApprove` /
+ * `deviceDeny` endpoints with the request headers (the session cookie
+ * identifies the caller), which enforce the claim/ownership/expiry state
+ * machine server-side. It always redirects back to `/device?user_code=...`,
+ * where the page's `load` re-reads the code through `deviceVerify` to show the
+ * resulting state; a failure (stale, already processed, wrong user) is
+ * swallowed rather than echoed because the re-read is authoritative.
+ */
+export async function handleDeviceAction(
+  request: Request,
+  options: AuthHandlerOptions,
+): Promise<Response> {
+  let userCode: unknown;
+  let action: unknown;
+  try {
+    const form = await request.formData();
+    userCode = form.get('user_code');
+    action = form.get('action');
+  } catch {
+    return redirectWithCookies('/device');
+  }
+
+  if (typeof userCode !== 'string' || userCode === '') {
+    return redirectWithCookies('/device');
+  }
+
+  const back = `/device?user_code=${encodeURIComponent(userCode)}`;
+  const deny = action === 'deny';
+
+  // Only a browser session may approve: a token holder that could approve its
+  // own device code would mint a fresh session outside the token list.
+  const headers = withoutBearer(request.headers);
+  try {
+    if (deny) {
+      await deviceApi(options.auth).deviceDeny({ body: { userCode }, headers });
+    } else {
+      await deviceApi(options.auth).deviceApprove({ body: { userCode }, headers });
+    }
+  } catch {
+    // Stale, already-processed, or claimed by another session. Never echo the
+    // underlying error; the review page re-reads the code and shows the state.
+  }
+  return redirectWithCookies(back);
+}
+
+// --- Shared helpers for the registration/reset/verification/token handlers. ---
+
+/** A JSON response body with the given status (default 200). */
+export function jsonResponse(data: unknown, status = 200): Response {
+  return Respond.json(data, { status });
+}
+
+/** The generic 429 every rate-limited auth handler answers with. */
+export function rateLimitedResponse(): Response {
+  return jsonError(429, 'rate_limited', 'too many requests');
+}
+
+/** The 400 for a body that is not a readable form. */
+export function invalidBodyResponse(): Response {
+  return jsonError(400, 'invalid_body', 'request body must be a form');
+}
+
+/**
+ * Parse a form body into flat string fields. Non-string entries (file uploads)
+ * are skipped; a body that is not `application/x-www-form-urlencoded` or
+ * `multipart/form-data` throws, which callers map to {@link invalidBodyResponse}.
+ */
+export async function readBody(request: Request): Promise<Record<string, string>> {
+  const form = await request.formData();
+  const body: Record<string, string> = {};
+  for (const [key, value] of form.entries()) {
+    if (typeof value === 'string') {
+      body[key] = value;
+    }
+  }
+  return body;
+}
+
+/** Whether `value` is a non-empty, plausibly well-formed email address. */
+export function isEmail(value: unknown): value is string {
+  return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}

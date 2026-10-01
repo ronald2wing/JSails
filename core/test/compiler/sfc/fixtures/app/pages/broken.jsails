@@ -1,0 +1,10 @@
+<script lang="ts">
+/** A page whose load always fails, so the error boundary renders in its place. */
+export function load(): { reason: string } {
+  throw new Error('the fixture page always fails');
+}
+</script>
+
+<template>
+  <p>Never rendered: {{ reason }}</p>
+</template>

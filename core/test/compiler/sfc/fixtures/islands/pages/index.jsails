@@ -1,0 +1,27 @@
+<!-- The island page: islands mounted directly, in a loop, nested in an island and through a view. -->
+<script lang="ts">
+export function load(): { counters: { id: string; start: number }[] } {
+  return {
+    counters: [
+      { id: 'a', start: 1 },
+      { id: 'b', start: 2 },
+    ],
+  };
+}
+</script>
+
+<template>
+  <main>
+    <h1>Islands</h1>
+    <Counter :start="0" label="Clicks" js-hydrate="load" />
+    <Counter
+      js-for="item in counters"
+      :key="item.id"
+      :start="item.start"
+      :label="`Item ${item.id}`"
+    />
+    <TogglePanel title="Details" />
+    <Badge text="static" />
+    <Promo />
+  </main>
+</template>

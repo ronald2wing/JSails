@@ -1,0 +1,102 @@
+{
+  "description": "Legacy app config surfaces the compat mapper (core/src/app/config/legacy.ts) still accepts (KRN-11a). Each entry is one surface of LEGACY_CONFIG_SURFACES; the package named by fixedBy removes the surface and its entry together.",
+  "kind": "gate",
+  "gate": "legacy-config",
+  "entries": [
+    {
+      "id": "jsails.app.js",
+      "reason": "The legacy config root; the starters and the docs site move to jsails.config.ts with defineApp, and the default config path flips with them.",
+      "fixedBy": "KRN-11b"
+    },
+    {
+      "id": "pages",
+      "reason": "The pages directory; routes come from the AppManifest instead.",
+      "fixedBy": "KRN-14"
+    },
+    {
+      "id": "api",
+      "reason": "The API directory; routes come from the AppManifest instead.",
+      "fixedBy": "KRN-14"
+    },
+    {
+      "id": "public",
+      "reason": "The static-assets directory; the build pipeline owns its asset directory.",
+      "fixedBy": "KRN-16"
+    },
+    {
+      "id": "out",
+      "reason": "The export directory; the build pipeline owns its output directory.",
+      "fixedBy": "KRN-16"
+    },
+    {
+      "id": "shape",
+      "reason": "The deployment shape; a process states the roles it runs (web, worker, export).",
+      "fixedBy": "KRN-12"
+    },
+    {
+      "id": "resolveSession",
+      "reason": "The session resolver; an authenticator plugin provides the actor.",
+      "fixedBy": "SEC-07"
+    },
+    {
+      "id": "identity",
+      "reason": "The identity source; an authenticator plugin provides the actor.",
+      "fixedBy": "SEC-07"
+    },
+    {
+      "id": "setup",
+      "reason": "The app setup hook; a definePlugin instance in plugins.use does the same with declared services. Its provider exists; removal moves the starters.",
+      "fixedBy": "KRN-11b"
+    },
+    {
+      "id": "extensions",
+      "reason": "Legacy extension objects; definePlugin instances in plugins.use replace them. Their provider exists; removal moves the starters after KRN-10b converts the remaining plugins.",
+      "fixedBy": "KRN-11b"
+    },
+    {
+      "id": "renderer",
+      "reason": "The page renderer override. REQ-08 typed its contract (a renderer answers with a PageOutcome); removing the key moves the implicit pages plugin the kernel installs onto plugins.use, which is KRN-11b's.",
+      "fixedBy": "KRN-11b"
+    },
+    {
+      "id": "introspect",
+      "reason": "The runtime introspection endpoint; the introspection plugin replaces it.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "seo",
+      "reason": "Site-wide SEO defaults; the seo plugin replaces them.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "i18n",
+      "reason": "The i18n block the kernel turns into the i18n plugin; the app lists the i18n plugin instance in plugins.use instead.",
+      "fixedBy": "KRN-11b"
+    },
+    {
+      "id": "onError",
+      "reason": "The request-error hook; the app/error hook module replaces it.",
+      "fixedBy": "KRN-14"
+    },
+    {
+      "id": "errorPage",
+      "reason": "The error-page renderer; the pages/_error hook module replaces it.",
+      "fixedBy": "KRN-14"
+    },
+    {
+      "id": "readiness",
+      "reason": "Readiness options; plugins contribute readiness checks.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "systemChecks",
+      "reason": "The system-check registry; plugins contribute readiness checks.",
+      "fixedBy": "KRN-22"
+    },
+    {
+      "id": "plugins.use specifiers",
+      "reason": "String and [specifier, options] entries in plugins.use; the app imports the plugin's definePlugin factory and lists its instance.",
+      "fixedBy": "KRN-11b"
+    }
+  ]
+}

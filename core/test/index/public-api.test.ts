@@ -1,0 +1,1625 @@
+import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { describe, it } from 'node:test';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  BROADCAST_PATH,
+  CliErrors,
+  defineCommand,
+  isDefinedCommand,
+  type CommandContext,
+  type CommandDefinition,
+  type CommandOption,
+  BATCH_OPTION_KEY,
+  CHAIN_OPTION_KEY,
+  chainMiddleware,
+  composeMiddleware,
+  InMemoryBatchCoordinator,
+  createBatchMiddleware,
+  createJobBatch,
+  createJobChain,
+  DEFAULT_RUNTIME_CONFIG_PATH,
+  EnvironmentErrors,
+  CredentialsErrors,
+  env,
+  FileDataSource,
+  FileDataSourceError,
+  isBatchDescriptor,
+  JobBatchError,
+  JobChainError,
+  JobMiddlewareError,
+  JobOptionsError,
+  JobPayloadError,
+  JobsRuntimeClosedError,
+  JobsRuntimeError,
+  JobNotRegisteredError,
+  JsailsDataSource,
+  MigrationError,
+  CacheErrors,
+  OVERLAP_OPTION_KEY,
+  PageRenderError,
+  RouteManifestError,
+  RuntimeConfigError,
+  ScheduleError,
+  StaticSiteError,
+  UnsupportedSchemaError,
+  ValidationError,
+  attachBroadcast,
+  createApp,
+  BullMQAdapter,
+  createHttpServer,
+  JobsRuntimeImpl,
+  createJobRegistry,
+  createOverlapMiddleware,
+  createResourceHandlers,
+  SocketIOBroadcastAdapter,
+  defineJob,
+  defineSerializer,
+  diffSchemaStates,
+  discoverRoutes,
+  executeSchemaPlan,
+  generateStaticSite,
+  loadPageModule,
+  leaseToken,
+  readDatabaseEnvironment,
+  readEnvironment,
+  readJsonBody,
+  readValkeyEnvironment,
+  reconcileDataSource,
+  renderRoute,
+  routeToOutputPath,
+  substituteRouteParams,
+  validateJobsRuntimeAdapter,
+  validatePayload,
+  validateRuntimeConfig,
+} from '../../src/index.js';
+import {
+  ServerComponentDefinitionError,
+  ServerComponentError,
+  defineAction,
+  defineServerComponent,
+  renderServerComponent,
+  renderServerComponentHtml,
+  serverComponentsPlugin,
+  type ServerComponentDefinition,
+  type ServerComponentsOptions,
+} from '../../src/index.js';
+import type {
+  AddColumnOperation,
+  AddIndexOperation,
+  AddUniqueOperation,
+  AlterColumnOperation,
+  ApiHandler,
+  ApiMethod,
+  ApiModule,
+  Authorize,
+  AttachBroadcastOptions,
+  AutodetectOptions,
+  BatchCallbacks,
+  BatchCoordinator,
+  BatchFailedSummary,
+  BatchItem,
+  BatchSummary,
+  Broadcast,
+  BroadcastAdapter,
+  BroadcastHandle,
+  BroadcastHandshake,
+  BroadcastOptions,
+  CollectionHandlers,
+  BullMQAdapterOptions,
+  ChainStep,
+  JobsRuntimeOptions,
+  JobAdapterContext,
+  JobDispatchOptions,
+  JobsRuntimeAdapter,
+  JobsRuntime,
+  ProcessJob,
+  RuntimeJob,
+  RuntimeProducer,
+  RuntimeWorker,
+  JobBatch,
+  JobChain,
+  JobMiddleware,
+  JobMiddlewareContext,
+  ColumnDefinition,
+  ColumnRenameHint,
+  AppOptions,
+  HttpServerOptions,
+  ResourceHandlersOptions,
+  CreateTableOperation,
+  DatabaseEnvironment,
+  DatabaseType,
+  DetailHandlers,
+  DiscoverRoutesOptions,
+  DropColumnOperation,
+  DropIndexOperation,
+  DropTableOperation,
+  DropUniqueOperation,
+  EnvironmentIssue,
+  FieldOptions,
+  FieldPath,
+  FileDataSourceOptions,
+  GenerateStaticSiteOptions,
+  GenerateStaticSiteResult,
+  Infer,
+  IndexDefinition,
+  JobContext,
+  JobDefinition,
+  JobHandler,
+  JobQueue,
+  JobRegistry,
+  JobWorker,
+  JsonObject,
+  JsonValue,
+  JsailsDataSourceOptions,
+  JsailsSupportedDriver,
+  Awaitable,
+  NormalizedPagination,
+  Operation,
+  Page,
+  PageComponent,
+  PageModule,
+  PaginationOptions,
+  QueryAdapter,
+  ReadOutput,
+  RenameColumnOperation,
+  ResolveSession,
+  ResourceAction,
+  ResourceAuthorize,
+  ResourceHandler,
+  ResourceHandlers,
+  ResourceStore,
+  ResolvedRuntimeConfig,
+  RouteManifest,
+  RouteManifestEntry,
+  RuntimeConfig,
+  ScalarColumnType,
+  ScalarLiteral,
+  ScheduleDefinition,
+  ScheduleInfo,
+  Schema,
+  SchemaState,
+  Serializer,
+  SerializerField,
+  SerializerFields,
+  Session,
+  SessionStore,
+  TableDefinition,
+  UniqueDefinition,
+  ValidateOptions,
+  ValidationIssue,
+  ValkeyEnvironment,
+  WorkerJob,
+  WriteInput,
+  RequestContext,
+} from '../../src/index.js';
+import * as apiBarrel from '../../src/api/index.js';
+import {
+  AppConfigError,
+  DEFAULT_APP_CONFIG_PATH,
+  createApplication,
+  createInterceptorRegistry,
+  createServiceRegistry,
+  createServiceToken,
+  defineEvent,
+  defineOperation,
+  definePlugin,
+  AesEncrypter,
+  EncryptionError,
+  encryptionPlugin,
+  encryptionToken,
+  InterceptorErrors,
+  activationModeOf,
+  createLoadedApp,
+  loadApp,
+  resolvePlugins,
+  preactPageRenderer,
+  runExtensions,
+  ServiceErrors,
+  SignalError,
+  signalsToken,
+  validateAppConfig,
+  validateExtensionEntries,
+} from '../../src/index.js';
+import type {
+  AppCleanup,
+  LoadAppOptions,
+  AppConfigValidationOptions,
+  Application,
+  AppSetup,
+  ExtensionCleanup,
+  ExtensionContext,
+  ExtensionRuntime,
+  InterceptorRegistry,
+  JsailsAppConfig,
+  JsailsExtension,
+  JsailsPlugin,
+  PageRenderer,
+  PageRenderOptions,
+  PluginContext,
+  ResolvedAppConfig,
+  ServiceRegistrar,
+  ServiceRegistry,
+  ServiceRegistryController,
+  ServiceToken,
+  ServeHandle,
+} from '../../src/index.js';
+
+// Type-only author interfaces exposed by the clean `jsails/extensions` subpath.
+// A static type import here proves the subpath carries the plugin contracts
+// without pulling in a provider runtime library.
+import type {
+  BroadcastAdapter as ExtBroadcastAdapter,
+  BroadcastHandle as ExtBroadcastHandle,
+  JobAdapterContext as ExtJobAdapterContext,
+  JobDispatchOptions as ExtJobDispatchOptions,
+  JobsRuntimeAdapter as ExtJobsRuntimeAdapter,
+  ProcessJob as ExtProcessJob,
+  RuntimeJob as ExtRuntimeJob,
+  RuntimeProducer as ExtRuntimeProducer,
+  RuntimeWorker as ExtRuntimeWorker,
+} from '../../src/extensions/index.js';
+
+// ---------------------------------------------------------------------------
+// New server-component symbols: directives, pagination, downloads, url-binding
+// ---------------------------------------------------------------------------
+import {
+  confirmAttrs,
+  loadingTargetAttrs,
+  showAttrs,
+  textAttrs,
+  sortAttrs,
+  intersectAttrs,
+  refAttrs,
+  ignoreAttrs,
+  pagerAttrs,
+  redirect,
+  isRedirect,
+  download,
+  isDownload,
+  DownloadError,
+  createDownloadReferenceSigner,
+  DOWNLOAD_REFERENCE_TTL_MS,
+  seedFromUrl,
+} from '../../src/index.js';
+import type {
+  ServerComponentPagerOptions,
+  ServerComponentRedirect,
+  DownloadReferenceSigner,
+  ServerComponentDownload,
+  DownloadReferenceClaims,
+  ServerComponentUrlBinding,
+} from '../../src/index.js';
+
+// ---------------------------------------------------------------------------
+// Component authoring helpers: defineComponent, localAction, serverAction, defineStyle
+// ---------------------------------------------------------------------------
+import {
+  AuthoringError,
+  defineComponent,
+  defineStyle,
+  localAction,
+  serverAction,
+  StyleError,
+} from '../../src/index.js';
+import type {
+  ActionKind,
+  AuthoringErrorCode,
+  AuthoringRenderTools,
+  DefineComponentOptions,
+  LocalAction,
+  ServerAction,
+  StyleContract,
+  StyleErrorCode,
+} from '../../src/index.js';
+
+// ---------------------------------------------------------------------------
+// Pages: the page outcome, reply helpers, and the PageStream type
+// ---------------------------------------------------------------------------
+import { documentOutcome, reply, ReplyErrors } from '../../src/index.js';
+import type { LoadResult, PageOutcome, PageProps } from '../../src/index.js';
+import { createValkeyConnections } from '../../src/plugin-sdk/index.js';
+import type { PageStream } from '../../src/index.js';
+
+// ---------------------------------------------------------------------------
+// API: filter types (value-widened filter clause/operator)
+// ---------------------------------------------------------------------------
+import type { FilterOperator, FilterClause, FilterValue } from '../../src/index.js';
+import { MapLeaseStore } from '../cache/map-cache-store.js';
+
+/**
+ * A unique BaseEntity subclass so the public FileDataSource smoke test binds
+ * its own entity and does not leak a data-source binding to another test.
+ */
+@Entity('public_api_widgets')
+class PublicApiWidget extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @Column({ type: 'varchar', length: 64, nullable: false })
+  name!: string;
+
+  @Column({ type: 'boolean', default: true })
+  active!: boolean;
+}
+
+describe('public API surface', () => {
+  it('exposes the supported runtime values', () => {
+    assert.equal(typeof BaseEntity, 'function');
+    assert.equal(typeof JsailsDataSource, 'function');
+    assert.equal(typeof diffSchemaStates, 'function');
+    assert.equal(typeof executeSchemaPlan, 'function');
+    assert.equal(typeof reconcileDataSource, 'function');
+    assert.equal(typeof MigrationError, 'function');
+    assert.equal(typeof UnsupportedSchemaError, 'function');
+    assert.ok(new UnsupportedSchemaError('x') instanceof MigrationError);
+  });
+
+  it('exposes the core types for consumers', () => {
+    const column: ColumnDefinition = {
+      name: 'id',
+      type: 'integer',
+      nullable: false,
+      primaryKey: true,
+    };
+    const table: TableDefinition = { name: 'users', columns: [column] };
+    const index: IndexDefinition = { name: 'idx_name', columns: ['name'], unique: false };
+    const unique: UniqueDefinition = { name: 'uq_email', columns: ['email'] };
+    const schema: SchemaState = { tables: [table] };
+    const operation: Operation = { kind: 'create_table', table };
+    const options: AutodetectOptions = { allowDestructive: false };
+    const scalar: ScalarColumnType = 'integer';
+    const literal: ScalarLiteral = 1;
+    const driver: JsailsSupportedDriver = 'postgres';
+    const hint: ColumnRenameHint = { table: 'users', from: 'a', to: 'b' };
+    const dataSourceOptions = {} as JsailsDataSourceOptions;
+
+    void [
+      column,
+      table,
+      index,
+      unique,
+      schema,
+      operation,
+      options,
+      scalar,
+      literal,
+      driver,
+      hint,
+      dataSourceOptions,
+    ];
+  });
+
+  it('exposes every operation kind type', () => {
+    const kinds: Record<string, Operation> = {
+      create: {
+        kind: 'create_table',
+        table: { name: 't', columns: [] },
+      } satisfies CreateTableOperation,
+      drop: { kind: 'drop_table', table: { name: 't', columns: [] } } satisfies DropTableOperation,
+      add: {
+        kind: 'add_column',
+        table: 't',
+        column: { name: 'c', type: 'integer', nullable: true },
+      } satisfies AddColumnOperation,
+      dropCol: {
+        kind: 'drop_column',
+        table: 't',
+        column: { name: 'c', type: 'integer', nullable: true },
+      } satisfies DropColumnOperation,
+      rename: {
+        kind: 'rename_column',
+        table: 't',
+        from: 'a',
+        to: 'b',
+      } satisfies RenameColumnOperation,
+      alter: {
+        kind: 'alter_column',
+        table: 't',
+        column: { name: 'c', type: 'text', nullable: true },
+        previous: { name: 'c', type: 'varchar', length: 10, nullable: true },
+      } satisfies AlterColumnOperation,
+      addIndex: {
+        kind: 'add_index',
+        table: 't',
+        index: { name: 'idx_c', columns: ['c'], unique: false },
+      } satisfies AddIndexOperation,
+      dropIndex: {
+        kind: 'drop_index',
+        table: 't',
+        index: { name: 'idx_c', columns: ['c'], unique: false },
+      } satisfies DropIndexOperation,
+      addUnique: {
+        kind: 'add_unique',
+        table: 't',
+        unique: { name: 'uq_c', columns: ['c'] },
+      } satisfies AddUniqueOperation,
+      dropUnique: {
+        kind: 'drop_unique',
+        table: 't',
+        unique: { name: 'uq_c', columns: ['c'] },
+      } satisfies DropUniqueOperation,
+    };
+    assert.equal(Object.keys(kinds).length, 10);
+  });
+});
+
+describe('public API surface: jobs', () => {
+  it('exposes the jobs runtime values', () => {
+    assert.equal(typeof defineJob, 'function');
+    assert.equal(typeof createJobRegistry, 'function');
+    assert.equal(typeof validatePayload, 'function');
+    assert.equal(typeof DEFAULT_RUNTIME_CONFIG_PATH, 'string');
+  });
+
+  it('exposes the jobs error classes with their names', () => {
+    assert.ok(new JobPayloadError('j', 'msg') instanceof Error);
+    assert.equal(new JobPayloadError('j', 'msg').name, 'JobPayloadError');
+    assert.ok(new JobNotRegisteredError('j') instanceof Error);
+    assert.ok(new JobOptionsError('invalid_option', 'msg') instanceof Error);
+    assert.ok(new ScheduleError('invalid_schedule', 'msg') instanceof Error);
+    assert.ok(new RuntimeConfigError('invalid_config', 'msg') instanceof Error);
+  });
+
+  it('exposes the jobs types for consumers', () => {
+    const registry = {} as JobRegistry;
+    const definition = {} as JobDefinition;
+    const handler: JobHandler<{ n: number }> = async (_data) => {};
+    const context = {} as JobContext;
+    const queue = {} as JobQueue;
+    const worker = {} as JobWorker;
+    const schedule: ScheduleDefinition = { id: 's', job: 'j', intervalMs: 60000 };
+    const workerJob = {} as WorkerJob;
+    const runtime = {} as RuntimeConfig;
+    const resolved = {} as ResolvedRuntimeConfig;
+
+    void [
+      registry,
+      definition,
+      handler,
+      context,
+      queue,
+      worker,
+      schedule,
+      workerJob,
+      runtime,
+      resolved,
+    ];
+  });
+});
+
+describe('public API surface: jobs runtime adapter', () => {
+  /** A minimal fake registry: the runtime only calls `schema.safeParse`. */
+  function fakeRegistry(): JobRegistry {
+    return {
+      ping: {
+        schema: { safeParse: (value: unknown) => ({ success: true, data: value }) },
+        handler: async () => {},
+      },
+    } as unknown as JobRegistry;
+  }
+
+  it('exposes the neutral controller, adapter validator, errors, and BullMQ adapter', () => {
+    assert.equal(typeof JobsRuntimeImpl, 'function');
+    assert.equal(typeof validateJobsRuntimeAdapter, 'function');
+    assert.equal(typeof BullMQAdapter, 'function');
+    assert.ok(new JobsRuntimeError('closed', 'm') instanceof Error);
+    assert.ok(new JobsRuntimeClosedError() instanceof JobsRuntimeError);
+
+    const connections = createValkeyConnections('redis://127.0.0.1:6379', {
+      appPrefix: 'app:test',
+      name: 'test',
+    });
+    const bull = new BullMQAdapter({ connections });
+    assert.equal(bull.name, 'bullmq');
+    // Options fail fast; no Queue/Worker is constructed and nothing connects.
+    assert.throws(
+      () => new BullMQAdapter({} as unknown as ConstructorParameters<typeof BullMQAdapter>[0]),
+      TypeError,
+    );
+  });
+
+  it('runs a fake backend through the neutral contract and rejects a bad adapter', async () => {
+    const dispatched: Array<{ name: string; data: unknown }> = [];
+    let workerClosed = false;
+    const adapter: JobsRuntimeAdapter = {
+      name: 'fake',
+      createProducer: () => ({
+        dispatch: async (name, data) => {
+          dispatched.push({ name, data });
+          return 'queued';
+        },
+        close: async () => {},
+      }),
+      createWorker: () => ({
+        close: async () => {
+          workerClosed = true;
+        },
+      }),
+    };
+
+    assert.throws(() => validateJobsRuntimeAdapter({ name: 'broken' }), TypeError);
+    assert.doesNotThrow(() => validateJobsRuntimeAdapter(adapter));
+
+    const runtime = new JobsRuntimeImpl({ registry: fakeRegistry(), adapter });
+    assert.equal(await runtime.dispatch('ping', { n: 1 }), 'queued');
+    assert.deepEqual(dispatched, [{ name: 'ping', data: { n: 1 } }]);
+    await runtime.startWorker();
+    await runtime.close();
+    assert.equal(workerClosed, true);
+  });
+
+  it('selects a custom runtime adapter with no URL via validateRuntimeConfig', () => {
+    const adapter: JobsRuntimeAdapter = {
+      name: 'no-url',
+      createProducer: () => ({ dispatch: async () => undefined, close: async () => {} }),
+      createWorker: () => ({ close: async () => {} }),
+    };
+
+    const resolved = validateRuntimeConfig({ registry: fakeRegistry(), adapter });
+    assert.equal(resolved.adapter, adapter);
+    assert.equal(resolved.valkeyUrl, undefined);
+    assert.equal(resolved.queueName, 'default');
+  });
+
+  it('exposes the job runtime adapter types for consumers', () => {
+    const adapter = {} as JobsRuntimeAdapter;
+    const context = {} as JobAdapterContext;
+    const producer = {} as RuntimeProducer;
+    const worker = {} as RuntimeWorker;
+    const job = {} as RuntimeJob;
+    const processJob: ProcessJob = async () => undefined;
+    const dispatchOptions: JobDispatchOptions = {};
+    const runtimeOptions = {} as JobsRuntimeOptions;
+    const runtime = {} as JobsRuntime;
+    const bullOptions = {} as BullMQAdapterOptions;
+
+    void [
+      adapter,
+      context,
+      producer,
+      worker,
+      job,
+      processJob,
+      dispatchOptions,
+      runtimeOptions,
+      runtime,
+      bullOptions,
+    ];
+  });
+});
+
+describe('public API surface: job middleware, chaining, and batching', () => {
+  it('exposes the middleware, chain, and batch runtime values', () => {
+    assert.equal(typeof composeMiddleware, 'function');
+    assert.equal(typeof createJobChain, 'function');
+    assert.equal(typeof chainMiddleware, 'function');
+    assert.equal(typeof createJobBatch, 'function');
+    assert.equal(typeof InMemoryBatchCoordinator, 'function');
+    assert.equal(typeof createBatchMiddleware, 'function');
+    assert.equal(typeof isBatchDescriptor, 'function');
+    assert.equal(CHAIN_OPTION_KEY, '__jsailsChain');
+    assert.equal(BATCH_OPTION_KEY, '__jsailsBatch');
+  });
+
+  it('exposes the error classes', () => {
+    const mwErr = new JobMiddlewareError('invalid_middleware', 'm');
+    assert.ok(mwErr instanceof Error);
+    assert.equal(mwErr.name, 'JobMiddlewareError');
+    assert.equal(mwErr.code, 'invalid_middleware');
+
+    const chainErr = new JobChainError('empty_chain', 'm');
+    assert.ok(chainErr instanceof Error);
+    assert.equal(chainErr.name, 'JobChainError');
+    assert.equal(chainErr.code, 'empty_chain');
+
+    const batchErr = new JobBatchError('empty_batch', 'm');
+    assert.ok(batchErr instanceof Error);
+    assert.equal(batchErr.name, 'JobBatchError');
+    assert.equal(batchErr.code, 'empty_batch');
+  });
+
+  it('exposes the type contracts for consumers', () => {
+    const middleware = {} as JobMiddleware;
+    const mwContext = {} as JobMiddlewareContext;
+    const chainStep = {} as ChainStep;
+    const jobChain = {} as JobChain;
+    const batchItem = {} as BatchItem;
+    const batchSummary = {} as BatchSummary;
+    const batchFailedSummary = {} as BatchFailedSummary;
+    const batchCallbacks = {} as BatchCallbacks;
+    const coordinator = {} as BatchCoordinator;
+    const jobBatch = {} as JobBatch;
+
+    void [
+      middleware,
+      mwContext,
+      chainStep,
+      jobChain,
+      batchItem,
+      batchSummary,
+      batchFailedSummary,
+      batchCallbacks,
+      coordinator,
+      jobBatch,
+    ];
+  });
+});
+
+describe('public API surface: broadcast', () => {
+  it('exposes the broadcast server runtime values', () => {
+    assert.equal(typeof attachBroadcast, 'function');
+    assert.equal(typeof BROADCAST_PATH, 'string');
+  });
+
+  it('exposes the pluggable adapter factory and contract types', () => {
+    assert.equal(typeof SocketIOBroadcastAdapter, 'function');
+    const socketAdapter = new SocketIOBroadcastAdapter({
+      allowedOrigins: ['https://app.example'],
+      authenticate: () => 'user',
+    });
+    assert.equal(socketAdapter.name, 'socket.io');
+    assert.equal(typeof socketAdapter.attach, 'function');
+
+    const custom = {} as BroadcastAdapter;
+    const handle = {} as BroadcastHandle;
+    const attachOptions: AttachBroadcastOptions = { adapter: custom };
+
+    void [handle, attachOptions];
+  });
+
+  it('exposes the broadcast types for consumers', () => {
+    const broadcast = {} as Broadcast;
+    const handshake = {} as BroadcastHandshake;
+    const options = {} as BroadcastOptions;
+    const maybe: Awaitable<string> = 'x';
+
+    void [broadcast, handshake, options, maybe];
+  });
+});
+
+describe('public API surface: signals', () => {
+  it('exposes the signal bus class, plugin, token, and error', () => {
+    assert.ok(signalsToken !== undefined);
+    assert.ok(new SignalError('m') instanceof Error);
+  });
+});
+
+describe('public API surface: encryption', () => {
+  it('exposes the AesEncrypter class, plugin, token, and error', () => {
+    assert.equal(typeof AesEncrypter, 'function');
+    assert.equal(typeof encryptionPlugin, 'function');
+    assert.ok(encryptionToken !== undefined);
+    assert.ok(new EncryptionError('invalid_key', 'm') instanceof Error);
+  });
+
+  it('round-trips a value through the root-entry encrypter', () => {
+    const encrypter = new AesEncrypter({ key: 'k'.repeat(32) });
+    const token = encrypter.encrypt('root entry secret');
+    assert.equal(encrypter.decrypt(token), 'root entry secret');
+  });
+});
+
+describe('public API surface: leases and scheduling', () => {
+  it('exposes the lease contract token and the cache error registry (implementations live in @jsails/cache)', () => {
+    assert.ok(leaseToken !== undefined);
+    const error = new CacheErrors.Error('invalid_key');
+    assert.ok(error instanceof Error);
+    assert.equal(error.code, 'cache.invalid_key');
+    assert.equal(CacheErrors.is(error, 'invalid_key'), true);
+  });
+
+  it('exposes the overlap middleware and option key', () => {
+    assert.equal(typeof createOverlapMiddleware, 'function');
+    assert.equal(OVERLAP_OPTION_KEY, '__jsailsOverlap');
+  });
+
+  it('overlap middleware skips when the descriptor is absent (fail-safe)', async () => {
+    const store = new MapLeaseStore();
+    const middleware = createOverlapMiddleware(store);
+    const nextCalled = { value: false };
+
+    // No OVERLAP_OPTION_KEY in options — the middleware must call next()
+    // exactly once and return its result unchanged.
+    const context = { name: 'testJob', jobId: 'job:42', options: {} } as Parameters<
+      typeof middleware
+    >[1];
+    const result = await middleware({ n: 1 }, context, async () => {
+      nextCalled.value = true;
+      return 'handler-result';
+    });
+    assert.equal(nextCalled.value, true);
+    assert.equal(result, 'handler-result');
+    await store.close();
+  });
+
+  it('exposes the ScheduleInfo type contract (type-only import)', () => {
+    const info = {} as ScheduleInfo;
+    void info;
+  });
+});
+
+describe('public API surface: user-defined CLI commands', () => {
+  it('exposes defineCommand, its brand check and the cli error registry', () => {
+    const command = defineCommand({ summary: 'say hello', run: () => 0 });
+    assert.equal(isDefinedCommand(command), true);
+    assert.equal(isDefinedCommand({ summary: 'say hello', run: () => 0 }), false);
+    assert.equal(command.needs, 'environment');
+    assert.ok(
+      new CliErrors.Error('missing_dependency', { command: 'm', package: 'p' }) instanceof Error,
+    );
+  });
+
+  it('exposes the command types for consumers', () => {
+    const definition: CommandDefinition = { summary: 'x', run: () => 0 };
+    const context = {} as CommandContext;
+    const option: CommandOption = { type: 'boolean', summary: 'y' };
+    const code: keyof typeof CliErrors.codes = 'invalid_command';
+
+    void [definition, context, option, code];
+  });
+});
+
+describe('public API surface: environment', () => {
+  it('exposes the config accessor, the environment readers and their error registries', () => {
+    assert.equal(typeof env.require, 'function');
+    assert.equal(typeof env.optional, 'function');
+    assert.equal(typeof readEnvironment, 'function');
+    assert.equal(typeof readDatabaseEnvironment, 'function');
+    assert.equal(typeof readValkeyEnvironment, 'function');
+    assert.equal(EnvironmentErrors.domain, 'environment');
+    assert.equal(CredentialsErrors.domain, 'credentials');
+  });
+
+  it('reads isolated database and Valkey config without any services', () => {
+    const database: DatabaseEnvironment = readDatabaseEnvironment({
+      DATABASE_TYPE: 'postgres',
+      DATABASE_HOST: 'db.internal',
+      DATABASE_PORT: '5432',
+      DATABASE_USER: 'app',
+      DATABASE_PASSWORD: 'secret',
+      DATABASE_NAME: 'app_db',
+    });
+    assert.equal(database.type, 'postgres');
+    assert.equal(database.port, 5432);
+
+    const valkey: ValkeyEnvironment = readValkeyEnvironment({
+      VALKEY_URL: 'redis://valkey:6379/0',
+    });
+    assert.equal(valkey.valkeyUrl, 'redis://valkey:6379/0');
+  });
+
+  it('exposes the environment types for consumers', () => {
+    const driver: DatabaseType = 'mariadb';
+    const database = {} as DatabaseEnvironment;
+    const valkey = {} as ValkeyEnvironment;
+    const issue: EnvironmentIssue = { path: [], code: 'required', message: 'x' };
+
+    void [driver, database, valkey, issue];
+  });
+});
+
+describe('public API surface: FileDataSource', () => {
+  it('exposes the read-only data source and its error', () => {
+    assert.equal(typeof FileDataSource, 'function');
+    assert.equal(typeof FileDataSourceError, 'function');
+    assert.ok(new FileDataSourceError('closed', 'x') instanceof Error);
+    assert.equal(new FileDataSourceError('closed', 'x').name, 'FileDataSourceError');
+  });
+
+  it('queries seeded rows through the public root entry', async () => {
+    const options: FileDataSourceOptions = {
+      models: [{ entity: PublicApiWidget, rows: [{ name: 'alpha' }, { name: 'beta' }] }],
+    };
+    const source = await FileDataSource.create(options);
+    try {
+      assert.equal(source.isReadOnly, true);
+      assert.equal(source.isInitialized, true);
+
+      const found = await PublicApiWidget.findOneBy({ name: 'alpha' });
+      assert.equal(found?.name, 'alpha');
+      assert.equal(found?.active, true);
+      assert.equal(await PublicApiWidget.count(), 2);
+    } finally {
+      await source.close();
+    }
+  });
+});
+
+describe('public API surface: routing, pages, and server', () => {
+  it('exposes the route, page, static-site, and server functions', () => {
+    assert.equal(typeof discoverRoutes, 'function');
+    assert.equal(typeof routeToOutputPath, 'function');
+    assert.equal(typeof substituteRouteParams, 'function');
+    assert.equal(typeof loadPageModule, 'function');
+    assert.equal(typeof renderRoute, 'function');
+    assert.equal(typeof generateStaticSite, 'function');
+    assert.equal(typeof createApp, 'function');
+    assert.equal(typeof createHttpServer, 'function');
+    assert.equal(typeof readJsonBody, 'function');
+  });
+
+  it('exposes the routing/page/server error classes', () => {
+    assert.ok(new RouteManifestError('invalid_segment', 'm') instanceof Error);
+    assert.ok(new PageRenderError('invalid_module', 'm') instanceof Error);
+    assert.ok(new StaticSiteError('unsafe_path', 'm') instanceof Error);
+  });
+
+  it('exposes the routing/page/server types for consumers', () => {
+    const entry = {} as RouteManifestEntry;
+    const manifest = {} as RouteManifest;
+    const discoverOptions: DiscoverRoutesOptions = { pagesDir: 'pages', apiDir: 'api' };
+    const renderOptions: PageRenderOptions = { staticMode: true };
+    const staticOptions = {} as GenerateStaticSiteOptions;
+    const staticResult = {} as GenerateStaticSiteResult;
+    const pageModule = {} as PageModule;
+    const pageComponent = {} as PageComponent;
+    const authorize: Authorize = () => true;
+    const resolveSession: ResolveSession = () => null;
+    const handler: ApiHandler = () => new Response(null, { status: 204 });
+    const method: ApiMethod = 'GET';
+    const apiModule: ApiModule = { GET: handler };
+    const appOptions = {} as AppOptions;
+    const serverOptions = {} as HttpServerOptions;
+    const context = {} as RequestContext;
+    const session = {} as Session;
+    const sessionStore = {} as SessionStore;
+    const json: JsonValue = { ok: true };
+    const jsonObject: JsonObject = { ok: true };
+
+    void [
+      entry,
+      manifest,
+      discoverOptions,
+      renderOptions,
+      staticOptions,
+      staticResult,
+      pageModule,
+      pageComponent,
+      authorize,
+      resolveSession,
+      handler,
+      method,
+      apiModule,
+      appOptions,
+      serverOptions,
+      context,
+      session,
+      sessionStore,
+      json,
+      jsonObject,
+    ];
+  });
+});
+
+describe('public API surface: API resources', () => {
+  it('exposes the resource and serializer functions and errors', () => {
+    assert.equal(typeof createResourceHandlers, 'function');
+    assert.equal(typeof defineSerializer, 'function');
+    assert.equal(typeof ValidationError, 'function');
+    assert.ok(new ValidationError([{ path: [], code: 'type', message: 'x' }]) instanceof Error);
+  });
+
+  it('exposes the resource/serializer types for consumers', () => {
+    const schema = {} as Schema<string>;
+    const inferred: Infer<Schema<string>> = 'x';
+    const fieldOptions: FieldOptions<string> = { optional: true };
+    const path: FieldPath = ['a', 0];
+    const issue: ValidationIssue = { path: [], code: 'type', message: 'x' };
+    const serializerField: SerializerField<string> = schema;
+    const serializerFields: SerializerFields = { name: serializerField };
+    const writeInput = {} as WriteInput<{ name: Schema<string> }>;
+    const readOutput = {} as ReadOutput<{ name: Schema<string> }>;
+    const validateOptions: ValidateOptions = { partial: true };
+    const serializer = {} as Serializer<{ name: string }, { name: string }>;
+    const resourceAuthorize: ResourceAuthorize<string> = () => true;
+    const store = {} as ResourceStore;
+    const action: ResourceAction = 'list';
+    const resourceHandler = {} as ResourceHandler;
+    const collection = {} as CollectionHandlers;
+    const detail = {} as DetailHandlers;
+    const handlers = {} as ResourceHandlers;
+    const handlerOptions = {} as ResourceHandlersOptions<unknown, unknown, unknown>;
+    const paginationOptions: PaginationOptions = { defaultPageSize: 10 };
+    const page = {} as Page<number>;
+    const normalized = {} as NormalizedPagination;
+    const adapter = {} as QueryAdapter<number>;
+
+    void [
+      schema,
+      inferred,
+      fieldOptions,
+      path,
+      issue,
+      serializerField,
+      serializerFields,
+      writeInput,
+      readOutput,
+      validateOptions,
+      serializer,
+      resourceAuthorize,
+      store,
+      action,
+      resourceHandler,
+      collection,
+      detail,
+      handlers,
+      handlerOptions,
+      paginationOptions,
+      page,
+      normalized,
+      adapter,
+    ];
+  });
+});
+
+describe('public API surface: browser-agnostic ./api barrel', () => {
+  it('builds and uses schemas and serializers from the barrel', () => {
+    assert.equal(typeof apiBarrel.string, 'function');
+    assert.equal(typeof apiBarrel.integer, 'function');
+    assert.equal(typeof apiBarrel.boolean, 'function');
+    assert.equal(typeof apiBarrel.object, 'function');
+    assert.equal(typeof apiBarrel.array, 'function');
+    assert.equal(typeof apiBarrel.optional, 'function');
+    assert.equal(typeof apiBarrel.defineSerializer, 'function');
+    assert.equal(typeof apiBarrel.createResourceHandlers, 'function');
+    assert.equal(typeof apiBarrel.normalizePagination, 'function');
+    assert.equal(typeof apiBarrel.paginateArray, 'function');
+    assert.equal(typeof apiBarrel.paginate, 'function');
+
+    const name = apiBarrel.string({ min: 1 });
+    assert.equal(name.validate('ok'), 'ok');
+    assert.throws(() => name.validate(1), apiBarrel.ValidationError);
+
+    const tags = apiBarrel.array(apiBarrel.string());
+    assert.deepEqual(tags.validate(['a', 'b']), ['a', 'b']);
+
+    const serializer: apiBarrel.Serializer<{ name: string }, { name: string }> =
+      apiBarrel.defineSerializer({ name: apiBarrel.string({ min: 1 }) });
+    assert.deepEqual(serializer.validate({ name: 'x' }), { name: 'x' });
+
+    const page = apiBarrel.paginateArray([1, 2, 3], { page: 1, pageSize: 2 });
+    assert.equal(page.count, 3);
+    assert.deepEqual(page.results, [1, 2]);
+    assert.equal(page.next, 2);
+  });
+
+  it('resolves the compiled ./api package subpath via self-reference', async () => {
+    // Computed specifier so TypeScript does not try to resolve dist/*.d.ts at
+    // typecheck time; this exercises the actual package.json "exports" mapping.
+    const subpath = ['jsails', 'api'].join('/');
+    const imported = (await import(subpath)) as Record<string, unknown>;
+    assert.equal(typeof imported.string, 'function');
+    assert.equal(typeof imported.defineSerializer, 'function');
+    assert.equal(typeof imported.createResourceHandlers, 'function');
+    assert.equal(typeof imported.paginateArray, 'function');
+  });
+});
+
+describe('public API surface: application config and runtime', () => {
+  it('exposes the kernel pipeline, the validator, and the error class', () => {
+    assert.equal(typeof loadApp, 'function');
+    assert.equal(typeof createLoadedApp, 'function');
+    assert.equal(typeof resolvePlugins, 'function');
+    assert.equal(typeof activationModeOf, 'function');
+    assert.equal(typeof validateAppConfig, 'function');
+    assert.equal(typeof createApplication, 'function');
+    assert.equal(typeof DEFAULT_APP_CONFIG_PATH, 'string');
+    assert.ok(new AppConfigError('m') instanceof Error);
+    assert.equal(new AppConfigError('m').name, 'AppConfigError');
+  });
+
+  it('validates and resolves a minimal app config', () => {
+    const resolved = validateAppConfig({ port: 0 }, { cwd: '/tmp/anchor' });
+    assert.equal(resolved.port, 0);
+    assert.equal(resolved.rootDir, resolve('/tmp/anchor'));
+    assert.deepEqual(resolved.extensions, []);
+    assert.equal(resolved.renderer, undefined);
+  });
+
+  it('exposes the app config and runtime types for consumers', () => {
+    const raw = {} as JsailsAppConfig;
+    const resolved = {} as ResolvedAppConfig;
+    const loadOptions = {} as LoadAppOptions;
+    const validateOptions = {} as AppConfigValidationOptions;
+    const cleanup: AppCleanup = () => {};
+    const setup: AppSetup = () => cleanup;
+    const application = {} as Application;
+    const handle = {} as ServeHandle;
+
+    void [raw, resolved, loadOptions, validateOptions, cleanup, setup, application, handle];
+  });
+});
+
+describe('public API surface: page renderer seam', () => {
+  it('exposes the built-in Preact page renderer', () => {
+    assert.equal(typeof preactPageRenderer, 'object');
+    assert.equal(typeof preactPageRenderer.render, 'function');
+  });
+
+  it('exposes the renderer contract types for consumers', () => {
+    const renderer = {} as PageRenderer;
+    const options: PageRenderOptions = { staticMode: true };
+
+    void [renderer, options];
+  });
+});
+
+describe('public API surface: server components', () => {
+  it('exposes the curated author surface on the root entry', () => {
+    assert.equal(typeof defineServerComponent, 'function');
+    assert.equal(typeof defineAction, 'function');
+    assert.equal(typeof serverComponentsPlugin, 'function');
+    assert.equal(typeof renderServerComponent, 'function');
+    assert.equal(typeof renderServerComponentHtml, 'function');
+    assert.ok(new ServerComponentDefinitionError('invalid_definition', 'm') instanceof Error);
+    assert.ok(new ServerComponentError('missing_runtime', 'm') instanceof Error);
+  });
+
+  it('exposes the author-facing types for consumers', () => {
+    const definition = {} as ServerComponentDefinition<JsonObject>;
+    const options = {} as ServerComponentsOptions;
+
+    void [definition, options];
+  });
+});
+
+describe('public API surface: ./server-components package subpath', () => {
+  it('resolves the compiled subpath via self-reference', async () => {
+    const subpath = ['jsails', 'server-components'].join('/');
+    const imported = (await import(subpath)) as Record<string, unknown>;
+    assert.equal(typeof imported.defineServerComponent, 'function');
+    assert.equal(typeof imported.defineAction, 'function');
+    assert.equal(typeof imported.serverComponentsPlugin, 'function');
+    assert.equal(typeof imported.renderServerComponent, 'function');
+    assert.equal(typeof imported.renderServerComponentHtml, 'function');
+    // Advanced signer/runtime construction lives only here, not on the root.
+    assert.equal(typeof imported.createServerComponentsRuntime, 'function');
+    assert.equal(typeof imported.HmacComponentSigner, 'function');
+    assert.equal(typeof imported.ServerComponentRuntimeError, 'function');
+    assert.equal(typeof imported.SnapshotError, 'function');
+    // Wire protocol constants are runtime strings.
+    assert.equal(typeof imported.COMPONENT_UPDATE_ENDPOINT, 'string');
+    assert.equal(typeof imported.COMPONENT_ATTRIBUTE, 'string');
+    // The cross-site check is the access chain's, so there is no token to name.
+    assert.equal('COMPONENT_CSRF_HEADER' in imported, false);
+    // Validation metadata and upload/poll markers are on the subpath too.
+    assert.equal(typeof imported.extractFieldRules, 'function');
+    assert.equal(typeof imported.serializeFieldRules, 'function');
+    assert.equal(typeof imported.ValidationMetaError, 'function');
+    assert.equal(typeof imported.COMPONENT_UPLOADING_ATTRIBUTE, 'string');
+    assert.equal(typeof imported.COMPONENT_UPLOAD_MAX_BYTES_ATTRIBUTE, 'string');
+    assert.equal(typeof imported.COMPONENT_UPLOAD_ENDPOINT, 'string');
+    assert.equal(typeof imported.COMPONENT_UPLOAD_FILE_FIELD, 'string');
+    assert.equal(typeof imported.COMPONENT_UPLOAD_SNAPSHOT_FIELD, 'string');
+    assert.equal(typeof imported.POLL_ATTRIBUTE, 'string');
+    assert.equal(typeof imported.LOADING_ATTRIBUTE, 'string');
+    assert.equal(typeof imported.DIRTY_ATTRIBUTE, 'string');
+    assert.equal(typeof imported.DEBOUNCE_ATTRIBUTE, 'string');
+  });
+});
+
+describe('public API surface: ./client package subpath', () => {
+  it('resolves the compiled browser client via self-reference', async () => {
+    const subpath = ['jsails', 'client'].join('/');
+    const imported = (await import(subpath)) as Record<string, unknown>;
+    assert.equal(typeof imported.startClient, 'function');
+    assert.equal(typeof imported.registerIsland, 'function');
+    assert.equal(typeof imported.morphComponent, 'function');
+    assert.equal(typeof imported.ISLAND_ATTRIBUTE, 'string');
+    assert.equal(typeof imported.FRAME_MISSING_MESSAGE, 'string');
+    assert.equal(typeof imported.JSAILS_BEFORE_NAVIGATION, 'string');
+    assert.equal(imported.IslandPropsError, undefined, 'island props errors are island.* codes');
+    assert.equal(typeof imported.IslandRegistryError, 'function');
+    assert.equal(typeof imported.ClientEnvironmentError, 'function');
+    assert.equal(typeof imported.useIslandDirectives, 'function');
+    assert.equal(typeof imported.intersectAttrs, 'function');
+    assert.equal(typeof imported.pagerAttrs, 'function');
+  });
+
+  it('does not leak the internal DOM binding/controller factories', async () => {
+    const subpath = ['jsails', 'client'].join('/');
+    const imported = (await import(subpath)) as Record<string, unknown>;
+    for (const name of [
+      'ClientRuntimeImpl',
+      'ComponentController',
+      'createComponentBindings',
+      'decodePublicSnapshot',
+      'IslandManagerImpl',
+      'decodeIslandProps',
+    ]) {
+      assert.equal(imported[name], undefined, `${name} must stay internal`);
+    }
+  });
+});
+
+describe('public API surface: extensions', () => {
+  it('exposes the service token, registry, runner, and error registry', () => {
+    assert.equal(typeof createServiceToken, 'function');
+    assert.equal(typeof createServiceRegistry, 'function');
+    assert.equal(typeof runExtensions, 'function');
+    const error = new ServiceErrors.Error('not_found', { token: 'db' });
+    assert.ok(error instanceof Error);
+    assert.equal(error.code, 'service.not_found');
+    assert.equal(error.name, 'ServiceError');
+  });
+
+  it('provides and resolves a typed service through the registry', () => {
+    const token = createServiceToken<string>('db');
+    const controller = createServiceRegistry();
+    controller.registrar.provide(token, 'memory://db');
+    assert.equal(controller.services.get(token), 'memory://db');
+    assert.equal(controller.services.has(token), true);
+    assert.equal(controller.services.tryGet(createServiceToken('db')), undefined);
+  });
+
+  it('runs extensions in order and provides services to later extensions', async () => {
+    const token = createServiceToken<string>('greeting');
+    const order: string[] = [];
+    const extensions: JsailsExtension[] = [
+      {
+        name: 'provider',
+        setup(context) {
+          order.push('provider');
+          context.services.provide(token, 'hello');
+          return () => {
+            order.push('dispose-provider');
+          };
+        },
+      },
+      {
+        name: 'consumer',
+        requires: [token],
+        setup(context) {
+          order.push(`consumer:${context.services.get(token)}`);
+        },
+      },
+    ];
+
+    const runtime = await runExtensions(extensions, { rootDir: import.meta.dirname });
+    assert.deepEqual(order, ['provider', 'consumer:hello']);
+    assert.equal(runtime.services.get(token), 'hello');
+    await runtime.close();
+    assert.deepEqual(order, ['provider', 'consumer:hello', 'dispose-provider']);
+  });
+
+  it('exposes the extension and registry types for consumers', () => {
+    const token = {} as ServiceToken<string>;
+    const registry = {} as ServiceRegistry;
+    const registrar = {} as ServiceRegistrar;
+    const controller = {} as ServiceRegistryController;
+    const code: keyof typeof ServiceErrors.codes = 'not_found';
+    const extension = {} as JsailsExtension;
+    const context = {} as ExtensionContext;
+    const runtime = {} as ExtensionRuntime;
+    const cleanup: ExtensionCleanup = () => {};
+
+    void [token, registry, registrar, controller, code, extension, context, runtime, cleanup];
+  });
+
+  it('exposes the plugin and interceptor surface', () => {
+    assert.equal(typeof definePlugin, 'function');
+    assert.equal(typeof defineOperation, 'function');
+    assert.equal(typeof defineEvent, 'function');
+    assert.equal(typeof createInterceptorRegistry, 'function');
+    assert.equal(typeof validateExtensionEntries, 'function');
+    const error = new InterceptorErrors.Error('sealed');
+    assert.ok(error instanceof Error);
+    assert.equal(error.name, 'InterceptorError');
+    assert.equal(InterceptorErrors.is(error, 'sealed'), true);
+
+    const plugin = {} as JsailsPlugin;
+    const context = {} as PluginContext;
+    const registry = {} as InterceptorRegistry;
+    void [plugin, context, registry];
+  });
+});
+
+describe('public API surface: ./extensions package subpath (ORM/Hono-free)', () => {
+  const bannedImport =
+    /from\s+["'](hono|@hono\/node-server|typeorm|mysql2|pg|sql\.js|bullmq|ioredis|socket\.io|socket\.io-client|@socket\.io\/redis-adapter|preact|preact-render-to-string|@preact\/signals|reflect-metadata|zod)["']/;
+
+  it('resolves the compiled ./extensions subpath via self-reference', async () => {
+    const subpath = ['jsails', 'extensions'].join('/');
+    const imported = (await import(subpath)) as Record<string, unknown>;
+    assert.equal(typeof imported.createServiceToken, 'function');
+    assert.equal(typeof imported.createServiceRegistry, 'function');
+    assert.equal(typeof imported.runExtensions, 'function');
+    assert.equal(typeof (imported.ServiceErrors as { Error?: unknown }).Error, 'function');
+  });
+
+  it('compiled entry never imports an ORM or HTTP runtime library', () => {
+    // The subpath must be importable without pulling in Hono or an ORM; the
+    // type-only Hono reference in extension.ts is erased at compile time, as
+    // are the type-only adapter/command/generator author interfaces.
+    const dir = fileURLToPath(new URL('../../src/extensions', import.meta.url));
+    for (const file of ['index.js', 'services.js', 'extension.js']) {
+      const source = readFileSync(`${dir}/${file}`, 'utf8');
+      assert.doesNotMatch(source, bannedImport, `${file} must not import a runtime library`);
+    }
+  });
+
+  it('exposes type-only adapter author interfaces (static import)', () => {
+    const jobAdapter = {} as ExtJobsRuntimeAdapter;
+    const jobContext = {} as ExtJobAdapterContext;
+    const producer = {} as ExtRuntimeProducer;
+    const worker = {} as ExtRuntimeWorker;
+    const job = {} as ExtRuntimeJob;
+    const processJob: ExtProcessJob = async () => undefined;
+    const dispatchOptions: ExtJobDispatchOptions = {};
+    const broadcast = {} as ExtBroadcastAdapter;
+    const handle = {} as ExtBroadcastHandle;
+
+    void [
+      jobAdapter,
+      jobContext,
+      producer,
+      worker,
+      job,
+      processJob,
+      dispatchOptions,
+      broadcast,
+      handle,
+    ];
+  });
+
+  it('imports and uses the subpath in a clean child process without runtime adapters', () => {
+    const projectRoot = fileURLToPath(new URL('../../..', import.meta.url));
+    const script = `
+      const mod = await import('jsails/extensions');
+      const token = mod.createServiceToken('db');
+      const registry = mod.createServiceRegistry();
+      registry.registrar.provide(token, { url: 'memory' });
+      if (registry.services.get(token).url !== 'memory') throw new Error('round-trip failed');
+      for (const name of ['createServiceToken', 'createServiceRegistry', 'runExtensions']) {
+        if (typeof mod[name] !== 'function') throw new Error('missing ' + name);
+      }
+      // Type-only author interfaces must not appear as runtime values, so the
+      // subpath exports no adapter/command construction surface.
+      for (const name of ['JobsRuntimeImpl', 'BullMQAdapter', 'SocketIOBroadcastAdapter', 'defineCommand']) {
+        if (mod[name] !== undefined) throw new Error('unexpected runtime export ' + name);
+      }
+      console.log('extensions-ok');
+    `;
+    const result = spawnSync(process.execPath, ['--input-type=module', '-e', script], {
+      cwd: projectRoot,
+      encoding: 'utf8',
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /extensions-ok/);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Server components: directives, pagination, redirect, downloads, url-binding
+// ---------------------------------------------------------------------------
+
+describe('public API surface: server-component directives', () => {
+  it('exposes every directive builder as a function', () => {
+    assert.equal(typeof confirmAttrs, 'function');
+    assert.equal(typeof loadingTargetAttrs, 'function');
+    assert.equal(typeof showAttrs, 'function');
+    assert.equal(typeof textAttrs, 'function');
+    assert.equal(typeof sortAttrs, 'function');
+    assert.equal(typeof intersectAttrs, 'function');
+    assert.equal(typeof refAttrs, 'function');
+    assert.equal(typeof ignoreAttrs, 'function');
+  });
+
+  it('confirmAttrs returns a non-empty record', () => {
+    const attrs = confirmAttrs('Are you sure?');
+    assert.equal(typeof attrs, 'object');
+    assert.ok(attrs !== null);
+    assert.equal(Object.keys(attrs).length, 1);
+  });
+
+  it('ignoreAttrs returns a record', () => {
+    const attrs = ignoreAttrs();
+    assert.equal(typeof attrs, 'object');
+    assert.ok(attrs !== null);
+  });
+});
+
+describe('public API surface: server-component pagination', () => {
+  it('exposes pagerAttrs as a function', () => {
+    assert.equal(typeof pagerAttrs, 'function');
+  });
+
+  it('pagerAttrs returns prev/next structures from a Page', () => {
+    const page = { results: [1, 2], count: 5, page: 1, pageSize: 2, previous: null, next: 3 };
+    const result = pagerAttrs(page, { action: 'page', pageField: 'p', pageSizeField: 'ps' });
+    assert.equal(result.previous, null);
+    assert.equal(typeof result.next, 'object');
+    assert.ok(result.next !== null);
+  });
+});
+
+describe('public API surface: server-component redirect', () => {
+  it('exposes redirect and isRedirect as functions', () => {
+    assert.equal(typeof redirect, 'function');
+    assert.equal(typeof isRedirect, 'function');
+  });
+
+  it('redirect builds a redirect signal and isRedirect detects it', () => {
+    const signal = redirect('/dashboard');
+    assert.equal(isRedirect(signal), true);
+    assert.equal(signal.url, '/dashboard');
+  });
+
+  it('isRedirect returns false for non-redirect values', () => {
+    assert.equal(isRedirect(null), false);
+    assert.equal(isRedirect(undefined), false);
+    assert.equal(isRedirect({}), false);
+  });
+});
+
+describe('public API surface: server-component downloads', () => {
+  it('exposes download, isDownload, DownloadError, and the signer factory', () => {
+    assert.equal(typeof download, 'function');
+    assert.equal(typeof isDownload, 'function');
+    assert.equal(typeof DownloadError, 'function');
+    assert.equal(typeof createDownloadReferenceSigner, 'function');
+    assert.equal(typeof DOWNLOAD_REFERENCE_TTL_MS, 'number');
+    assert.equal(DOWNLOAD_REFERENCE_TTL_MS, 300_000);
+  });
+
+  it('download builds a signal and isDownload detects it', () => {
+    const dl = download('file-1', { filename: 'report.pdf', contentType: 'application/pdf' });
+    assert.equal(isDownload(dl), true);
+    assert.equal(dl.id, 'file-1');
+    assert.equal(dl.filename, 'report.pdf');
+    assert.equal(dl.contentType, 'application/pdf');
+  });
+
+  it('DownloadError carries a code and name', () => {
+    const err = new DownloadError('invalid_input', 'msg');
+    assert.ok(err instanceof Error);
+    assert.equal(err.name, 'DownloadError');
+    assert.equal(err.code, 'invalid_input');
+  });
+
+  it('createDownloadReferenceSigner signs and verifies a reference', () => {
+    const signer = createDownloadReferenceSigner({ key: 'k'.repeat(32) });
+    const token = signer.sign({
+      downloadId: 'abc123',
+      component: 'task-list',
+      subject: 'user-42',
+      filename: 'data.csv',
+      contentType: 'text/csv',
+      origin: 'https://example.com',
+      page: { path: '/reports', params: {} },
+    });
+    assert.equal(typeof token, 'string');
+    const claims = signer.verify(token);
+    assert.equal(claims.downloadId, 'abc123');
+    assert.equal(claims.component, 'task-list');
+    assert.equal(claims.subject, 'user-42');
+    assert.equal(claims.filename, 'data.csv');
+    assert.equal(claims.contentType, 'text/csv');
+  });
+});
+
+describe('public API surface: server-component url-binding', () => {
+  it('exposes seedFromUrl as a function', () => {
+    assert.equal(typeof seedFromUrl, 'function');
+  });
+});
+
+describe('public API surface: server-component types', () => {
+  it('exposes the directive/pagination/download/url-binding types', () => {
+    const pagerOpts: ServerComponentPagerOptions = { action: 'page' };
+    const redir = {} as ServerComponentRedirect;
+    const dl = {} as ServerComponentDownload;
+    const signer = {} as DownloadReferenceSigner;
+    const claims = {} as DownloadReferenceClaims;
+    const urlBinding: ServerComponentUrlBinding = ['page'];
+    void [pagerOpts, redir, dl, signer, claims, urlBinding];
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Pages: streaming
+// ---------------------------------------------------------------------------
+
+describe('public API surface: page outcome', () => {
+  it('exposes reply, ReplyErrors and documentOutcome', () => {
+    assert.equal(typeof reply.props, 'function');
+    assert.equal(typeof reply.redirect, 'function');
+    assert.equal(typeof reply.redirectExternal, 'function');
+    assert.equal(typeof reply.notFound, 'function');
+    assert.equal(typeof ReplyErrors.is, 'function');
+    const outcome: PageOutcome = documentOutcome('<p>hi</p>');
+    assert.equal(outcome.kind, 'document');
+  });
+
+  it('types a load that replies, and unwraps its props', () => {
+    const load = (signedIn: boolean): LoadResult<{ title: string }> =>
+      signedIn ? reply.props({ title: 'Hi' }) : reply.redirect('/login');
+    const props: PageProps<typeof load> = { title: 'Hi' };
+    assert.equal(props.title, 'Hi');
+    const answer = load(false);
+    assert.ok('kind' in answer && answer.kind === 'redirect');
+  });
+
+  it('exposes the PageStream type contract', () => {
+    const iterable: PageStream = (async function* () {
+      yield 'x';
+    })();
+    void iterable;
+  });
+});
+
+// ---------------------------------------------------------------------------
+// API: filter types (FilterClause, FilterOperator, FilterValue)
+// ---------------------------------------------------------------------------
+
+describe('public API surface: API filter types', () => {
+  it('exposes the filter type contracts for consumers', () => {
+    const op: FilterOperator = 'eq';
+    const value: FilterValue = 'search';
+    const clause: FilterClause = { field: 'title', operator: 'eq', value: 'hello' };
+    void [op, value, clause];
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Client: Turbo Stream message emitters (subpath-only — not root-exported)
+// ---------------------------------------------------------------------------
+
+describe('public API surface: ./client Turbo Stream emitters', () => {
+  it('exposes every stream emitter via the client subpath', async () => {
+    const subpath = ['jsails', 'client'].join('/');
+    const imported = (await import(subpath)) as Record<string, unknown>;
+    assert.equal(typeof imported.turboStreamMessage, 'function');
+    assert.equal(typeof imported.replaceStream, 'function');
+    assert.equal(typeof imported.updateStream, 'function');
+    assert.equal(typeof imported.appendStream, 'function');
+    assert.equal(typeof imported.prependStream, 'function');
+    assert.equal(typeof imported.removeStream, 'function');
+    assert.equal(typeof imported.beforeStream, 'function');
+    assert.equal(typeof imported.afterStream, 'function');
+    assert.equal(typeof imported.refreshStream, 'function');
+  });
+
+  it('does not leak stream emitters from the root entry', async () => {
+    // The root entry deliberately excludes the client runtime — stream emitters
+    // are subpath-only and must not pollute the server-side jsails import.
+    const root = (await import('../../src/index.js')) as Record<string, unknown>;
+    assert.equal(root['turboStreamMessage'], undefined, 'turboStreamMessage must not leak to root');
+    assert.equal(root['replaceStream'], undefined, 'replaceStream must not leak to root');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Testing: server-component test harness (subpath-only — not root-exported)
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Components: authoring helpers (defineComponent, localAction, serverAction, defineStyle)
+// ---------------------------------------------------------------------------
+
+describe('public API surface: component authoring helpers', () => {
+  it('exposes the authoring functions and error classes on the root entry', () => {
+    assert.equal(typeof defineComponent, 'function');
+    assert.equal(typeof localAction, 'function');
+    assert.equal(typeof serverAction, 'function');
+    assert.equal(typeof defineStyle, 'function');
+    assert.equal(typeof AuthoringError, 'function');
+    assert.equal(typeof StyleError, 'function');
+  });
+
+  it('AuthoringError is an Error with a code', () => {
+    const err = new AuthoringError('invalid_actions', 'm');
+    assert.ok(err instanceof Error);
+    assert.equal(err.name, 'AuthoringError');
+    assert.equal(err.code, 'invalid_actions');
+  });
+
+  it('StyleError is an Error with a code', () => {
+    const err = new StyleError('invalid_slots', 'm');
+    assert.ok(err instanceof Error);
+    assert.equal(err.name, 'StyleError');
+    assert.equal(err.code, 'invalid_slots');
+  });
+
+  it('defineStyle creates a slot-addressable contract', () => {
+    const style = defineStyle({ header: 'text-xl font-bold', body: 'text-sm' });
+    assert.equal(style.slot('header'), 'text-xl font-bold');
+    assert.equal(style.slot('body'), 'text-sm');
+    // Unknown slot must throw at runtime — use a cast to bypass the static check.
+    assert.throws(() => (style.slot as (name: string) => string)('footer'), StyleError);
+  });
+
+  it('localAction creates a static action descriptor', () => {
+    const act = localAction({
+      run(state: { count: number }) {
+        state.count += 1;
+      },
+    });
+    assert.equal(act.kind, 'local');
+    assert.equal(typeof act.run, 'function');
+  });
+
+  it('serverAction creates a round-tripped action descriptor', () => {
+    const act = serverAction({
+      run(state: { name: string }) {
+        state.name = 'updated';
+      },
+    });
+    assert.equal(act.kind, 'server');
+    assert.equal(typeof act.run, 'function');
+  });
+
+  it('exposes the authoring type contracts for consumers', () => {
+    const kind: ActionKind = 'local';
+    const code: AuthoringErrorCode = 'invalid_actions';
+    const renderTools = {} as AuthoringRenderTools<{ n: number }>;
+    const options = {} as DefineComponentOptions<{ n: number }>;
+    const local = {} as LocalAction<{ n: number }>;
+    const server = {} as ServerAction<{ n: number }>;
+    const styleContract = {} as StyleContract;
+    const styleCode: StyleErrorCode = 'unknown_slot';
+    void [kind, code, renderTools, options, local, server, styleContract, styleCode];
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Client model: ./client/model package subpath
+// ---------------------------------------------------------------------------
+
+describe('public API surface: ./client/model package subpath', () => {
+  it('resolves the compiled subpath via self-reference', async () => {
+    const subpath = ['jsails', 'client', 'model'].join('/');
+    const imported = (await import(subpath)) as Record<string, unknown>;
+    assert.equal(typeof imported.createModel, 'function');
+    assert.equal(typeof imported.ModelError, 'function');
+
+    const err = new (imported.ModelError as new (c: string, m: string) => Error)(
+      'invalid_definition',
+      'm',
+    );
+    assert.ok(err instanceof Error);
+    assert.equal(err.name, 'ModelError');
+  });
+
+  it('does not leak createModel from the root entry', async () => {
+    const root = (await import('../../src/index.js')) as Record<string, unknown>;
+    assert.equal(root['createModel'], undefined, 'createModel must stay subpath-only');
+    assert.equal(root['ModelError'], undefined, 'ModelError must stay subpath-only');
+  });
+});
+
+describe('public API surface: deploy tooling lives in @jsails/jamal', () => {
+  it('exports neither a deploy nor a jamal subpath', async () => {
+    for (const name of ['deploy', 'jamal']) {
+      await assert.rejects(
+        import(['jsails', name].join('/')),
+        (error: unknown) => (error as { code?: unknown }).code === 'ERR_PACKAGE_PATH_NOT_EXPORTED',
+        name,
+      );
+    }
+  });
+
+  it('keeps the deploy and ONCE helpers off the root entry', async () => {
+    const root = (await import('../../src/index.js')) as Record<string, unknown>;
+    for (const name of [
+      'createDeploymentGeneratorRegistry',
+      'generateOnceConfig',
+      'generateServerHardeningConfig',
+      'loadJamalConfig',
+      'runJamalCommand',
+    ]) {
+      assert.equal(root[name], undefined, name);
+    }
+  });
+
+  it('serves the on-demand TLS allowlist from jsails/app, since the app runs it', async () => {
+    const app = (await import(['jsails', 'app'].join('/'))) as Record<string, unknown>;
+    assert.equal(typeof app['createOnDemandTlsAllowlist'], 'function');
+    assert.equal(typeof app['OnDemandTlsAllowlistError'], 'function');
+  });
+});

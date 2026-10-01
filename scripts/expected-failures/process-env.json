@@ -1,0 +1,62 @@
+{
+  "description": "Shipped source files that read the process environment outside the permanent process boundaries allow-listed, file by file, in scripts/gates/process-env.mjs (KRN-10). Each entry is one file; its variables move to a plugin env declaration or the resolved environment, and the entry is removed with that change.",
+  "kind": "gate",
+  "gate": "process-env",
+  "entries": [
+    {
+      "id": "core/src/app/serve.ts",
+      "reason": "Serve reads NODE_ENV directly; KRN-12 hands it the resolved environment name with the roles a process runs (KRN-11a hands the commands the resolved environment, but serve.ts is assembled by the application, which KRN-12 owns).",
+      "fixedBy": "KRN-12"
+    },
+    {
+      "id": "core/src/encryption/model-encrypter.ts",
+      "reason": "defineModel resolves the column encrypter from process.env; DAT-10 makes encryption a column codec whose plugin owns the keyring and declares the keys in its env.",
+      "fixedBy": "DAT-10"
+    },
+    {
+      "id": "core/src/jobs/runtime-config.ts",
+      "reason": "The jobs runtime config reads queue variables from process.env; KRN-12 deletes the module in favour of the jobs plugin and its declared env.",
+      "fixedBy": "KRN-12"
+    },
+    {
+      "id": "core/src/server-components/extension.ts",
+      "reason": "server-components: reads its signing keys and mode from process.env; KRN-14 leaves it a plain kernel plugin (its component metadata moves onto the AppManifest), which declares them in its env and reads the mode from its setup context.",
+      "fixedBy": "KRN-14"
+    },
+    {
+      "id": "core/src/server/app.ts",
+      "reason": "The proxy diagnostic reads NODE_ENV directly; KRN-12 hands the server the resolved environment name when it assembles the process.",
+      "fixedBy": "KRN-12"
+    },
+    {
+      "id": "core/src/valkey/provider.ts",
+      "reason": "useValkeyConnections falls back to VALKEY_URL from the process environment for its consumers still on the legacy contract (broadcast, jobs, live), which declare no variables; it goes when they convert and pass their declared env.",
+      "fixedBy": "CNT-09"
+    },
+    {
+      "id": "packages/auth/src/auth-database.ts",
+      "reason": "auth: reads its variables from process.env; SEC-12 converts the plugin onto definePlugin (its tables onto schema contributions) and declares them in its env.",
+      "fixedBy": "SEC-12"
+    },
+    {
+      "id": "packages/auth/src/better-auth.ts",
+      "reason": "auth: reads its variables from process.env; SEC-12 converts the plugin onto definePlugin (its tables onto schema contributions) and declares them in its env.",
+      "fixedBy": "SEC-12"
+    },
+    {
+      "id": "packages/auth/src/cli-client.ts",
+      "reason": "auth: reads its variables from process.env; SEC-12 converts the plugin onto definePlugin (its tables onto schema contributions) and declares them in its env.",
+      "fixedBy": "SEC-12"
+    },
+    {
+      "id": "packages/jamal/src/deps.ts",
+      "reason": "jamal's verbs default their environment (host user, failure report) to process.env; KRN-11b's defineJamal loader hands them the resolved environment.",
+      "fixedBy": "KRN-11b"
+    },
+    {
+      "id": "packages/jamal/src/secrets.ts",
+      "reason": "jamal's secrets substitution defaults $NAME lookups to process.env; KRN-11b's defineJamal loader hands it the resolved environment.",
+      "fixedBy": "KRN-11b"
+    }
+  ]
+}

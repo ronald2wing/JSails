@@ -1,0 +1,77 @@
+{
+  "description": "Access-matrix invariants that do not hold yet (scripts/check-access.mjs, the access gate). Each entry is one app and invariant (<app>:<invariant>); the package named by fixedBy makes it hold and removes the entry, and an entry whose invariant holds fails the gate until it is removed.",
+  "kind": "gate",
+  "gate": "access",
+  "entries": [
+    {
+      "id": "admin:rejected-credential-401",
+      "reason": "Every session resolver answers an invalid credential with no session, so the chain treats a rejected cookie or token as anonymous (admitted on public surfaces, refused cross-site or 401 by the gate instead of 401 first). The Authenticator returns { rejected } and the chain answers 401 before any other stage.",
+      "fixedBy": "SEC-07"
+    },
+    {
+      "id": "auth:anonymous-write-rate-limited",
+      "reason": "A surface descriptor states no rate-limit rule yet, so no write an anonymous caller reaches (sign-in, registration, the component lane, signed webhooks) declares one. The kernel limiter adds the per-surface rule declaration.",
+      "fixedBy": "SEC-08"
+    },
+    {
+      "id": "auth:rejected-credential-401",
+      "reason": "Every session resolver answers an invalid credential with no session, so the chain treats a rejected cookie or token as anonymous (admitted on public surfaces, refused cross-site or 401 by the gate instead of 401 first). The Authenticator returns { rejected } and the chain answers 401 before any other stage.",
+      "fixedBy": "SEC-07"
+    },
+    {
+      "id": "blog:rejected-credential-401",
+      "reason": "Every session resolver answers an invalid credential with no session, so the chain treats a rejected cookie or token as anonymous (admitted on public surfaces, refused cross-site or 401 by the gate instead of 401 first). The Authenticator returns { rejected } and the chain answers 401 before any other stage.",
+      "fixedBy": "SEC-07"
+    },
+    {
+      "id": "framework:anonymous-write-rate-limited",
+      "reason": "A surface descriptor states no rate-limit rule yet, so no write an anonymous caller reaches (sign-in, registration, the component lane, signed webhooks) declares one. The kernel limiter adds the per-surface rule declaration.",
+      "fixedBy": "SEC-08"
+    },
+    {
+      "id": "framework:rejected-credential-401",
+      "reason": "Every session resolver answers an invalid credential with no session, so the chain treats a rejected cookie or token as anonymous (admitted on public surfaces, refused cross-site or 401 by the gate instead of 401 first). The Authenticator returns { rejected } and the chain answers 401 before any other stage.",
+      "fixedBy": "SEC-07"
+    },
+    {
+      "id": "starter-admin:anonymous-write-rate-limited",
+      "reason": "A surface descriptor states no rate-limit rule yet, so no write an anonymous caller reaches (sign-in, registration, the component lane, signed webhooks) declares one. The kernel limiter adds the per-surface rule declaration.",
+      "fixedBy": "SEC-08"
+    },
+    {
+      "id": "starter-admin:rejected-credential-401",
+      "reason": "Every session resolver answers an invalid credential with no session, so the chain treats a rejected cookie or token as anonymous (admitted on public surfaces, refused cross-site or 401 by the gate instead of 401 first). The Authenticator returns { rejected } and the chain answers 401 before any other stage.",
+      "fixedBy": "SEC-07"
+    },
+    {
+      "id": "starter-blog:anonymous-write-rate-limited",
+      "reason": "A surface descriptor states no rate-limit rule yet, so no write an anonymous caller reaches (sign-in, registration, the component lane, signed webhooks) declares one. The kernel limiter adds the per-surface rule declaration.",
+      "fixedBy": "SEC-08"
+    },
+    {
+      "id": "starter-blog:rejected-credential-401",
+      "reason": "Every session resolver answers an invalid credential with no session, so the chain treats a rejected cookie or token as anonymous (admitted on public surfaces, refused cross-site or 401 by the gate instead of 401 first). The Authenticator returns { rejected } and the chain answers 401 before any other stage.",
+      "fixedBy": "SEC-07"
+    },
+    {
+      "id": "starter-saas:anonymous-write-rate-limited",
+      "reason": "A surface descriptor states no rate-limit rule yet, so no write an anonymous caller reaches (sign-in, registration, the component lane, signed webhooks) declares one. The kernel limiter adds the per-surface rule declaration.",
+      "fixedBy": "SEC-08"
+    },
+    {
+      "id": "starter-saas:rejected-credential-401",
+      "reason": "Every session resolver answers an invalid credential with no session, so the chain treats a rejected cookie or token as anonymous (admitted on public surfaces, refused cross-site or 401 by the gate instead of 401 first). The Authenticator returns { rejected } and the chain answers 401 before any other stage.",
+      "fixedBy": "SEC-07"
+    },
+    {
+      "id": "starter-starter:rejected-credential-401",
+      "reason": "Every session resolver answers an invalid credential with no session, so the chain treats a rejected cookie or token as anonymous (admitted on public surfaces, refused cross-site or 401 by the gate instead of 401 first). The Authenticator returns { rejected } and the chain answers 401 before any other stage.",
+      "fixedBy": "SEC-07"
+    },
+    {
+      "id": "webhook:anonymous-write-rate-limited",
+      "reason": "A surface descriptor states no rate-limit rule yet, so no write an anonymous caller reaches (sign-in, registration, the component lane, signed webhooks) declares one. The kernel limiter adds the per-surface rule declaration.",
+      "fixedBy": "SEC-08"
+    }
+  ]
+}

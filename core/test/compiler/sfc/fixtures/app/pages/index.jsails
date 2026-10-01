@@ -1,0 +1,10 @@
+<!-- The home page: static text, no load. -->
+<template>
+  <main>
+    <h1>Welcome</h1>
+    <p>Braces { and } and a > are text, &amp; entities decode.</p>
+    <ol>
+      <li js-for="n in 3" :key="n">Item {{ n }}</li>
+    </ol>
+  </main>
+</template>

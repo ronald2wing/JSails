@@ -1,0 +1,19 @@
+<script setup lang="ts">
+import type { Row } from './card.jsails';
+defineProps<{ rows: readonly Row[]; totals: Record<string, number> }>();
+</script>
+
+<template>
+  <Card :rows="rows" :attributes="{ id: 'posts', class: 'wide' }">
+    <template #header><b>Posts</b></template>
+    <template #row="{ item, index }"
+      ><li :data-index="index">#{{ item.id }} {{ item.label }}</li></template
+    >
+    <dl>
+      <template js-for="(value, key, index) in totals" :key="key">
+        <dt>{{ index + 1 }}. {{ key }}</dt>
+        <dd>{{ value }}</dd>
+      </template>
+    </dl>
+  </Card>
+</template>

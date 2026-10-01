@@ -1,0 +1,34 @@
+{
+  "description": "Jamal fake-host scenarios (JOB-10): whole-verb deploy, rollback, lock, and interruption scenarios of packages/jamal/test/scenarios that today's release engine fails against the FakeHost model (packages/jamal/src/testing). Each entry records one defect of the current engine; fixedBy names the deploy package whose engine passes the scenario (JOB-13 release execution and retention); the secrets-file scenarios JOB-11 fixed and the host-state, lock, and digest scenarios JOB-12 fixed left with them. JOB-13 empties and deletes this ledger.",
+  "kind": "tests",
+  "entries": [
+    {
+      "file": "packages/jamal/test/scenarios/release-lifecycle.test.ts",
+      "test": [
+        "release lifecycle on one host",
+        "consecutive deploys keep at most retain + 1 (6) app images"
+      ],
+      "platforms": ["darwin", "linux"],
+      "failure": {
+        "message": "the host keeps 8 app images after 8 deploys; at most 6 are allowed",
+        "name": "AssertionError"
+      },
+      "reason": "Unbounded images: a deploy removes the previous container but never an image, so every release's image stays on the server until the disk fills.",
+      "fixedBy": "JOB-13"
+    },
+    {
+      "file": "packages/jamal/test/scenarios/interruption.test.ts",
+      "test": [
+        "a deploy cut short",
+        "an interrupt at any remote command leaves one serving release and no lock"
+      ],
+      "platforms": ["darwin", "linux"],
+      "failure": {
+        "message": "an interrupt left the host wrong at",
+        "name": "AssertionError"
+      },
+      "reason": "An interrupt releases the lock but leaves a release container that started and never took traffic running (the plan retires leftovers only on the next deploy), and a signal that arrives after the handlers are detached but before the final lock release ends the process with the lock held.",
+      "fixedBy": "JOB-13"
+    }
+  ]
+}

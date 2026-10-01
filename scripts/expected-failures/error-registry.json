@@ -1,0 +1,272 @@
+{
+  "description": "Units (a top-level entry of core/src, or one package src) that still raise hand-written errors: a raw Error, TypeError or RangeError, or a hand-written JsailsError subclass. Judged by the error-registry gate (KRN-07); eslint/errors.mjs lints every unit not listed here. An entry is removed when its unit is converted to defineErrors registries; KRN-24 requires the ledger empty.",
+  "kind": "gate",
+  "gate": "error-registry",
+  "entries": [
+    {
+      "id": "adoption:core/src/api",
+      "reason": "core/src/api still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/app",
+      "reason": "core/src/app still raises hand-written errors; it is a kernel-owned directory, converted whole in a KRN-07 follow-up once the parallel lanes editing core/src/app/config have landed, so the conversion does not race their edits.",
+      "fixedBy": "KRN-07"
+    },
+    {
+      "id": "adoption:core/src/broadcast",
+      "reason": "core/src/broadcast still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/build",
+      "reason": "core/src/build still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/client",
+      "reason": "core/src/client still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/compiler",
+      "reason": "core/src/compiler still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/contracts",
+      "reason": "core/src/contracts still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/data",
+      "reason": "core/src/data still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/database",
+      "reason": "core/src/database still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/dev",
+      "reason": "core/src/dev still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/encryption",
+      "reason": "core/src/encryption still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/facades",
+      "reason": "core/src/facades still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/http",
+      "reason": "core/src/http still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/i18n",
+      "reason": "core/src/i18n still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/jobs",
+      "reason": "core/src/jobs still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/live",
+      "reason": "core/src/live still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/mcp",
+      "reason": "core/src/mcp still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/migrations",
+      "reason": "core/src/migrations still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/models",
+      "reason": "core/src/models still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/pages",
+      "reason": "core/src/pages still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/plugins",
+      "reason": "core/src/plugins still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/routing",
+      "reason": "core/src/routing still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/security",
+      "reason": "core/src/security still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/seo",
+      "reason": "core/src/seo still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/server",
+      "reason": "core/src/server still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/server-components",
+      "reason": "core/src/server-components still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/services",
+      "reason": "core/src/services still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/signals",
+      "reason": "core/src/signals still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/symbols",
+      "reason": "core/src/symbols still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/testing",
+      "reason": "core/src/testing still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:core/src/valkey",
+      "reason": "core/src/valkey still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/admin/src",
+      "reason": "packages/admin/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/ai/src",
+      "reason": "packages/ai/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/auth/src",
+      "reason": "packages/auth/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/blog/src",
+      "reason": "packages/blog/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/config/src",
+      "reason": "packages/config/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/content/src",
+      "reason": "packages/content/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/database/src",
+      "reason": "packages/database/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/diagnostics/src",
+      "reason": "packages/diagnostics/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/flags/src",
+      "reason": "packages/flags/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/inertia/src",
+      "reason": "packages/inertia/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/jamal/src",
+      "reason": "packages/jamal/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/live/src",
+      "reason": "packages/live/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/logging/src",
+      "reason": "packages/logging/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/mail/src",
+      "reason": "packages/mail/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/mcp/src",
+      "reason": "packages/mcp/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/media/src",
+      "reason": "packages/media/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/notifications/src",
+      "reason": "packages/notifications/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/resources/src",
+      "reason": "packages/resources/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/sessions/src",
+      "reason": "packages/sessions/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/tenancy/src",
+      "reason": "packages/tenancy/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/theme/src",
+      "reason": "packages/theme/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    },
+    {
+      "id": "adoption:packages/webhook/src",
+      "reason": "packages/webhook/src still raises hand-written errors; its owner moves them onto defineErrors registries, and KRN-24 requires this ledger empty.",
+      "fixedBy": "KRN-24"
+    }
+  ]
+}

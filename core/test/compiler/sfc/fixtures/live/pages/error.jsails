@@ -1,0 +1,7 @@
+<!-- The error boundary: a static export must not write it in place of a refused page. -->
+<template>
+  <main>
+    <h1>{{ error.status }}</h1>
+    <p>{{ error.message }}</p>
+  </main>
+</template>

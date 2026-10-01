@@ -1,0 +1,468 @@
+/**
+ * Built-in BullMQ job runtime adapter.
+ *
+ * Implements the provider-neutral {@link JobsRuntimeAdapter} contract from
+ * `./runtime.js` on top of BullMQ's `Queue` and `Worker`. This is the only
+ * module that maps the neutral runtime onto BullMQ; the neutral controller
+ * performs all job-level policy (payload validation on both sides, dispatch
+ * option allowlisting, schedule preparation) and this adapter owns the
+ * transport semantics only.
+ *
+ * Lazy construction: `BullMQAdapter` validates its options and creates no
+ * `Queue`/`Worker` until `createProducer`/`createWorker` are called by the
+ * runtime. Importing this module never connects.
+ *
+ * Connections come from the app's Valkey provider and carry its role
+ * policies. A producer's `Queue` runs on the shared `command` connection: a
+ * dispatch is a request-path command, so it fails fast while Valkey is
+ * unreachable (no offline queue) and every reply has a deadline, and producers
+ * of every queue share one connection. A worker gets its own `queue`-role
+ * connection (`maxRetriesPerRequest: null`, which BullMQ's blocking moves
+ * require; BullMQ duplicates it for the blocking read), which this adapter
+ * disconnects after the worker closes. The shared connection belongs to the
+ * provider and is never closed here. Every handle's `close()` is idempotent,
+ * and a constructor/error-listener failure never leaks a half-built handle.
+ *
+ * Scheduling reuses the neutral `PreparedSchedule[]` (already validated by the
+ * runtime) and maps it directly to `Queue.upsertJobScheduler`; the native queue
+ * is recovered from a `WeakMap` keyed by the producer handle this adapter
+ * created, so no queue engine is cloned.
+ */
+
+import { Queue, UnrecoverableError, WaitingError, Worker } from 'bullmq';
+import type {
+  ConnectionOptions,
+  JobSchedulerJson,
+  JobsOptions,
+  JobSchedulerTemplateOptions,
+  QueueOptions,
+  WorkerOptions,
+} from 'bullmq';
+
+import { createCleanup } from '../extensions/cleanup.js';
+import { attachErrorHandler, defaultErrorLogger, type JobErrorHandler } from './connection.js';
+import {
+  defaultJobOptions,
+  validateJobRetention,
+  type JobQueue,
+  type JobRetention,
+  type JobRetentionOptions,
+  type QueueFactory,
+} from './queue.js';
+import { DESCRIPTION_OPTION_KEY, OVERLAP_OPTION_KEY } from './option-keys.js';
+import {
+  isOverlapDescriptor,
+  type JobWorker,
+  type PreparedSchedule,
+  type WorkerFactory,
+  type WorkerJob,
+} from './scheduler.js';
+import {
+  isJobAttemptInterrupted,
+  isJobErrorNonRetryable,
+  type JobAdapterContext,
+  type JobsRuntimeAdapter,
+  type ProcessJob,
+  type QueueCounts,
+  type RuntimeProducer,
+  type RuntimeWorker,
+  type ScheduleInfo,
+} from './runtime.js';
+import type { ValkeyClient, ValkeyConnections } from '../valkey/connections.js';
+
+/** Options accepted by {@link BullMQAdapter}. */
+export interface BullMQAdapterOptions {
+  /** The app's Valkey connections. The adapter never closes the provider. */
+  readonly connections: ValkeyConnections;
+  /** Optional error callback; when absent, errors are logged payload-free. */
+  readonly onError?: JobErrorHandler;
+  /**
+   * Completed-job retention for this queue. Defaults to one hour / 1000 jobs
+   * (`DEFAULT_REMOVE_ON_COMPLETE`); `false` keeps them forever.
+   */
+  readonly removeOnComplete?: JobRetention;
+  /**
+   * Failed-job retention for this queue. Defaults to seven days / 5000 jobs
+   * (`DEFAULT_REMOVE_ON_FAIL`); `false` keeps them forever.
+   */
+  readonly removeOnFail?: JobRetention;
+  /** Test seam: override the `Queue` construction. */
+  readonly queueFactory?: QueueFactory;
+  /** Test seam: override the `Worker` construction. */
+  readonly workerFactory?: WorkerFactory;
+}
+
+/** Build a real BullMQ `Queue`. Reached only from `createProducer`. */
+const defaultQueueFactory: QueueFactory = (name, opts) => new Queue(name, opts);
+
+/** Build a real BullMQ `Worker`. Reached only from `createWorker`. */
+const defaultWorkerFactory: WorkerFactory = (name, processor, opts) =>
+  new Worker(name, processor, opts);
+
+interface ResolvedAdapterOptions {
+  readonly connections: ValkeyConnections;
+  readonly onError: JobErrorHandler | undefined;
+  readonly retention: JobRetentionOptions;
+  readonly queueFactory: QueueFactory | undefined;
+  readonly workerFactory: WorkerFactory | undefined;
+}
+
+function resolveOptions(options: BullMQAdapterOptions): ResolvedAdapterOptions {
+  if (options === null || typeof options !== 'object') {
+    throw new TypeError('BullMQAdapter requires an options object');
+  }
+  if (
+    options.connections === null ||
+    typeof options.connections !== 'object' ||
+    typeof options.connections.shared !== 'function' ||
+    typeof options.connections.dedicated !== 'function'
+  ) {
+    throw new TypeError('BullMQAdapter requires the app Valkey connections');
+  }
+  if (options.onError !== undefined && typeof options.onError !== 'function') {
+    throw new TypeError('onError must be a function');
+  }
+  if (options.queueFactory !== undefined && typeof options.queueFactory !== 'function') {
+    throw new TypeError('queueFactory must be a function');
+  }
+  if (options.workerFactory !== undefined && typeof options.workerFactory !== 'function') {
+    throw new TypeError('workerFactory must be a function');
+  }
+  const retention: { removeOnComplete?: JobRetention; removeOnFail?: JobRetention } = {};
+  if (options.removeOnComplete !== undefined) {
+    retention.removeOnComplete = validateJobRetention(options.removeOnComplete, 'removeOnComplete');
+  }
+  if (options.removeOnFail !== undefined) {
+    retention.removeOnFail = validateJobRetention(options.removeOnFail, 'removeOnFail');
+  }
+  return {
+    connections: options.connections,
+    onError: options.onError,
+    retention,
+    queueFactory: options.queueFactory,
+    workerFactory: options.workerFactory,
+  };
+}
+
+/**
+ * Built-in BullMQ {@link JobsRuntimeAdapter}. Options are validated
+ * synchronously and nothing connects until the runtime creates a producer or
+ * worker handle.
+ */
+export class BullMQAdapter implements JobsRuntimeAdapter {
+  readonly name = 'bullmq';
+  /** Jobs reach every worker on the same Valkey queue. */
+  readonly reach = 'shared';
+
+  readonly #opts: ResolvedAdapterOptions;
+  // Recovers the native queue for a producer handle without exposing BullMQ
+  // types through the neutral contract. Scoped per adapter instance.
+  readonly #producerQueues = new WeakMap<RuntimeProducer, JobQueue>();
+
+  constructor(options: BullMQAdapterOptions) {
+    this.#opts = resolveOptions(options);
+  }
+
+  #makeQueue(context: JobAdapterContext, connection: ValkeyClient): JobQueue {
+    const queue = (this.#opts.queueFactory ?? defaultQueueFactory)(context.queueName, {
+      connection,
+      prefix: context.prefix,
+      defaultJobOptions: defaultJobOptions(this.#opts.retention),
+    } satisfies QueueOptions<ConnectionOptions>);
+    try {
+      attachErrorHandler(queue, this.#opts.onError, defaultErrorLogger('queue', context.queueName));
+    } catch (error) {
+      // A partially built queue must not leak its owned connection.
+      queue.close().catch(() => {
+        // Teardown of a half-built queue is best-effort; the setup error wins.
+      });
+      throw error;
+    }
+    return queue;
+  }
+
+  #makeWorker(
+    context: JobAdapterContext,
+    processJob: ProcessJob,
+    connection: ValkeyClient,
+  ): JobWorker {
+    const reportError = this.#opts.onError ?? defaultErrorLogger('worker', context.queueName);
+    const processor = async (job: WorkerJob, token?: string): Promise<unknown> => {
+      try {
+        return await processJob(job);
+      } catch (error) {
+        if (isJobAttemptInterrupted(error)) {
+          await returnToWait(job, token, reportError);
+          // BullMQ treats a `WaitingError` as "the processor moved the job
+          // itself": it neither counts the attempt nor moves the job to failed.
+          throw new WaitingError();
+        }
+        throw toBullMQError(error);
+      }
+    };
+    const worker = (this.#opts.workerFactory ?? defaultWorkerFactory)(
+      context.queueName,
+      processor,
+      {
+        connection,
+        prefix: context.prefix,
+        concurrency: context.concurrency,
+      } satisfies WorkerOptions<ConnectionOptions>,
+    );
+    try {
+      attachErrorHandler(
+        worker,
+        this.#opts.onError,
+        defaultErrorLogger('worker', context.queueName),
+      );
+    } catch (error) {
+      worker.close().catch(() => {
+        // Teardown of a half-built worker is best-effort; the setup error wins.
+      });
+      throw error;
+    }
+    return worker;
+  }
+
+  async createProducer(context: JobAdapterContext): Promise<RuntimeProducer> {
+    const queue = this.#makeQueue(context, await this.#opts.connections.shared('command'));
+    const retention = this.#opts.retention;
+    const closeOnce = createCleanup(() => queue.close());
+    const producer: RuntimeProducer = {
+      dispatch(name, data, dispatchOptions) {
+        return queue.add(name, data, {
+          ...defaultJobOptions(retention),
+          ...(dispatchOptions as JobsOptions),
+        });
+      },
+      async readCounts(): Promise<QueueCounts> {
+        if (typeof queue.getJobCounts !== 'function') {
+          throw new TypeError('bullmq adapter: the queue does not support job counts');
+        }
+        const counts = await queue.getJobCounts(
+          'waiting',
+          'active',
+          'completed',
+          'failed',
+          'delayed',
+        );
+        return {
+          waiting: counts['waiting'] ?? 0,
+          active: counts['active'] ?? 0,
+          completed: counts['completed'] ?? 0,
+          failed: counts['failed'] ?? 0,
+          delayed: counts['delayed'] ?? 0,
+        };
+      },
+      async pause(): Promise<void> {
+        if (typeof queue.pause !== 'function') {
+          throw new TypeError('bullmq adapter: the queue does not support pause');
+        }
+        await queue.pause();
+      },
+      async resume(): Promise<void> {
+        if (typeof queue.resume !== 'function') {
+          throw new TypeError('bullmq adapter: the queue does not support resume');
+        }
+        await queue.resume();
+      },
+      async close() {
+        await closeOnce();
+      },
+    };
+    this.#producerQueues.set(producer, queue);
+    return producer;
+  }
+
+  async createWorker(context: JobAdapterContext, processJob: ProcessJob): Promise<RuntimeWorker> {
+    const connection = await this.#opts.connections.dedicated(
+      'queue',
+      `worker-${context.queueName.replace(/[^A-Za-z0-9._-]+/g, '-').slice(0, 48)}`,
+    );
+    let worker: JobWorker;
+    try {
+      worker = this.#makeWorker(context, processJob, connection);
+    } catch (error) {
+      connection.disconnect();
+      throw error;
+    }
+    // The worker drains (or, with `force`, skips) in-flight jobs and closes
+    // the blocking connection it duplicated; the dedicated connection it was
+    // given is this adapter's to disconnect afterwards. The first `force`
+    // value wins; a later close joins the same teardown.
+    let forceClose = false;
+    const closeOnce = createCleanup(async () => {
+      try {
+        await worker.close(forceClose);
+      } finally {
+        connection.disconnect();
+      }
+    });
+    return {
+      async close(force) {
+        forceClose = force === true;
+        await closeOnce();
+      },
+    };
+  }
+
+  async upsertSchedules(
+    producer: RuntimeProducer,
+    schedules: readonly PreparedSchedule[],
+  ): Promise<void> {
+    const queue = this.#producerQueues.get(producer);
+    if (queue === undefined) {
+      throw new TypeError('bullmq adapter: scheduling requires a producer created by this adapter');
+    }
+    // Every tick is a new job, so a schedule is the main source of finished
+    // jobs: retention rides on each template explicitly.
+    const { removeOnComplete, removeOnFail } = defaultJobOptions(this.#opts.retention);
+    for (const entry of schedules) {
+      // The overlap descriptor rides in the scheduled job's `opts` so it
+      // reaches the worker via `job.opts` → `JobMiddlewareContext.options`,
+      // exactly like the chain/batch descriptors. BullMQ stores `opts`
+      // verbatim on the job template, so the reserved key survives. The cast
+      // is required because `JobSchedulerTemplateOptions` has no index
+      // signature for framework-reserved keys.
+      const opts: Record<string, unknown> = { removeOnComplete, removeOnFail };
+      if (entry.overlap !== undefined) {
+        opts[OVERLAP_OPTION_KEY] = entry.overlap;
+      }
+      if (entry.description !== undefined) {
+        opts[DESCRIPTION_OPTION_KEY] = entry.description;
+      }
+      const templateOpts = opts as JobSchedulerTemplateOptions;
+      const repeat =
+        'intervalMs' in entry.repeat
+          ? { every: entry.repeat.intervalMs }
+          : { pattern: entry.repeat.cron, tz: entry.repeat.timezone };
+      await queue.upsertJobScheduler(entry.id, repeat, {
+        name: entry.job,
+        data: entry.data,
+        opts: templateOpts,
+      });
+    }
+  }
+
+  async listSchedules(producer: RuntimeProducer): Promise<readonly ScheduleInfo[]> {
+    const queue = this.#producerQueues.get(producer);
+    if (queue === undefined) {
+      throw new TypeError(
+        'bullmq adapter: listing schedules requires a producer created by this adapter',
+      );
+    }
+    if (typeof queue.getJobSchedulers !== 'function') {
+      throw new TypeError('bullmq adapter: the queue does not support listing schedules');
+    }
+    const raw = await queue.getJobSchedulers();
+    return raw.map((entry: JobSchedulerJson): ScheduleInfo => {
+      const id = entry.id ?? entry.key;
+      const job = entry.name;
+      const repeat =
+        entry.pattern !== undefined
+          ? entry.pattern
+          : entry.every !== undefined
+            ? `every ${entry.every}ms`
+            : 'unknown';
+      // Include nextRunAt only when `next` is a finite number, so the
+      // field is absent rather than set to `undefined` for unknown times.
+      const nextFinite =
+        typeof entry.next === 'number' && Number.isFinite(entry.next) ? entry.next : undefined;
+      // Only surface the overlap descriptor when the raw opts carry a valid
+      // one; a malformed/absent key is silently omitted (the scheduler
+      // stored it, so corruption means the store was tampered with — but the
+      // caller should not see it).
+      const templateOpts = entry.template?.opts as Record<string, unknown> | undefined;
+      const rawOverlap = templateOpts?.[OVERLAP_OPTION_KEY];
+      const overlap = isOverlapDescriptor(rawOverlap) ? rawOverlap : undefined;
+      const rawDescription = templateOpts?.[DESCRIPTION_OPTION_KEY];
+      const description =
+        typeof rawDescription === 'string' && rawDescription.trim() !== ''
+          ? rawDescription
+          : undefined;
+      const result: ScheduleInfo = {
+        id,
+        job,
+        repeat,
+        ...(description !== undefined ? { description } : {}),
+      };
+      if (nextFinite !== undefined) {
+        (result as unknown as Record<string, unknown>).nextRunAt = nextFinite;
+      }
+      if (overlap !== undefined) {
+        (result as unknown as Record<string, unknown>).overlap = overlap;
+      }
+      return result;
+    });
+  }
+
+  async pauseSchedules(producer: RuntimeProducer, ids: readonly string[]): Promise<void> {
+    const queue = this.#producerQueues.get(producer);
+    if (queue === undefined) {
+      throw new TypeError(
+        'bullmq adapter: pausing schedules requires a producer created by this adapter',
+      );
+    }
+    if (typeof queue.removeJobScheduler !== 'function') {
+      throw new TypeError('bullmq adapter: the queue does not support pausing schedules');
+    }
+    // Removal is idempotent — BullMQ returns `false` for an unknown id.
+    // A later `work` start re-registers the schedules via `upsertSchedules`,
+    // so pausing is non-durable.
+    for (const id of ids) {
+      await queue.removeJobScheduler(id);
+    }
+  }
+
+  async removeSchedules(producer: RuntimeProducer, ids: readonly string[]): Promise<void> {
+    const queue = this.#producerQueues.get(producer);
+    if (queue === undefined) {
+      throw new TypeError(
+        'bullmq adapter: removing schedules requires a producer created by this adapter',
+      );
+    }
+    if (typeof queue.removeJobScheduler !== 'function') {
+      throw new TypeError('bullmq adapter: the queue does not support removing schedules');
+    }
+    for (const id of ids) {
+      await queue.removeJobScheduler(id);
+    }
+  }
+}
+
+/**
+ * Put a job whose attempt the runtime's shutdown interrupted back on the wait
+ * list. `moveToWait` leaves `attemptsMade` alone, so the interruption costs no
+ * attempt and no backoff. If the move fails (the lock or the connection is
+ * gone), the job stays active without a lock renewal and BullMQ's stalled-job
+ * check returns it to the wait list instead.
+ */
+async function returnToWait(
+  job: WorkerJob,
+  token: string | undefined,
+  reportError: JobErrorHandler,
+): Promise<void> {
+  if (typeof job.moveToWait !== 'function') return;
+  try {
+    await job.moveToWait(token);
+  } catch (error) {
+    reportError(error instanceof Error ? error : new Error(String(error)));
+  }
+}
+
+/**
+ * Map the runtime's non-retryable marker onto BullMQ's: an
+ * `UnrecoverableError` fails the job at once instead of spending the attempts
+ * left. The message and stack carry over; everything else passes unchanged.
+ */
+function toBullMQError(error: unknown): unknown {
+  if (!isJobErrorNonRetryable(error) || error instanceof UnrecoverableError) {
+    return error;
+  }
+  const original = error instanceof Error ? error : undefined;
+  const unrecoverable = new UnrecoverableError(original?.message ?? String(error));
+  if (original?.stack !== undefined) {
+    unrecoverable.stack = original.stack;
+  }
+  return unrecoverable;
+}

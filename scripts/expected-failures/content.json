@@ -1,0 +1,348 @@
+{
+  "description": "Content cluster audit regressions (CNT-01): one audit-*.test.ts(x) test per audited or critic-predicted defect in server components, live, rich text and the editor, blog, disks and media, cache, mail, notifications and webhooks. Each entry is a test that asserts the correct behaviour and fails today; the closing CNT package removes its entry.",
+  "kind": "tests",
+  "entries": [
+    {
+      "file": "core/test/live/audit-change-capture.test.ts",
+      "test": ["live/capture-row-contents: a captured change carries the row key, not its columns"],
+      "failure": {
+        "message": "password hash was copied into the change record",
+        "name": "AssertionError"
+      },
+      "reason": "Capture re-reads every written row and stores all scalar columns (password and token hashes included) in the change log; the feed only ever needs the key.",
+      "fixedBy": "CNT-10"
+    },
+    {
+      "file": "core/test/live/audit-change-capture.test.ts",
+      "test": ["live/capture-reread: capturing a committed write issues no extra read"],
+      "failure": {
+        "message": "capture re-read the written row",
+        "name": "AssertionError"
+      },
+      "reason": "Every committed write costs one extra SELECT to re-read the row, even for entities no publication covers.",
+      "fixedBy": "CNT-10"
+    },
+    {
+      "file": "core/test/live/audit-change-capture.test.ts",
+      "test": ["live/capture-bulk-update: an update by criteria marks the collection changed"],
+      "failure": {
+        "message": "a bulk update reached no subscriber",
+        "name": "AssertionError"
+      },
+      "reason": "A query-builder update carries no primary key and runs outside a capture frame, so capture drops it and live clients keep stale rows.",
+      "fixedBy": "CNT-10"
+    },
+    {
+      "file": "core/test/live/audit-change-capture.test.ts",
+      "test": ["live/capture-bulk-delete: a delete by criteria marks the collection changed"],
+      "failure": {
+        "message": "a bulk delete reached no subscriber",
+        "name": "AssertionError"
+      },
+      "reason": "A delete by criteria has no keyed entity event, so capture drops it and live clients keep deleted rows.",
+      "fixedBy": "CNT-10"
+    },
+    {
+      "file": "packages/notifications/test/audit-notifications.test.ts",
+      "test": [
+        "notifications/notifiable-index: the notifications table indexes the notifiable column every read filters on"
+      ],
+      "failure": {
+        "message": "no index leads with notifiable",
+        "name": "AssertionError"
+      },
+      "reason": "jsails_notifications has no index on notifiable, so list, unreadCount and markAllRead scan the whole table.",
+      "fixedBy": "CNT-19"
+    },
+    {
+      "file": "packages/notifications/test/audit-notifications.test.ts",
+      "test": [
+        "notifications/timeout-cancels-attempt: a channel attempt that times out is told to stop through an AbortSignal"
+      ],
+      "failure": {
+        "message": "the channel received no AbortSignal",
+        "name": "AssertionError"
+      },
+      "reason": "The dispatcher races a timer without an AbortSignal, so a timed-out send keeps running and may still deliver.",
+      "fixedBy": "CNT-19"
+    },
+    {
+      "file": "packages/notifications/test/audit-notifications.test.ts",
+      "test": [
+        "notifications/concurrency-bound: a timed-out attempt still counts against the channel concurrency until it ends"
+      ],
+      "failure": {
+        "message": "concurrency 1 let \\d+ attempts run at once",
+        "name": "AssertionError"
+      },
+      "reason": "A timed-out attempt frees its worker while it keeps running, so the concurrency bound does not bound in-flight sends.",
+      "fixedBy": "CNT-19"
+    },
+    {
+      "file": "packages/notifications/test/audit-notifications.test.ts",
+      "test": [
+        "notifications/failure-cause: a failed delivery keeps the channel error as its cause"
+      ],
+      "failure": {
+        "message": "the channel error was discarded",
+        "name": "AssertionError"
+      },
+      "reason": "Failures are reduced to channel names by a bare catch; the cause is lost.",
+      "fixedBy": "CNT-19"
+    },
+    {
+      "file": "packages/mail/test/audit-mail.test.ts",
+      "test": ["mail/address-shape: an address needs a local part and a domain"],
+      "failure": {
+        "message": "\"@\" was accepted as an email address",
+        "name": "AssertionError"
+      },
+      "reason": "assertMailAddress only requires one '@', so '@', 'ada@' and '@example.com' pass.",
+      "fixedBy": "CNT-19"
+    },
+    {
+      "file": "packages/mail/test/audit-mail.test.ts",
+      "test": ["mail/body-required: a message with neither text nor html is refused"],
+      "failure": {
+        "message": "a message with no body was accepted",
+        "name": "AssertionError"
+      },
+      "reason": "validateMessage accepts a message with neither text nor html.",
+      "fixedBy": "CNT-19"
+    },
+    {
+      "file": "packages/mail/test/audit-mail.test.ts",
+      "test": ["mail/memory-transport-bounded: the in-memory transport keeps a bounded capture"],
+      "failure": {
+        "message": "the capture grows without bound",
+        "name": "AssertionError"
+      },
+      "reason": "InMemoryMailTransport keeps every captured message forever.",
+      "fixedBy": "CNT-19"
+    },
+    {
+      "file": "packages/webhook/test/audit-webhook.test.ts",
+      "test": [
+        "webhook/form-encoded-body: a verified form-encoded delivery (Slack commands) reaches the handler"
+      ],
+      "failure": {
+        "message": "a correctly signed form-encoded delivery was refused",
+        "name": "AssertionError"
+      },
+      "reason": "handleDelivery always JSON-parses the body, so verified form-encoded Slack deliveries get 400.",
+      "fixedBy": "CNT-20"
+    },
+    {
+      "file": "packages/webhook/test/audit-webhook.test.ts",
+      "test": [
+        "webhook/acknowledge-before-processing: a delivery is acknowledged once stored, without waiting for its handler"
+      ],
+      "failure": {
+        "message": "did not settle within",
+        "name": "SettleTimeoutError"
+      },
+      "reason": "The handler runs inside the sender's request; a slow or dead process loses the event and holds the replay claim (at-most-once).",
+      "fixedBy": "CNT-20"
+    },
+    {
+      "file": "packages/filesystem/test/audit-filesystem.test.ts",
+      "test": [
+        "filesystem/variant-follows-source: a variant is derived again when its source bytes change"
+      ],
+      "failure": {
+        "message": "the variant of the overwritten source is still served",
+        "name": "AssertionError"
+      },
+      "reason": "Variant keys hash (source key, name, params), not source content, so an overwritten source keeps its old variant.",
+      "fixedBy": "CNT-18"
+    },
+    {
+      "file": "packages/filesystem/test/audit-filesystem.test.ts",
+      "test": [
+        "filesystem/variant-known-per-process: a variant purged by one instance is not reported as present by another"
+      ],
+      "failure": {
+        "message": "instance B returned a key that no longer exists",
+        "name": "AssertionError"
+      },
+      "reason": "The resolver's known-key set is per process, so another instance keeps returning purged keys until restart.",
+      "fixedBy": "CNT-18"
+    },
+    {
+      "file": "packages/media/test/audit-media.test.ts",
+      "test": [
+        "media/orphan-on-index-failure: an upload whose index write fails leaves no bytes on the disk"
+      ],
+      "failure": {
+        "message": "the bytes stay on the disk with no index row",
+        "name": "AssertionError"
+      },
+      "reason": "upload writes the bytes, then the index row, with no rollback or two-phase commit.",
+      "fixedBy": "CNT-18"
+    },
+    {
+      "file": "packages/media/test/audit-media.test.ts",
+      "test": [
+        "media/custom-type-keeps-foreign-extension: a stored filename never keeps an extension that implies another type"
+      ],
+      "failure": {
+        "message": "stored as notes\\.html",
+        "name": "AssertionError"
+      },
+      "reason": "reconcileExtension keeps the original filename when the recorded type has no known extension, so an allowed custom type keeps an .html name.",
+      "fixedBy": "CNT-18"
+    },
+    {
+      "file": "packages/content/test/audit-content.test.ts",
+      "test": [
+        "content/duplicate-slug: two pages that claim one slug fail discovery instead of one replacing the other"
+      ],
+      "failure": {
+        "message": "one of the two pages silently vanished",
+        "name": "AssertionError"
+      },
+      "reason": "buildCollection sets bySlug in order, so a later page with the same frontmatter slug replaces an earlier one without an error.",
+      "fixedBy": "CNT-18"
+    },
+    {
+      "file": "packages/content/test/audit-content.test.ts",
+      "test": [
+        "content/render-cache-collision: the render cache never serves one file the HTML of another"
+      ],
+      "failure": {
+        "message": "BB\\.md was served Aa\\.md's cached HTML",
+        "name": "AssertionError"
+      },
+      "reason": "Render-cache files are named by a 31-bit string hash of the path, so colliding paths share an entry.",
+      "fixedBy": "CNT-18"
+    },
+    {
+      "file": "packages/content/test/audit-content.test.ts",
+      "test": ["content/feed-xml-illegal-characters: a feed never contains XML-illegal characters"],
+      "failure": {
+        "message": "one control character invalidates the whole feed",
+        "name": "AssertionError"
+      },
+      "reason": "Feeds escape HTML but pass XML-illegal control characters through.",
+      "fixedBy": "CNT-16"
+    },
+    {
+      "file": "packages/blog/test/audit-blog.test.ts",
+      "test": [
+        "blog/default-memory-repository: the blog plugin refuses to start without a persistent repository"
+      ],
+      "failure": {
+        "message": "keeps every post in process memory",
+        "name": "AssertionError"
+      },
+      "reason": "blogPlugin defaults to an in-memory repository, which loses every post on restart.",
+      "fixedBy": "CNT-15"
+    },
+    {
+      "file": "packages/blog/test/audit-blog.test.ts",
+      "test": [
+        "blog/write-path-search-sync: publishing, unpublishing and deleting a post keep the search engine in step"
+      ],
+      "failure": {
+        "message": "a published post never reached the index",
+        "name": "AssertionError"
+      },
+      "reason": "Only the admin save and revision restore call the search engine; publishPost, unpublishPost and deletePost never do.",
+      "fixedBy": "CNT-16"
+    },
+    {
+      "file": "packages/blog/test/audit-blog.test.ts",
+      "test": ["blog/optimistic-locking: a save based on a stale read of a post is refused"],
+      "failure": {
+        "message": "posts carry no lockVersion",
+        "name": "AssertionError"
+      },
+      "reason": "updatePost is read-modify-write with no version check, so concurrent editors overwrite each other.",
+      "fixedBy": "CNT-15"
+    },
+    {
+      "file": "packages/blog/test/audit-blog.test.ts",
+      "test": [
+        "blog/term-delete-dangling: deleting a category removes it from the posts that carried it"
+      ],
+      "failure": {
+        "message": "the post still names the deleted category",
+        "name": "AssertionError"
+      },
+      "reason": "deleteCategory and deleteTag leave the id in posts' JSON term arrays.",
+      "fixedBy": "CNT-15"
+    },
+    {
+      "file": "packages/blog/test/audit-blog.test.ts",
+      "test": [
+        "blog/term-archive-reads-all-posts: a category archive page reads that page of posts, not every published post"
+      ],
+      "failure": {
+        "message": "one archive page hydrated \\d+ post rows",
+        "name": "AssertionError"
+      },
+      "reason": "publishedTermPage loads every published post and filters term membership in JavaScript.",
+      "fixedBy": "CNT-15"
+    },
+    {
+      "file": "packages/blog/test/audit-blog.test.ts",
+      "test": [
+        "blog/database-search-scans: a database search reads the matching page, not every post with its body"
+      ],
+      "failure": {
+        "message": "one search hydrated \\d+ post rows",
+        "name": "AssertionError"
+      },
+      "reason": "The database search driver calls listPosts and matches in JavaScript on every public search.",
+      "fixedBy": "CNT-16"
+    },
+    {
+      "file": "packages/blog/test/audit-blog.test.ts",
+      "test": [
+        "blog/orama-per-process: a post published through one instance is searchable on another"
+      ],
+      "failure": {
+        "message": "instance B still searches its startup snapshot",
+        "name": "AssertionError"
+      },
+      "reason": "The default Orama index is built per process on first search and only updated by in-process calls.",
+      "fixedBy": "CNT-16"
+    },
+    {
+      "file": "packages/blog/test/audit-blog.test.ts",
+      "test": [
+        "blog/search-page-unbounded: the search route bounds the page it asks the engine for"
+      ],
+      "failure": {
+        "message": "the engine was asked for results up to #\\d+",
+        "name": "AssertionError"
+      },
+      "reason": "GET /blog/search passes an unbounded page to the engine (OpenSearch answers 400, surfaced as 503).",
+      "fixedBy": "CNT-16"
+    },
+    {
+      "file": "packages/blog/test/audit-blog.test.ts",
+      "test": [
+        "blog/sitemap-requeries: the sitemap is read once per content version: fresh after a write, cached otherwise"
+      ],
+      "failure": {
+        "message": "two sitemap requests with no write in between read posts \\d+ times",
+        "name": "AssertionError"
+      },
+      "reason": "The sitemap re-reads up to 50 000 posts on every request with no version-keyed cache.",
+      "fixedBy": "CNT-16"
+    },
+    {
+      "file": "packages/live/test/audit-live.test.ts",
+      "test": [
+        "live/resnapshot-single-flight: oversized changes re-snapshot a subscription one at a time"
+      ],
+      "failure": {
+        "message": "\\d+ snapshot queries ran at once for one subscription",
+        "name": "AssertionError"
+      },
+      "reason": "resnapshot has no in-flight guard, so k oversized changes run k concurrent snapshot queries per subscription.",
+      "fixedBy": "CNT-11"
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "name": "@jsails/filesystem",
+  "version": "1.0.0",
+  "description": "Local, in-memory, and S3 Disk implementations, lazily materialized variants, and the filesystem plugin for JSails.",
+  "license": "MIT",
+  "author": "Ronald Wong <ronald2wing@gmail.com>",
+  "homepage": "https://jsails.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronald2wing/JSails.git",
+    "directory": "packages/filesystem"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./testing": {
+      "types": "./dist/src/testing/index.d.ts",
+      "default": "./dist/src/testing/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/test",
+    "!dist/.tsbuildinfo",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "tsc -p tsconfig.json",
+    "build:clean": "npm run clean && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node ../../scripts/run-tests.mjs",
+    "test:watch": "node ../../scripts/run-tests.mjs --watch"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1155.0",
+    "@aws-sdk/s3-request-presigner": "^3.1155.0"
+  },
+  "peerDependencies": {
+    "jsails": "^1.0.0"
+  },
+  "devDependencies": {
+    "jsails": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ronald2wing/JSails/issues"
+  },
+  "jsails": {
+    "manifestVersion": 1,
+    "id": "jsails-filesystem",
+    "version": "1.0.0",
+    "name": "Filesystem",
+    "summary": "Local, in-memory, and S3 disks with lazily materialized file variants.",
+    "publisher": "jsails",
+    "jsailsCompat": "^1.0.0",
+    "apiTier": "stable",
+    "permissions": [
+      "services.provide"
+    ],
+    "env": [
+      {
+        "name": "FILESYSTEM_DISK",
+        "kind": "string",
+        "description": "The backend of an env-driven disk: local (the default), s3, or memory."
+      },
+      {
+        "name": "FILESYSTEM_LOCAL_ROOT",
+        "kind": "string",
+        "description": "The root of an env-driven local disk, relative to the application root."
+      },
+      {
+        "name": "S3_BUCKET",
+        "kind": "string",
+        "description": "The bucket of an env-driven S3 disk."
+      },
+      {
+        "name": "S3_REGION",
+        "kind": "string",
+        "description": "The region of an env-driven S3 disk."
+      },
+      {
+        "name": "S3_ENDPOINT",
+        "kind": "url",
+        "description": "The endpoint of an S3-compatible store other than AWS."
+      },
+      {
+        "name": "S3_FORCE_PATH_STYLE",
+        "kind": "string",
+        "description": "Whether to address the bucket in the path rather than the host name."
+      },
+      {
+        "name": "S3_PREFIX",
+        "kind": "string",
+        "description": "The key prefix every object of an env-driven S3 disk is stored under."
+      },
+      {
+        "name": "S3_CONDITIONAL_WRITES",
+        "kind": "string",
+        "description": "Off for a store that ignores If-None-Match; on by default."
+      },
+      {
+        "name": "S3_ACCESS_KEY_ID",
+        "kind": "secret",
+        "description": "The access key of an env-driven S3 disk."
+      },
+      {
+        "name": "S3_SECRET_ACCESS_KEY",
+        "kind": "secret",
+        "description": "The secret key of an env-driven S3 disk."
+      },
+      {
+        "name": "S3_SESSION_TOKEN",
+        "kind": "secret",
+        "description": "The session token of temporary S3 credentials."
+      }
+    ],
+    "entry": "@jsails/filesystem"
+  }
+}
