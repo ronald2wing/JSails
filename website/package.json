@@ -15,17 +15,17 @@
   "dependencies": {
     "@jsails/content": "file:../packages/content",
     "jsails": "file:../core",
-    "preact": "^11.0.1"
+    "preact": "^11.2.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.6",
-    "@tailwindcss/vite": "^4.3.3",
-    "@types/node": "^26.6.5",
-    "daisyui": "^5.7.50",
-    "pagefind": "^1.5.2",
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^26.6.6",
+    "daisyui": "^5.8.1",
+    "pagefind": "^1.6.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
-    "vite": "^8.3.5"
+    "vite": "^8.3.8"
   },
   "engines": {
     "node": ">=26.0.0"
