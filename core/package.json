@@ -268,7 +268,7 @@
     "hono": "^4.13.13",
     "image-size": "^2.0.4",
     "inflection": "^3.0.2",
-    "ioredis": "^5.11.1",
+    "ioredis": "^6.0.0",
     "kysely": "^0.29.7",
     "mime-types": "^3.0.2",
     "mysql2": "^3.24.5",
