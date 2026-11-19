@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@types/nodemailer": "^8.0.2",
-    "nodemailer": "^10.2.0"
+    "nodemailer": "^10.6.0"
   },
   "peerDependencies": {
     "jsails": "^1.0.0"
