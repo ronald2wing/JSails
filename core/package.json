@@ -308,7 +308,7 @@
   },
   "devDependencies": {
     "@modelcontextprotocol/client": "2.4.0",
-    "@oxc-project/types": "^0.155.0",
+    "@oxc-project/types": "^0.159.0",
     "happy-dom": "21.0.4"
   }
 }
