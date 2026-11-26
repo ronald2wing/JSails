@@ -39,8 +39,8 @@
   "peerDependencies": {
     "@jsails/admin": "^1.0.0",
     "jsails": "^1.0.0",
-    "preact": "^11.0.1",
-    "typeorm": "^1.1.1"
+    "preact": "^11.2.0",
+    "typeorm": "^1.1.3"
   },
   "peerDependenciesMeta": {
     "@jsails/admin": {
@@ -51,8 +51,8 @@
     "@jsails/admin": "^1.0.0",
     "@jsails/filesystem": "^1.0.0",
     "jsails": "^1.0.0",
-    "preact": "^11.0.1",
-    "typeorm": "^1.1.1"
+    "preact": "^11.2.0",
+    "typeorm": "^1.1.3"
   },
   "engines": {
     "node": ">=26.0.0"

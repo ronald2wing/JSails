@@ -37,8 +37,8 @@
     "test:watch": "node ../../scripts/run-tests.mjs --watch"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1155.0",
-    "@aws-sdk/s3-request-presigner": "^3.1155.0"
+    "@aws-sdk/client-s3": "^3.1175.0",
+    "@aws-sdk/s3-request-presigner": "^3.1175.0"
   },
   "peerDependencies": {
     "jsails": "^1.0.0"

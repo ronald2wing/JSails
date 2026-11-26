@@ -33,7 +33,7 @@
     "test:watch": "node ../../scripts/run-tests.mjs --watch"
   },
   "dependencies": {
-    "nodemailer": "^10.2.0"
+    "nodemailer": "^10.6.1"
   },
   "peerDependencies": {
     "jsails": "1.0.0"

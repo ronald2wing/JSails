@@ -34,9 +34,9 @@
   },
   "dependencies": {
     "@jsails/mail": "^1.0.0",
-    "better-auth": "1.7.12",
-    "kysely": "^0.29.7",
-    "mysql2": "^3.24.5"
+    "better-auth": "1.7.27",
+    "kysely": "^0.29.9",
+    "mysql2": "^3.24.6"
   },
   "peerDependencies": {
     "jsails": "^1.0.0",
